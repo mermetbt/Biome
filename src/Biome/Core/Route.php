@@ -3,6 +3,8 @@
 namespace Biome\Core;
 
 use League\Route\RouteCollection;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Route extends RouteCollection
 {
@@ -12,7 +14,8 @@ class Route extends RouteCollection
 	public function autoroute()
 	{
 		$this->addRoute('GET', '/', function (Request $request, Response $response) {
-			$response->setContent('Init;');
+			$response->setContent('Init');
+			return $response;
 		});
 	}
 }

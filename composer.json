@@ -6,7 +6,8 @@
         "php": ">=5.5.0",
         "psr/log": "^1.0@dev",
         "koala-framework/composer-extra-assets": "^1.1@dev",
-        "league/route": "^1.0@dev"
+        "league/route": "^1.0@dev",
+        "filp/whoops": "^1.2@dev"
     },
     "license": "GPL-2.0",
     "authors": [
