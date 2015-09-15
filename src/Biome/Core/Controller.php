@@ -2,10 +2,46 @@
 
 namespace Biome\Core;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 class Controller
 {
-	public function __construct()
-	{
+	protected $request;
+	protected $response;
 
+	public function __construct(Request $request, Response $response)
+	{
+		$this->request	= $request;
+		$this->response = $response;
+	}
+
+	public function request()
+	{
+		return $this->request;
+	}
+
+	public function response()
+	{
+		return $this->response;
+	}
+
+	public function process($type, $controller_name, $action_name, $method_name)
+	{
+		if($type == 'GET')
+		{
+			$this->view = new View($this->response);
+			$this->view->load($controller_name, $action_name);
+		}
+
+		$this->$method_name();
+
+		if($type == 'GET')
+		{
+			// Render view
+			$this->view->render();
+		}
+
+		return $this->response;
 	}
 }

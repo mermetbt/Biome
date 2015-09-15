@@ -63,10 +63,12 @@ class Route extends RouteCollection
 						$route_path .= $controller_name . '/' . strtolower($name);
 					}
 
-					$this->addRoute($type, $route_path, function(Request $request, Response $response) use($meta) {
-						$ctrl = new $meta['controller']();
-						$ctrl->$meta['action']();
-						return $response;
+					$this->addRoute($type, $route_path, function(Request $request, Response $response) use($type, $controller_name, $name, $meta) {
+						/* Initialize the controller. */
+						$ctrl = new $meta['controller']($request, $response);
+
+						/* Execute the action. */
+						return $ctrl->process($type, $controller_name, $name, $meta['action']);
 					});
 				}
 			}
