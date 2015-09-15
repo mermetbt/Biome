@@ -39,7 +39,8 @@ class Controller
 		if($type == 'GET')
 		{
 			// Render view
-			$this->view->render();
+			$content = $this->view->render();
+			$this->response->setContent($content);
 		}
 
 		return $this->response;

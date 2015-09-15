@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <biome:views xmlns:biome="http://github.com/mermetbt/Biome/">
 	<biome:view action="index">
-		My main controller !<br/>
+		<h1>Biome</h1>
+
+		<span>My main controller !</span>
+		<br/>
 		<a href="index/test">Test</a>
 	</biome:view>
 
 	<biome:view action="test">
-		Test!
+		<span>Test!</span><br/>
 		<a href="../">Go back!</a>
 	</biome:view>
 </biome:views>
