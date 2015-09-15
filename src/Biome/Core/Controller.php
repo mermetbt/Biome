@@ -40,7 +40,10 @@ class Controller
 		{
 			// Render view
 			$content = $this->view->render();
-			$this->response->setContent($content);
+			if(!empty($content))
+			{
+				$this->response->setContent($content);
+			}
 		}
 
 		return $this->response;

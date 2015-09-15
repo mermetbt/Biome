@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Biome
 {
+	protected static $directories = array();
+
 	public static function start()
 	{
 		/* Initializing the Framework. */
@@ -17,7 +19,7 @@ class Biome
 		$request = Request::createFromGlobals();
 
 		/* Routing. */
-		$router = new Route($request, array(__DIR__ . '/../app/controllers/'));
+		$router = new Route($request, array(__DIR__ . '/../app/controllers/', self::getDir('controllers')));
 		$router->autoroute();
 
 		/* Dispatch. */
@@ -28,5 +30,15 @@ class Biome
 		$response->send();
 
 		/* Commit. */
+	}
+
+	public static function registerDirs(array $dirs)
+	{
+		self::$directories = $dirs;
+	}
+
+	public static function getDir($type)
+	{
+		return self::$directories[$type];
 	}
 }

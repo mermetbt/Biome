@@ -38,10 +38,14 @@ class View
 
 	public function load($controller, $action)
 	{
-		$path = __DIR__ . '/../../app/views/' . $controller . '.xml';
+		$path = \Biome\Biome::getDir('views') . '/' . $controller .'.xml';
 		if(!file_exists($path))
 		{
-			return FALSE;
+			$path = __DIR__ . '/../../app/views/' . $controller . '.xml';
+			if(!file_exists($path))
+			{
+				return FALSE;
+			}
 		}
 
 		$xml_contents = file_get_contents($path);

@@ -63,13 +63,26 @@ class Route extends RouteCollection
 						$route_path .= $controller_name . '/' . strtolower($name);
 					}
 
-					$this->addRoute($type, $route_path, function(Request $request, Response $response) use($type, $controller_name, $name, $meta) {
+					$method = function(Request $request, Response $response) use($type, $controller_name, $name, $meta) {
 						/* Initialize the controller. */
 						$ctrl = new $meta['controller']($request, $response);
 
 						/* Execute the action. */
 						return $ctrl->process($type, $controller_name, $name, $meta['action']);
-					});
+					};
+
+					$this->addRoute($type, $route_path, $method);
+					if($name == 'index')
+					{
+						$route_path = '/' . $controller_name;
+						$this->addRoute($type, $route_path, $method);
+					}
+
+					if($controller_name == 'index' && $name == 'index')
+					{
+						$route_path = '/' . $controller_name . '/' . $name;
+						$this->addRoute($type, $route_path, $method);
+					}
 				}
 			}
 		}
