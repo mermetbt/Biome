@@ -14,14 +14,14 @@ class Biome
 		/* Initializing the Framework. */
 		Error::init();
 
-		/* Routing. */
-		$router = new Route();
-		$router->autoroute();
+		$request = Request::createFromGlobals();
 
+		/* Routing. */
+		$router = new Route($request, array(__DIR__ . '/../app/controllers/'));
+		$router->autoroute();
 
 		/* Dispatch. */
 		$dispatcher = $router->getDispatcher();
-		$request = Request::createFromGlobals();
 		$response = $dispatcher->dispatch($request->getMethod(), $request->getPathInfo());
 
 		/* Send the response. */
