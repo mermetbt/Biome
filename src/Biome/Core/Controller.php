@@ -30,7 +30,7 @@ class Controller
 	{
 		if($type == 'GET')
 		{
-			$this->view = new View($this->response);
+			$this->view = new View($this->request, $this->response);
 			$this->view->load($controller_name, $action_name);
 		}
 

@@ -12,6 +12,7 @@ class Component implements Element
 	public $name		= '';
 	public $attributes	= array();
 	protected $value	= array();
+	public static $view	= NULL;
 
 	public static function xmlDeserialize(Reader $reader)
 	{
@@ -54,6 +55,7 @@ class Component implements Element
 		if(file_exists($component_template_file))
 		{
 			ob_start();
+			$view = self::$view;
 			include($component_template_file);
 			$content = ob_get_contents();
 			ob_end_clean();

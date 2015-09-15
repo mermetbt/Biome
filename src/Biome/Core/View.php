@@ -2,16 +2,38 @@
 
 namespace Biome\Core;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sabre\Xml\Reader;
 
 class View
 {
 	protected $_tree = NULL;
+	protected $_variables = array();
 
-	public function __construct(Response $response)
+	protected $_request = NULL;
+	protected $_response = NULL;
+
+	protected $_title = 'Biome';
+
+	public function __construct(Request $request, Response $response)
 	{
+		$this->_request = $request;
+		$this->_response = $response;
+	}
 
+	public function __set($variable, $value)
+	{
+		$this->_variables[$variable] = $value;
+	}
+
+	public function __get($variable)
+	{
+		if(!isset($this->_variables[$variable]))
+		{
+			return NULL;
+		}
+		return $this->_variables[$variable];
 	}
 
 	public function load($controller, $action)
@@ -48,6 +70,8 @@ class View
 		$reader->xml($xml_contents);
 		$tree = $reader->parse();
 
+		View\Component::$view = $this;
+
 		if($tree['value'] instanceof \Biome\Component\Views)
 		{
 			$node = $tree['value'];
@@ -63,5 +87,20 @@ class View
 			return FALSE;
 		}
 		return $this->_tree->render();
+	}
+
+	public function setTitle($title)
+	{
+		$this->_title = $title;
+	}
+
+	public function getTitle()
+	{
+		return $this->_title;
+	}
+
+	public function getBaseUrl()
+	{
+		return $this->_request->getBaseUrl();
 	}
 }
