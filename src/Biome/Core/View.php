@@ -25,10 +25,25 @@ class View
 		$xml_contents = file_get_contents($path);
 		$reader = new Reader();
 
-		$reader->elementMap = array(
-			'{http://github.com/mermetbt/Biome/}views' => 'Biome\Component\Views',
-			'{http://github.com/mermetbt/Biome/}view' => 'Biome\Component\View',
-		);
+		$components = scandir(__DIR__ . '/../Component/');
+		$components_list = array();
+		foreach($components AS $file)
+		{
+			if($file[0] == '.')
+			{
+				continue;
+			}
+
+			if(substr($file, -4) != '.php')
+			{
+				continue;
+			}
+
+			$componentName = substr($file, 0, -4);
+			$components_list['{http://github.com/mermetbt/Biome/}' . strtolower($componentName)] = 'Biome\\Component\\'.$componentName;
+		}
+
+		$reader->elementMap = $components_list;
 
 		$reader->xml($xml_contents);
 		$tree = $reader->parse();

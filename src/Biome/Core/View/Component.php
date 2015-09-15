@@ -23,6 +23,7 @@ class Component implements Element
 
 		/* Iterate through children. */
 		$children = $reader->parseInnerTree();
+		if(is_array($children))
 		foreach($children as $child)
 		{
 			/* Load component from the framework. */
@@ -77,7 +78,19 @@ class Component implements Element
 			else
 			if(is_array($v))
 			{
+				if(strncmp($v['name'], '{}', 2) != 0)
+				{
+					continue;
+				}
+
 				$markup = preg_replace('/{(.*)}/', '', $v['name']);
+
+				if($markup == 'br')
+				{
+					echo '<br/>';
+					continue;
+				}
+
 				echo '<', $markup;
 				if(!empty($v['attributes']))
 				{
