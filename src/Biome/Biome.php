@@ -1,6 +1,7 @@
 <?php
 namespace Biome;
 
+use Biome\Core\URL;
 use Biome\Core\Route;
 use Biome\Core\Error;
 
@@ -16,7 +17,7 @@ class Biome
 		/* Initializing the Framework. */
 		Error::init();
 
-		$request = Request::createFromGlobals();
+		$request = URL::getRequest();
 
 		/* Routing. */
 		$router = new Route($request, array(__DIR__ . '/../app/controllers/', self::getDir('controllers')));
@@ -40,5 +41,16 @@ class Biome
 	public static function getDir($type)
 	{
 		return self::$directories[$type];
+	}
+
+	public static function registerAlias(array $alias)
+	{
+		/**
+		 * TODO: Replace this ugly and unsecure things by a better autoloading.
+		 */
+		foreach($alias AS $a => $c)
+		{
+			eval('class ' . $a . ' extends ' . $c . ' {};');
+		}
 	}
 }
