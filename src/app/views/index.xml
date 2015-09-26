@@ -6,6 +6,12 @@
 		<span>My main controller !</span>
 		<br/>
 		<a href="index/test">Test</a>
+
+		<biome:form controller="auth" action="signup">
+			<biome:field id="username" value="#{auth.user.username}"/>
+			<biome:field id="password" value="#{auth.user.password}"/>
+			<biome:button value="Sign Up" action="#{auth.signup}"/>
+		</biome:form>
 	</biome:view>
 
 	<biome:view action="test">

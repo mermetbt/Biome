@@ -97,19 +97,38 @@ class Route extends RouteCollection
 		$routes = array();
 		foreach($methods AS $method)
 		{
-			$type = strtoupper(substr($method->getName(), 0, 3));
-			switch($type)
+			$m_upper = strtoupper($method->getName());
+
+			// GET
+			if(strncmp($m_upper, 'GET', 3) == 0)
 			{
-				case 'GET':
-				case 'POST':
-				case 'PUT':
-				case 'DELETE':
-					$method_name = substr($method->getName(), 3);
-					$routes[$type][strtolower($method_name)] = array('controller' => $method->getDeclaringClass()->getName(), 'action' => $method->getName());
-					break;
-				default:
-					continue;
+				$type = 'GET';
+				$method_name = substr($method->getName(), 3);
 			}
+			else
+			if(strncmp($m_upper, 'POST', 4) == 0)
+			{
+				$type = 'POST';
+				$method_name = substr($method->getName(), 4);
+			}
+			else
+			if(strncmp($m_upper, 'PUT', 3) == 0)
+			{
+				$type = 'PUT';
+				$method_name = substr($method->getName(), 3);
+			}
+			else
+			if(strncmp($m_upper, 'DELETE', 6) == 0)
+			{
+				$type = 'DELETE';
+				$method_name = substr($method->getName(), 6);
+			}
+			else
+			{
+				continue;
+			}
+
+			$routes[$type][strtolower($method_name)] = array('controller' => $method->getDeclaringClass()->getName(), 'action' => $method->getName());
 		}
 
 		return $routes;

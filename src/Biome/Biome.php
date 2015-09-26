@@ -1,4 +1,5 @@
 <?php
+
 namespace Biome;
 
 use Biome\Core\URL;
@@ -14,6 +15,8 @@ class Biome
 
 	public static function start()
 	{
+		session_start();
+
 		/* Initializing the Framework. */
 		Error::init();
 

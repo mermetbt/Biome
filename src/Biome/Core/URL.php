@@ -27,6 +27,6 @@ class URL
 
 	public static function fromRoute($controller, $action = NULL, $item = NULL, $module = NULL)
 	{
-
+		return self::getBaseURL() . '/' . $controller . '/' . $action;
 	}
 }

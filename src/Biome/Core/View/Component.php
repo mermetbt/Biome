@@ -2,12 +2,15 @@
 
 namespace Biome\Core\View;
 
+use Biome\Core\Collection;
+
 use Sabre\Xml\Element;
 use Sabre\Xml\Reader;
 use Sabre\Xml\Writer;
 
 class Component implements Element
 {
+	protected $id		= '';
 	public $fullname	= '';
 	public $name		= '';
 	public $attributes	= array();
@@ -117,5 +120,51 @@ class Component implements Element
 		$content = ob_get_contents();
 		ob_end_clean();
 		return $content;
+	}
+
+	public function getId()
+	{
+		if(!isset($this->attributes['id']))
+		{
+			$this->id = md5(rand());
+			return $this->id;
+		}
+		$this->id = $this->attributes['id'];
+		return $this->id;
+	}
+
+	public function fetchVariable($value)
+	{
+		$matches = array();
+		preg_match('/#{(.*)}/', $value, $matches);
+
+		if(!isset($matches[1]))
+		{
+			return $value;
+		}
+
+		return $matches[1];
+	}
+
+	public function fetchValue($value)
+	{
+		$var = $this->fetchVariable($value);
+
+		if(empty($var))
+		{
+			return $value;
+		}
+
+		$raw = explode('.', $var);
+
+		$collection = $raw[0];
+		$object = $raw[1];
+		$field = $raw[2];
+
+		$c = Collection::get($collection);
+		$o = $c->$object;
+		$f = $o->$field;
+
+		return $f;
 	}
 }
