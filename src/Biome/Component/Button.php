@@ -6,6 +6,12 @@ use Biome\Core\View\Component;
 
 class Button extends Component
 {
+	public function render()
+	{
+		$this->addClasses('btn btn-default');
+		return parent::render();
+	}
+
 	public function getValue()
 	{
 		if(isset($this->attributes['value']))
@@ -13,14 +19,5 @@ class Button extends Component
 			return $this->attributes['value'];
 		}
 		return 'Submit';
-	}
-
-	public function getClass()
-	{
-		if(isset($this->attributes['class']))
-		{
-			return 'btn btn-default ' . $this->attributes['class'];
-		}
-		return 'btn btn-default';
 	}
 }

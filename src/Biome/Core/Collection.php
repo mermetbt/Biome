@@ -9,7 +9,7 @@ use Serializable;
 class Collection implements Serializable
 {
 	protected $map = array();
-	private $_instances = array();
+	protected $_instances = array();
 	private static $_collections_set = array();
 
 	public static function get($collection_name = NULL)
@@ -52,6 +52,11 @@ class Collection implements Serializable
 			}
 		}
 
+		if(!class_exists($class_name))
+		{
+			return NULL;
+		}
+
 		$c = new $class_name();
 
 		self::$_collections_set[$collection_name] = $c;
@@ -74,25 +79,33 @@ class Collection implements Serializable
 		$this->_instances = unserialize($serialized);
 	}
 
-	public function __set($object_name, $value)
+	public function __set($attribute_name, $value)
 	{
-		if(empty($this->map[$object_name]))
+		if(!isset($this->map[$attribute_name]))
 		{
-			throw new \Exception('No mapping defined in collection for object ' . $object_name . '!');
+			throw new \Exception('No mapping defined in collection for attribute ' . $attribute_name . '!');
 		}
+		$this->_instances[$attribute_name] = $value;
 	}
 
-	public function __get($object_name)
+	public function __get($attribute_name)
 	{
-		if(empty($this->map[$object_name]))
+		if(!isset($this->map[$attribute_name]))
 		{
-			throw new \Exception('No mapping defined in collection for object ' . $object_name . '!');
+			throw new \Exception('No mapping defined in collection for attribute ' . $attribute_name . '!');
 		}
 
-		if(empty($this->_instances[$object_name]))
+		if(!isset($this->_instances[$attribute_name]))
 		{
-			$this->_instances[$object_name] = ObjectLoader::load($this->map[$object_name]);
+			if(is_string($this->map[$attribute_name]))
+			{
+				$this->_instances[$attribute_name] = ObjectLoader::load($this->map[$attribute_name]);
+			}
+			else
+			{
+				$this->_instances[$attribute_name] = $this->map[$attribute_name];
+			}
 		}
-		return $this->_instances[$object_name];
+		return $this->_instances[$attribute_name];
 	}
 }

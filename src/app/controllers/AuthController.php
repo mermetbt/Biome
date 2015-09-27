@@ -12,7 +12,8 @@ class AuthController extends Controller
 
 	public function postLogin(AuthCollection $c)
 	{
-
+		echo 'Authentication of ', $c->user->firstname, ' ', $c->user->lastname, '<br/>';
+		echo '<a href="', URL::fromRoute(),'">Go back!</a>';
 	}
 
 	public function getSignup()
@@ -22,6 +23,18 @@ class AuthController extends Controller
 
 	public function postSignup(AuthCollection $c)
 	{
-		echo 'New username set to ', $c->user->username, '<br/>';
+		echo 'New mail set to ', $c->user->mail, '<br/>';
+		$c->storeUser($c->user);
+		echo '<a href="', URL::fromRoute(),'">Go back!</a>';
+	}
+
+	public function postSignup_obj(User $u)
+	{
+		echo 'New user set to ', $u->firstname, ' ', $u->lastname, '<br/>';
+
+		$c = Collection::get('auth');
+		$c->storeUser($u);
+
+		echo '<a href="', URL::fromRoute(),'">Go back!</a>';
 	}
 }

@@ -12,17 +12,10 @@
 		<div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
 				<li><a href="#">Home</a></li>
-				<?php echo $content; ?>
 			</ul>
-			<form class="navbar-form navbar-right">
-				<div class="form-group">
-					<input type="text" placeholder="Email" class="form-control">
-				</div>
-				<div class="form-group">
-					<input type="password" placeholder="Password" class="form-control">
-				</div>
-				<button type="submit" class="btn btn-success">Sign in</button>
-			</form>
+
+			<?php echo $content; ?>
+
 		</div>
 	</div>
 </nav>

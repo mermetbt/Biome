@@ -2,8 +2,6 @@
 
 namespace Biome\Core\View;
 
-use Biome\Core\Collection;
-
 use Sabre\Xml\Element;
 use Sabre\Xml\Reader;
 use Sabre\Xml\Writer;
@@ -14,8 +12,17 @@ class Component implements Element
 	public $fullname	= '';
 	public $name		= '';
 	public $attributes	= array();
+	public $classes		= array();
 	protected $value	= array();
 	public static $view	= NULL;
+
+	use ContextManager;
+
+	/**
+	 *
+	 * Component loading and tree construction.
+	 *
+	 */
 
 	public static function xmlDeserialize(Reader $reader)
 	{
@@ -69,10 +76,22 @@ class Component implements Element
 
 	public function xmlSerialize(Writer $writer) {}
 
+
+	/**
+	 *
+	 * Components rendering
+	 *
+	 */
+
 	public function render()
 	{
 		$content = $this->renderChildren();
+		$content = $this->renderComponent($content);
+		return $content;
+	}
 
+	public function renderComponent($content)
+	{
 		$component_template_file = __DIR__ . '/../../Component/templates/' . $this->name . '.php';
 		if(file_exists($component_template_file))
 		{
@@ -86,6 +105,17 @@ class Component implements Element
 		{
 			throw new \Exception('Template file not found: ' . $component_template_file . ' for component ' . get_called_class() . ' - ' . $this->fullname);
 		}
+		return $content;
+	}
+
+	public function renderChildren()
+	{
+		ob_start();
+
+		$this->rec_renderChildren($this->value);
+
+		$content = ob_get_contents();
+		ob_end_clean();
 		return $content;
 	}
 
@@ -146,16 +176,33 @@ class Component implements Element
 		return TRUE;
 	}
 
-	public function renderChildren()
+	/**
+	 *
+	 * Component subcomponents management.
+	 *
+	 */
+	public function getChilds()
 	{
-		ob_start();
-
-		$this->rec_renderChildren($this->value);
-
-		$content = ob_get_contents();
-		ob_end_clean();
-		return $content;
+		return $this->value;
 	}
+
+	public function getChildren($component_name)
+	{
+		foreach($this->getChilds() AS $c)
+		{
+			if($c->name == $component_name)
+			{
+				return $c;
+			}
+		}
+		return NULL;
+	}
+
+	/**
+	 *
+	 * Component attributes management.
+	 *
+	 */
 
 	public function getId()
 	{
@@ -168,38 +215,34 @@ class Component implements Element
 		return $this->id;
 	}
 
-	public function fetchVariable($value)
+	public function getClasses()
 	{
-		$matches = array();
-		preg_match('/#{(.*)}/', $value, $matches);
-
-		if(!isset($matches[1]))
+		if(isset($this->attributes['class']))
 		{
-			return $value;
+			$this->addClasses($this->attributes['class']);
 		}
-
-		return $matches[1];
+		return join(' ', $this->classes);
 	}
 
-	public function fetchValue($value)
+	public function addClasses($css_class)
 	{
-		$var = $this->fetchVariable($value);
-
-		if(empty($var))
+		$classes = explode(' ', $css_class);
+		foreach($classes AS $c)
 		{
-			return $value;
+			$c = trim($c);
+			$this->classes[$c] = $c;
 		}
+		return TRUE;
+	}
 
-		$raw = explode('.', $var);
-
-		$collection = $raw[0];
-		$object = $raw[1];
-		$field = $raw[2];
-
-		$c = Collection::get($collection);
-		$o = $c->$object;
-		$f = $o->$field;
-
-		return $f;
+	public function removeClasses($css_class)
+	{
+		$classes = explode(' ', $css_class);
+		foreach($classes AS $c)
+		{
+			$c = trim($c);
+			unset($this->classes[$c]);
+		}
+		return TRUE;
 	}
 }

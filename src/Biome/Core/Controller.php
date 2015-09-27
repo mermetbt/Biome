@@ -2,6 +2,8 @@
 
 namespace Biome\Core;
 
+use Biome\Core\ORM\ObjectLoader;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -58,44 +60,73 @@ class Controller
 	protected function parameterInjection($type, $name, $required)
 	{
 		$value = NULL;
-		if(!empty($type))
+		if(empty($type))
 		{
-			switch($type)
+			return $value;
+		}
+
+		switch($type)
+		{
+			// Default PHP type
+			case 'string':
+			case 'int':
+				return $value;
+				break;
+			default: // Class injection
+
+		}
+
+		/**
+		 * Collection injection
+		 */
+		if(substr($type, -strlen('Collection')) == 'Collection')
+		{
+			// Instanciate the collection
+			$collection_name = strtolower(substr($type, 0, -strlen('Collection')));
+			$value = Collection::get($collection_name);
+
+			// Check if data are sent
+			foreach($this->request()->request->keys() AS $key)
 			{
-				// Default PHP type
-				case 'string':
-				case 'int':
-					break;
-				default: // Class injection
+				if(strncmp($collection_name . '/', $key, strlen($collection_name . '/')) == 0)
+				{
+					$raw = explode('/', $key);
+					$total = count($raw);
 
-					/**
-					 * Collection injection
-					 */
-					if(substr($type, -strlen('Collection')) == 'Collection')
+					$iter = $value;
+					for($i = 1; $i < $total-1; $i++)
 					{
-						// Instanciate the collection
-						$collection_name = strtolower(substr($type, 0, -strlen('Collection')));
-						$value = Collection::get($collection_name);
-
-						// Check if data are sent
-						foreach($this->request()->request->keys() AS $key)
-						{
-							//echo 'Check collection ', $collection_name, ' over ', $key, '<br/>';
-							if(strncmp($collection_name . '/', $key, strlen($collection_name . '/')) == 0)
-							{
-								$raw = explode('/', $key);
-								$total = count($raw);
-
-								$iter = $value;
-								for($i = 1; $i < $total-1; $i++)
-								{
-									$iter = $iter->$raw[$i];
-								}
-								$v = $this->request()->request->get($key);
-								$iter->$raw[$i] = $v;
-							}
-						}
+						$iter = $iter->$raw[$i];
 					}
+					$v = $this->request()->request->get($key);
+					$iter->$raw[$i] = $v;
+				}
+			}
+		}
+		else
+		/**
+		 * Object injection
+		 */
+		{
+			$object_name = strtolower($type);
+			$value = ObjectLoader::load($object_name);
+
+			// Check if data are sent
+			foreach($this->request()->request->keys() AS $key)
+			{
+				if(strncmp($object_name . '/', $key, strlen($object_name . '/')) == 0)
+				{
+					$raw = explode('/', $key);
+					$total = count($raw);
+
+					$iter = $value;
+					for($i = 1; $i < $total-1; $i++)
+					{
+						$iter = $iter->$raw[$i];
+					}
+					$v = $this->request()->request->get($key);
+					$iter->$raw[$i] = $v;
+				}
 			}
 		}
 

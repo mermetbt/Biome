@@ -22,6 +22,11 @@ abstract class Models implements ObjectInterface
 		return $this->getValue($field_name);
 	}
 
+	public function getFieldType($field_name)
+	{
+		return $this->_structure[$field_name]->getType();
+	}
+
 	protected function setStructure($field_name, AbstractField $field)
 	{
 		$field->setName($field_name);
@@ -51,6 +56,11 @@ abstract class Models implements ObjectInterface
 		if(isset($this->_values['old'][$attribute]))
 		{
 			return $this->_values['old'][$attribute];
+		}
+		else
+		if(isset($this->_structure[$attribute]))
+		{
+			return $this->_structure[$attribute]->getDefaultValue();
 		}
 		else
 		{

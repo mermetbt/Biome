@@ -13,6 +13,15 @@ abstract class AbstractField
 		$this->name = $name;
 	}
 
+	public function getType()
+	{
+		$class_name = get_class($this);
+		$raw = explode('\\', $class_name);
+		$inner_class = end($raw);
+		$type = substr($inner_class, 0, -strlen('Field'));
+		return strtolower($type);
+	}
+
 	public function setDefaultValue($value)
 	{
 		$this->default_value = $value;

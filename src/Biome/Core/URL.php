@@ -25,8 +25,30 @@ class URL
 		return self::getBaseURL() . '/' . $asset_path;
 	}
 
-	public static function fromRoute($controller, $action = NULL, $item = NULL, $module = NULL)
+	public static function fromRoute($controller = NULL, $action = NULL, $item = NULL, $module = NULL)
 	{
-		return self::getBaseURL() . '/' . $controller . '/' . $action;
+		$url = self::getBaseURL();
+
+		if($module)
+		{
+			$url .= '/' . $module;
+		}
+
+		if($controller)
+		{
+			$url .= '/' . $controller;
+		}
+
+		if($action)
+		{
+			$url .= '/' . $action;
+		}
+
+		if($item)
+		{
+			$url .= '/' . $item;
+		}
+
+		return $url;
 	}
 }

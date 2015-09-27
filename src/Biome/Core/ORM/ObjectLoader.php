@@ -33,6 +33,11 @@ class ObjectLoader
 			}
 		}
 
+		if(!class_exists($object_name))
+		{
+			throw new \Exception('The object ' . $object_name . ' doesn\'t exists!');
+		}
+
 		$object = new $object_name();
 
 		if(!$object instanceof ObjectInterface)
