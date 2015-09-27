@@ -68,7 +68,7 @@ class Route extends RouteCollection
 						$ctrl = new $meta['controller']($request, $response);
 
 						/* Execute the action. */
-						return $ctrl->process($type, $controller_name, $name, $meta['action']);
+						return $ctrl->process($type, $controller_name, $name, $meta['action'], $meta['parameters']);
 					};
 
 					$this->addRoute($type, $route_path, $method);
@@ -97,30 +97,34 @@ class Route extends RouteCollection
 		$routes = array();
 		foreach($methods AS $method)
 		{
+			/**
+			 * Type of HTTP Method.
+			 */
+
 			$m_upper = strtoupper($method->getName());
 
 			// GET
 			if(strncmp($m_upper, 'GET', 3) == 0)
 			{
-				$type = 'GET';
+				$method_type = 'GET';
 				$method_name = substr($method->getName(), 3);
 			}
 			else
 			if(strncmp($m_upper, 'POST', 4) == 0)
 			{
-				$type = 'POST';
+				$method_type = 'POST';
 				$method_name = substr($method->getName(), 4);
 			}
 			else
 			if(strncmp($m_upper, 'PUT', 3) == 0)
 			{
-				$type = 'PUT';
+				$method_type = 'PUT';
 				$method_name = substr($method->getName(), 3);
 			}
 			else
 			if(strncmp($m_upper, 'DELETE', 6) == 0)
 			{
-				$type = 'DELETE';
+				$method_type = 'DELETE';
 				$method_name = substr($method->getName(), 6);
 			}
 			else
@@ -128,9 +132,53 @@ class Route extends RouteCollection
 				continue;
 			}
 
-			$routes[$type][strtolower($method_name)] = array('controller' => $method->getDeclaringClass()->getName(), 'action' => $method->getName());
+			$method_name = strtolower($method_name);
+
+			/**
+			 * Parameters
+			 */
+			$param_list = array();
+			$parameters = $method->getParameters();
+			foreach($parameters AS $param)
+			{
+				// PHP 7
+				if(method_exists($param, 'getType'))
+				{
+					$type = $param->getType();
+				}
+				// PHP 5
+				else
+				{
+					$type = $this->extractParamTypeFromString((string)$param);
+				}
+				$name = $param->getName();
+				$required = !$param->allowsNull();
+				$param_list[] = array('type' => $type, 'name' => $name, 'required' => $required);
+			}
+
+			/**
+			 * Save in routes
+			 */
+			$routes[$method_type][$method_name] = array(
+												'controller' => $method->getDeclaringClass()->getName(),
+												'action' => $method->getName(),
+												'parameters' => $param_list
+			);
 		}
 
 		return $routes;
+	}
+
+	protected function extractParamTypeFromString($param_str)
+	{
+		$matches = array();
+		preg_match('/\[(.*)\]/', $param_str, $matches);
+
+		$raw = explode(' ', trim($matches[1]));
+
+		$required = ($raw[0] == '<required>') ? TRUE : FALSE;
+		$type = ($raw[1][0] == '$') ? '' : $raw[1];
+
+		return $type;
 	}
 }

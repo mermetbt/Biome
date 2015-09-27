@@ -10,10 +10,9 @@ class AuthController extends Controller
 		//TODO: Redirect to the main page
 	}
 
-	public function postLogin()
+	public function postLogin(AuthCollection $c)
 	{
-		$c = Collection::get('auth');
-		$c->user->username = $this->request()->get('auth_user_username');
+
 	}
 
 	public function getSignup()
@@ -21,9 +20,8 @@ class AuthController extends Controller
 		//TODO: Redirect to the main page
 	}
 
-	public function postSignup()
+	public function postSignup(AuthCollection $c)
 	{
-		$c = Collection::get('auth');
-		$c->user->username = $this->request()->get('auth_user_username');
+		echo 'New username set to ', $c->user->username, '<br/>';
 	}
 }

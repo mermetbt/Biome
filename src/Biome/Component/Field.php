@@ -10,7 +10,7 @@ class Field extends Component
 	{
 		if(!isset($this->attributes['name']))
 		{
-			return $this->fetchVariable($this->attributes['value']);
+			return str_replace('.', '/', $this->fetchVariable($this->attributes['value']));
 		}
 		$this->name = $this->attributes['name'];
 	}
