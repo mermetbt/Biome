@@ -14,4 +14,13 @@ class Button extends Component
 		}
 		return 'Submit';
 	}
+
+	public function getClass()
+	{
+		if(isset($this->attributes['class']))
+		{
+			return 'btn btn-default ' . $this->attributes['class'];
+		}
+		return 'btn btn-default';
+	}
 }

@@ -1,1 +1,1 @@
-<button class="btn btn-default" type="submit"><?php echo $this->getValue(); ?></button>
+<button class="<?php echo $this->getClass(); ?>" type="submit"><?php echo $this->getValue(); ?></button>

@@ -38,6 +38,9 @@ class View
 
 	public function load($controller, $action)
 	{
+		/**
+		 * Opening template file
+		 */
 		$path = \Biome\Biome::getDir('views') . '/' . $controller .'.xml';
 		if(!file_exists($path))
 		{
@@ -51,6 +54,9 @@ class View
 		$xml_contents = file_get_contents($path);
 		$reader = new Reader();
 
+		/**
+		 * Loading components
+		 */
 		$components = scandir(__DIR__ . '/../Component/');
 		$components_list = array();
 		foreach($components AS $file)
@@ -70,6 +76,10 @@ class View
 		}
 
 		$reader->elementMap = $components_list;
+
+		/**
+		 * Parsing XML template
+		 */
 
 		$reader->xml($xml_contents);
 		$tree = $reader->parse();

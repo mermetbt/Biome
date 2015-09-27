@@ -7,11 +7,18 @@
 		<br/>
 		<a href="index/test">Test</a>
 
-		<biome:form controller="auth" action="signup">
-			<biome:field id="username" value="#{auth.user.username}"/>
-			<biome:field id="password" value="#{auth.user.password}"/>
-			<biome:button value="Sign Up" action="#{auth.signup}"/>
-		</biome:form>
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="well">
+					<h2>Sign up!</h2>
+					<biome:form controller="auth" action="signup">
+						<biome:field id="username" value="#{auth.user.username}"/><br/>
+						<biome:field id="password" value="#{auth.user.password}"/><br/>
+						<biome:button class="btn-success" value="Sign Up" action="#{auth.signup}"/>
+					</biome:form>
+				</div>
+			</div>
+		</div>
 	</biome:view>
 
 	<biome:view action="test">

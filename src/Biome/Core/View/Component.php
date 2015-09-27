@@ -27,25 +27,44 @@ class Component implements Element
 
 		/* Iterate through children. */
 		$children = $reader->parseInnerTree();
-		if(is_array($children))
+
+		if(!is_array($children))
+		{
+			return $component;
+		}
+
 		foreach($children as $child)
 		{
-			/* Load component from the framework. */
-			if($child['value'] instanceof Component)
-			{
-				$child['value']->fullname	= $child['name'];
-				$child['value']->name		= strtolower(substr(get_class($child['value']), 16));
-				$child['value']->attributes = $child['attributes'];
-				$component->value[] = $child['value'];
-			}
-			/* Load standard HTML markup. */
-			else
-			{
-				$component->value[] = $child;
-			}
+			$component->value[] = self::rec_xmlDeserialize($child);
 		}
 
 		return $component;
+	}
+
+	private static function rec_xmlDeserialize($child)
+	{
+		/* Load component from the framework. */
+		if($child['value'] instanceof Component)
+		{
+			$child['value']->fullname	= $child['name'];
+			$child['value']->name		= strtolower(substr(get_class($child['value']), 16));
+			$child['value']->attributes = $child['attributes'];
+			return $child['value'];
+		}
+
+		/* Load standard HTML markup. */
+		if(is_array($child['value']))
+		{
+			$list = array();
+			foreach($child['value'] AS $c)
+			{
+				$list[] = self::rec_xmlDeserialize($c);
+			}
+			$child['value'] = $list;
+			return $child;
+		}
+
+		return $child;
 	}
 
 	public function xmlSerialize(Writer $writer) {}
@@ -70,22 +89,22 @@ class Component implements Element
 		return $content;
 	}
 
-	public function renderChildren()
+	private function rec_renderChildren(array $nodes)
 	{
-		ob_start();
 		/* Render childs components first. */
-		foreach($this->value AS $v)
+		foreach($nodes AS $v)
 		{
 			if($v instanceof Component)
 			{
 				echo $v->render();
 			}
 			else
+			// Standard HTML
 			if(is_array($v))
 			{
 				if(strncmp($v['name'], '{}', 2) != 0)
 				{
-					continue;
+					throw new \Exception('Unrecognized component namespace ' . $v['name']);
 				}
 
 				$markup = preg_replace('/{(.*)}/', '', $v['name']);
@@ -108,15 +127,31 @@ class Component implements Element
 				}
 				echo '>';
 
-				echo $v['value'];
+				if(is_array($v['value']))
+				{
+					$this->rec_renderChildren($v['value']);
+				}
+				else
+				{
+					echo $v['value'];
+				}
+
 				echo '</', $markup, '>';
 			}
 			else
 			{
 				echo $v;
 			}
-
 		}
+		return TRUE;
+	}
+
+	public function renderChildren()
+	{
+		ob_start();
+
+		$this->rec_renderChildren($this->value);
+
 		$content = ob_get_contents();
 		ob_end_clean();
 		return $content;
