@@ -48,6 +48,13 @@
 				<li><biome:variable value="#{user.firstname}"/><span> - </span><biome:variable value="#{user.lastname}"/></li>
 			</biome:loop>
 		</ul>
+
+		<h3>Users in database!</h3>
+		<ul>
+			<biome:loop value="#{users.users}" var="u">
+				<li><biome:variable value="#{u.firstname}"/><span> - </span><biome:variable value="#{u.lastname}"/></li>
+			</biome:loop>
+		</ul>
 	</biome:view>
 
 	<biome:view action="test">

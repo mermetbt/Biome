@@ -102,8 +102,18 @@ trait ContextManager
 			$result = $this->rec_fetchValue(join('.', $raw), $ctx);
 
 			/* We find the preceding item, fetch the next. */
-			$this->setContext($var, $result->$end, $ctx);
-			return $result->$end;
+			if(method_exists($result, 'get' . $end))
+			{
+				$end = 'get' . $end;
+				$result = $result->$end();
+			}
+			else
+			{
+				$result = $result->$end;
+			}
+
+			$this->setContext($var, $result, $ctx);
+			return $result;
 		}
 
 		/* No item found, check collections. */

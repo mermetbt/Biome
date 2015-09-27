@@ -45,8 +45,6 @@ class ObjectLoader
 			throw new \Exception('The models ' . $object_name . ' doesn\'t implement the ObjectInterface!');
 		}
 
-		$object->fields();
-
 		return $object;
 	}
 }

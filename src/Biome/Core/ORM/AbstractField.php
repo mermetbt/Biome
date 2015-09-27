@@ -6,7 +6,7 @@ abstract class AbstractField
 {
 	protected $name;
 	protected $title;
-	protected $default_value = '';
+	protected $default_value = NULL;
 
 	public function setName($name)
 	{

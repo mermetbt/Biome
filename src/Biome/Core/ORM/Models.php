@@ -7,6 +7,25 @@ abstract class Models implements ObjectInterface
 	protected $_structure;
 	protected $_values;
 
+	private $_query_set = NULL;
+
+	public function __construct($values = array(), QuerySet $qs = NULL)
+	{
+		$this->_query_set = $qs;
+
+		$this->fields();
+
+		foreach($values AS $attribute => $value)
+		{
+			if(!isset($this->_structure[$attribute]))
+			{
+				continue;
+				//throw new \Exception('Undefined field ' . $attribute . ' in object ' . get_class($this) . '!');
+			}
+			$this->_values['old'][$attribute] = $value;
+		}
+	}
+
 	public function __set($field_name, $value)
 	{
 		if($value instanceof AbstractField)
@@ -22,20 +41,36 @@ abstract class Models implements ObjectInterface
 		return $this->getValue($field_name);
 	}
 
+	/**
+	 * Operations over fields.
+	 */
+	public function setFieldType($field_name, AbstractField $field)
+	{
+		$field->setName($field_name);
+		$this->_structure[$field_name] = $field;
+		return TRUE;
+	}
+
 	public function getFieldType($field_name)
 	{
 		return $this->_structure[$field_name]->getType();
+	}
+
+	public function hasField($field_name)
+	{
+		return isset($this->_structure[$field_name]);
 	}
 
 	protected function setStructure($field_name, AbstractField $field)
 	{
 		$field->setName($field_name);
 		$this->_structure[$field_name] = $field;
-		$this->_values['old'][$field_name] = '';
-		$this->_values['new'][$field_name] = $field->getDefaultValue();
 		return TRUE;
 	}
 
+	/**
+	 * Operations over values.
+	 */
 	protected function setValue($attribute, $value)
 	{
 		if(!isset($this->_structure[$attribute]))
@@ -60,11 +95,62 @@ abstract class Models implements ObjectInterface
 		else
 		if(isset($this->_structure[$attribute]))
 		{
-			return $this->_structure[$attribute]->getDefaultValue();
+			// Fetch attribute if object has an ID.
+			if($this->getId() != NULL)
+			{
+				$this->_query_set->fields($attribute)->fetch();
+
+				return $this->getValue($attribute);
+			}
+			else
+			{
+				// Otherwise return the default value.
+				return $this->_structure[$attribute]->getDefaultValue();
+			}
 		}
 		else
 		{
 			throw new \Exception('Undefined field ' . $attribute . ' in object ' . get_class($this) . '!');
 		}
+	}
+
+	public function getId()
+	{
+		$id = $this->parameters()['primary_key'];
+		if(isset($this->$id))
+		{
+			return $this->$id;
+		}
+		return NULL;
+	}
+
+	/**
+	 *
+	 * Action over models.
+	 *
+	 */
+
+	/**
+	 * Return a QuerySet for this object.
+	 */
+	public static function all()
+	{
+		return (new QuerySet(get_called_class()));
+	}
+
+	/**
+	 * Get an object from an ID.
+	 */
+	public static function get($id)
+	{
+		return self::all()->get($id);
+	}
+
+	/**
+	 * Get a collection of object from a condition
+	 */
+	public static function filter($where)
+	{
+		return self::all()->filter($where);
 	}
 }

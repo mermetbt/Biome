@@ -11,7 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Biome
 {
-	protected static $directories = array();
+	protected static $directories	= array();
+	protected static $_services		= array();
 
 	public static function start()
 	{
@@ -55,5 +56,26 @@ class Biome
 		{
 			eval('class ' . $a . ' extends ' . $c . ' {};');
 		}
+	}
+
+	public static function registerService($service_name, $callable)
+	{
+		self::$_services[$service_name]['function'] = $callable;
+	}
+
+	public static function getService($service_name)
+	{
+		if(!isset(self::$_services[$service_name]))
+		{
+			throw new \Exception('Service undefined ' . $service_name);
+		}
+
+		if(!isset(self::$_services[$service_name]['instance']))
+		{
+			$func = self::$_services[$service_name]['function'];
+			self::$_services[$service_name]['instance'] = $func();
+		}
+
+		return self::$_services[$service_name]['instance'];
 	}
 }
