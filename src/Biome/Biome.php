@@ -5,9 +5,8 @@ namespace Biome;
 use Biome\Core\URL;
 use Biome\Core\Route;
 use Biome\Core\Error;
-
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Biome\Core\HTTP\Request;
+use Biome\Core\HTTP\Response;
 
 class Biome
 {

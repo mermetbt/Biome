@@ -2,7 +2,7 @@
 
 namespace Biome\Core;
 
-use Symfony\Component\HttpFoundation\Request;
+use Biome\Core\HTTP\Request;
 
 class URL
 {

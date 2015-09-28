@@ -3,8 +3,10 @@
 namespace Biome\Core;
 
 use League\Route\RouteCollection;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use League\Container\Container;
+
+use Biome\Core\HTTP\Request;
+use Biome\Core\HTTP\Response;
 
 class Route extends RouteCollection
 {
@@ -13,7 +15,11 @@ class Route extends RouteCollection
 
 	public function __construct(Request $request, array $controllers_dir = array())
 	{
-		parent::__construct();
+		$container = new Container();
+		$container->add('Symfony\Component\HttpFoundation\Request', $request);
+		$container->add('Symfony\Component\HttpFoundation\Response', 'Biome\Core\HTTP\Response');
+
+		parent::__construct($container);
 		$this->_request = $request;
 		$this->_controllers_dir = $controllers_dir;
 	}

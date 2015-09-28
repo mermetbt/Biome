@@ -2,9 +2,7 @@
 
 namespace Biome\Core\ORM\Field;
 
-use Biome\Core\ORM\AbstractField;
-
-class EmailField extends AbstractField
+class EmailField extends TextField
 {
 
 }

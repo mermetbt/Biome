@@ -17,7 +17,7 @@ class AuthCollection extends SessionCollection
 	public function storeUser(User $user)
 	{
 		$list = $this->users;
-		$list[] = $user;
+		$list[] = clone $user;
 		$this->users = $list;
 	}
 }

@@ -4,8 +4,8 @@ namespace Biome\Core;
 
 use Biome\Core\ORM\ObjectLoader;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Biome\Core\HTTP\Request;
+use Biome\Core\HTTP\Response;
 
 class Controller
 {
@@ -42,7 +42,12 @@ class Controller
 			$method_params[] = $this->parameterInjection($param['type'], $param['name'], $param['required']);
 		}
 
-		call_user_func_array(array($this, $method_name), $method_params);
+		$result = call_user_func_array(array($this, $method_name), $method_params);
+
+		if($result instanceof Response)
+		{
+			$this->response = $result;
+		}
 
 		if($type == 'GET')
 		{

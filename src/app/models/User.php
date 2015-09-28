@@ -20,10 +20,19 @@ class User extends Models
 
 	public function fields()
 	{
-		$this->user_id		= new PrimaryField();
-		$this->firstname	= new TextField();
-		$this->lastname		= new TextField();
-		$this->mail			= new EmailField();
-		$this->password		= new PasswordField();
+		$this->user_id		= PrimaryField::create()
+								->setLabel('User ID');
+
+		$this->firstname	= TextField::create(32)
+								->setLabel('Firstname');
+
+		$this->lastname		= TextField::create(32)
+								->setLabel('Lastname');
+
+		$this->mail			= EmailField::create()
+								->setLabel('E-Mail');
+
+		$this->password		= PasswordField::create(32)
+								->setLabel('Password');
 	}
 }

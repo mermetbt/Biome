@@ -2,8 +2,9 @@
 
 namespace Biome\Core;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Biome\Core\HTTP\Request;
+use Biome\Core\HTTP\Response;
+
 use Sabre\Xml\Reader;
 
 class View

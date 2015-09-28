@@ -5,12 +5,13 @@ namespace Biome\Core\ORM;
 abstract class AbstractField
 {
 	protected $name;
-	protected $title;
+	protected $label;
 	protected $default_value = NULL;
 
-	public function setName($name)
+	public static function create()
 	{
-		$this->name = $name;
+		$class_name = get_called_class();
+		return new $class_name(func_get_args());
 	}
 
 	public function getType()
@@ -22,9 +23,25 @@ abstract class AbstractField
 		return strtolower($type);
 	}
 
+	/**
+	 * Default Accessors
+	 */
+
+	public function setName($name)
+	{
+		$this->name = $name;
+		return $this;
+	}
+
+	public function getName()
+	{
+		return $this->name;
+	}
+
 	public function setDefaultValue($value)
 	{
 		$this->default_value = $value;
+		return $this;
 	}
 
 	public function getDefaultValue()
@@ -32,4 +49,14 @@ abstract class AbstractField
 		return $this->default_value;
 	}
 
+	public function setLabel($label)
+	{
+		$this->label = $label;
+		return $this;
+	}
+
+	public function getLabel()
+	{
+		return $this->label;
+	}
 }

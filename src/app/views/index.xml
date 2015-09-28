@@ -2,8 +2,8 @@
 <biome:views xmlns:biome="http://github.com/mermetbt/Biome/">
 	<biome:navbar>
 		<biome:form class="navbar-right" controller="auth" action="login">
-			<biome:field value="#{auth.user.mail}" placeholder="Email"/>
-			<biome:field value="#{auth.user.password}" placeholder="Password"/>
+			<biome:field value="#{auth.user.mail}" placeholder="Email" label=""/>
+			<biome:field value="#{auth.user.password}" placeholder="Password" label=""/>
 			<biome:button class="btn-success" value="Sign in" action="#{auth.login}"/>
 		</biome:form>
 	</biome:navbar>
@@ -12,6 +12,9 @@
 		<span>My main controller !</span>
 		<br/>
 		<a href="index/test">Test</a>
+		<br/>
+
+		<biome:a controller="index" action="unset"><span>Reset the session</span></biome:a>
 
 		<div class="row">
 			<div class="col-lg-4">
@@ -19,10 +22,10 @@
 					<h3>Session collection example</h3>
 					<h2>Sign up!</h2>
 					<biome:form controller="auth" action="signup">
-						<biome:field value="#{auth.user.firstname}"/><br/>
-						<biome:field value="#{auth.user.lastname}"/><br/>
-						<biome:field value="#{auth.user.mail}"/><br/>
-						<biome:field value="#{auth.user.password}"/><br/>
+						<biome:field value="#{auth.user.firstname}"/>
+						<biome:field value="#{auth.user.lastname}"/>
+						<biome:field value="#{auth.user.mail}"/>
+						<biome:field value="#{auth.user.password}"/>
 						<biome:button class="btn-success" value="Sign up" action="#{auth.signup}"/>
 					</biome:form>
 				</div>
@@ -32,10 +35,10 @@
 					<h3>Object example</h3>
 					<h2>Sign up!</h2>
 					<biome:form controller="auth" action="signup_obj">
-						<biome:field value="#{user.firstname}"/><br/>
-						<biome:field value="#{user.lastname}"/><br/>
-						<biome:field value="#{user.mail}"/><br/>
-						<biome:field value="#{user.password}"/><br/>
+						<biome:field value="#{user.firstname}"/>
+						<biome:field value="#{user.lastname}"/>
+						<biome:field value="#{user.mail}"/>
+						<biome:field value="#{user.password}"/>
 						<biome:button class="btn-success" value="Sign up" action="#{auth.signup_obj}"/>
 					</biome:form>
 				</div>

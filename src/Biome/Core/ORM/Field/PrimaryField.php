@@ -6,5 +6,4 @@ use Biome\Core\ORM\AbstractField;
 
 class PrimaryField extends AbstractField
 {
-
 }

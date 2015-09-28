@@ -30,7 +30,7 @@ abstract class Models implements ObjectInterface
 	{
 		if($value instanceof AbstractField)
 		{
-			return $this->setStructure($field_name, $value);
+			return $this->setField($field_name, $value);
 		}
 
 		return $this->setValue($field_name, $value);
@@ -44,28 +44,21 @@ abstract class Models implements ObjectInterface
 	/**
 	 * Operations over fields.
 	 */
-	public function setFieldType($field_name, AbstractField $field)
+	public function setField($field_name, AbstractField $field)
 	{
 		$field->setName($field_name);
 		$this->_structure[$field_name] = $field;
 		return TRUE;
 	}
 
-	public function getFieldType($field_name)
+	public function getField($field_name)
 	{
-		return $this->_structure[$field_name]->getType();
+		return $this->_structure[$field_name];
 	}
 
 	public function hasField($field_name)
 	{
 		return isset($this->_structure[$field_name]);
-	}
-
-	protected function setStructure($field_name, AbstractField $field)
-	{
-		$field->setName($field_name);
-		$this->_structure[$field_name] = $field;
-		return TRUE;
 	}
 
 	/**

@@ -33,9 +33,9 @@ class Field extends Component
 			return $this->attributes['type'];
 		}
 
-		$type = $this->fetchType($this->attributes['value']);
+		$field = $this->fetchField($this->attributes['value']);
 
-		return $type;
+		return $field->getType();
 	}
 
 	public function getPlaceholder()
@@ -45,5 +45,14 @@ class Field extends Component
 			return $this->attributes['placeholder'];
 		}
 		return '';
+	}
+
+	public function getLabel()
+	{
+		if(!isset($this->attributes['label']))
+		{
+			return $this->fetchField($this->attributes['value'])->getLabel();
+		}
+		$this->name = $this->attributes['label'];
 	}
 }

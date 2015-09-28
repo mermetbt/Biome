@@ -145,7 +145,7 @@ trait ContextManager
 		return $result;
 	}
 
-	public function fetchType($value)
+	public function fetchField($value)
 	{
 		$var = $this->fetchVariable($value);
 
@@ -159,9 +159,9 @@ trait ContextManager
 		unset($raw[count($raw)-1]);
 
 		$object = $this->rec_fetchValue(join('.', $raw));
-		$type = $object->getFieldType($field);
+		$field_object = $object->getField($field);
 
-		return $type;
+		return $field_object;
 	}
 
 }
