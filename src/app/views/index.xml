@@ -48,14 +48,14 @@
 		<h3>Users registered!</h3>
 		<ul>
 			<biome:loop value="#{auth.users}" var="user">
-				<li><biome:variable value="#{user.firstname}"/><span> - </span><biome:variable value="#{user.lastname}"/></li>
+				<li><biome:variable value="#{user.user_id}"/><span>: </span><biome:variable value="#{user.firstname}"/><span> - </span><biome:variable value="#{user.lastname}"/></li>
 			</biome:loop>
 		</ul>
 
 		<h3>Users in database!</h3>
 		<ul>
 			<biome:loop value="#{users.users}" var="u">
-				<li><biome:variable value="#{u.firstname}"/><span> - </span><biome:variable value="#{u.lastname}"/></li>
+				<li><biome:variable value="#{u.user_id}"/><span>: </span><biome:variable value="#{u.firstname}"/><span> - </span><biome:variable value="#{u.lastname}"/></li>
 			</biome:loop>
 		</ul>
 	</biome:view>

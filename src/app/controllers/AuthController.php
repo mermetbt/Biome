@@ -13,6 +13,11 @@ class AuthController extends Controller
 	public function postLogin(AuthCollection $c)
 	{
 		echo 'Authentication of ', $c->user->firstname, ' ', $c->user->lastname, '<br/>';
+
+		$c->user->fetch('firstname', 'lastname');
+
+		echo 'Id:', $c->user->getId(), '<br/>';
+
 		echo '<a href="', URL::fromRoute(),'">Go back!</a>';
 	}
 
@@ -40,6 +45,10 @@ class AuthController extends Controller
 
 		$c = Collection::get('auth');
 		$c->storeUser($u);
+
+		$u->save();
+
+		echo 'New user set to ', $u->firstname, ' ', $u->lastname, '<br/>';
 
 		echo '<a href="', URL::fromRoute(),'">Go back!</a>';
 	}

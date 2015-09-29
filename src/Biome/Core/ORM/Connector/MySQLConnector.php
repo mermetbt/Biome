@@ -62,6 +62,11 @@ class MySQLConnector
 
 	public function real_escape_string($string)
 	{
+		if(!$this->isConnected())
+		{
+			$this->connect();
+		}
+
 		if($string === NULL)
 		{
 			return '';

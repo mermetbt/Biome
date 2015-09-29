@@ -53,6 +53,10 @@ abstract class Models implements ObjectInterface
 
 	public function getField($field_name)
 	{
+		if(!isset($this->_structure[$field_name]))
+		{
+			throw new \Exception('Undefined field ' . $field_name . ' in object ' . get_class($this) . '!');
+		}
 		return $this->_structure[$field_name];
 	}
 
@@ -66,55 +70,188 @@ abstract class Models implements ObjectInterface
 	 */
 	protected function setValue($attribute, $value)
 	{
-		if(!isset($this->_structure[$attribute]))
+		$f = $this->getField($attribute);
+
+		$new = $f->applySet($value);
+		if(!isset($this->_values['old'][$attribute]) || $new !== $this->_values['old'][$attribute])
 		{
-			throw new \Exception('Undefined field ' . $attribute . ' in object ' . get_class($this) . '!');
+			$this->_values['new'][$attribute] = $new;
 		}
-		$this->_values['new'][$attribute] = $value;
 		return TRUE;
 	}
 
 	protected function getValue($attribute)
 	{
+		$f = $this->getField($attribute);
+
 		if(isset($this->_values['new'][$attribute]))
 		{
-			return $this->_values['new'][$attribute];
+			return $f->applyGet($this->_values['new'][$attribute]);
 		}
-		else
+
 		if(isset($this->_values['old'][$attribute]))
 		{
-			return $this->_values['old'][$attribute];
+			return $f->applyGet($this->_values['old'][$attribute]);
 		}
-		else
-		if(isset($this->_structure[$attribute]))
-		{
-			// Fetch attribute if object has an ID.
-			if($this->getId() != NULL)
-			{
-				$this->_query_set->fields($attribute)->fetch();
 
-				return $this->getValue($attribute);
-			}
-			else
-			{
-				// Otherwise return the default value.
-				return $this->_structure[$attribute]->getDefaultValue();
-			}
+		// Fetch attribute if object has an ID.
+		$pk = $this->parameters()['primary_key'];
+		if(isset($this->$pk))
+		{
+			$this->_query_set->fields($attribute)->fetch();
+
+			return $this->getValue($attribute);
 		}
 		else
 		{
-			throw new \Exception('Undefined field ' . $attribute . ' in object ' . get_class($this) . '!');
+			// Otherwise return the default value.
+			return $f->getDefaultValue();
 		}
 	}
 
+	/**
+	 * Return the identifier of the current object.
+	 */
 	public function getId()
 	{
-		$id = $this->parameters()['primary_key'];
-		if(isset($this->$id))
+		$pk = $this->parameters()['primary_key'];
+		$id = $this->$pk;
+		if(!empty($id))
 		{
-			return $this->$id;
+			return $id;
 		}
 		return NULL;
+	}
+
+	private function setId($id)
+	{
+		$pk = $this->parameters()['primary_key'];
+		$this->_values['old'][$pk] = $id;
+		return TRUE;
+	}
+
+	/**
+	 * Retrieve the object in the database.
+	 */
+	public function sync()
+	{
+		$id = $this->getId();
+		if($id === NULL)
+		{
+			return $this;
+		}
+
+		$obj = $this->_query_set->get($id);
+
+		// Reset object.
+		unset($this->_values['new']);
+		unset($this->_values['old']);
+
+		foreach($this->_structure AS $f_name => $f_object)
+		{
+			$f = $obj->getField($f_name);
+			if($f->isReady())
+			{
+				$this->_values['old'][$f_name] = $obj->$f_name;
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Fetch the object in the database with the specific fields.
+	 * If NULL is set, the object will be retrieve with all the
+	 * fields without thoses corresponding to the primary keys.
+	 */
+	public function fetch(...$fields)
+	{
+		if($this->getId() !== NULL)
+		{
+			return $this;
+		}
+
+		$filters = array();
+		if(!empty($fields))
+		{
+			foreach($fields AS $f)
+			{
+				$filters[] = array($f, '=', $this->$f);
+			}
+		}
+		else
+		{
+			$pks = $this->parameters()['primary_key'];
+			if(is_string($pks))
+			{
+				$pks = array($pks => $pks);
+			}
+
+			foreach($this->_structure AS $f)
+			{
+				if($f instanceof PrimaryField)
+				{
+					continue;
+				}
+
+				if(isset($pks[$f]))
+				{
+					continue;
+				}
+
+				$filters[] = array($f, '=', $this->$f);
+			}
+		}
+		$result = self::all()->filter($filters);
+		$count = count($result);
+		if($count > 1)
+		{
+			throw new \Exception('Too many results!');
+		}
+
+		if($count == 0)
+		{
+			return NULL;
+		}
+
+		$obj = current($result);
+		foreach($this->_structure AS $name => $f)
+		{
+			$f = $obj->getField($f_name);
+			if($f->isReady())
+			{
+				$this->_values['old'][$f_name] = $obj->$f_name;
+				unset($this->_values['old'][$f_name]);
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Insert or update the object in the database.
+	 */
+	public function save()
+	{
+		if($this->_query_set === NULL)
+		{
+			$this->_query_set = self::all();
+		}
+
+		$id = $this->getId();
+
+		// Creation
+		if($id === NULL)
+		{
+			$this->_query_set->create($this->_values['new'], $id);
+			$this->setId($id);
+			$this->sync();
+		}
+		else
+		{
+			$this->_query_set->update($id, $this->_values['new']);
+			$this->sync();
+		}
+
+		return TRUE;
 	}
 
 	/**

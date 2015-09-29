@@ -23,6 +23,21 @@ abstract class AbstractField
 		return strtolower($type);
 	}
 
+	public function isReady()
+	{
+		return TRUE;
+	}
+
+	public function applyGet($value)
+	{
+		return $value;
+	}
+
+	public function applySet($value)
+	{
+		return $value;
+	}
+
 	/**
 	 * Default Accessors
 	 */

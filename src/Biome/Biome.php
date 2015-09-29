@@ -13,6 +13,8 @@ class Biome
 	protected static $directories	= array();
 	protected static $_services		= array();
 
+	protected static $_end_actions	= array();
+
 	public static function start()
 	{
 		session_start();
@@ -34,6 +36,10 @@ class Biome
 		$response->send();
 
 		/* Commit. */
+		foreach(self::$_end_actions AS $action)
+		{
+			$action();
+		}
 	}
 
 	public static function registerDirs(array $dirs)
@@ -59,7 +65,12 @@ class Biome
 
 	public static function registerService($service_name, $callable)
 	{
+		if(!is_callable($callable))
+		{
+			throw new \Exception('Unable to register a service on a non callable!');
+		}
 		self::$_services[$service_name]['function'] = $callable;
+		return TRUE;
 	}
 
 	public static function getService($service_name)
@@ -76,5 +87,15 @@ class Biome
 		}
 
 		return self::$_services[$service_name]['instance'];
+	}
+
+	public static function setFinal($action)
+	{
+		if(!is_callable($action))
+		{
+			throw new \Exception('Unable to set final action on a non callable!');
+		}
+		self::$_end_actions[] = $action;
+		return TRUE;
 	}
 }

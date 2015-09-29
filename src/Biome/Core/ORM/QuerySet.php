@@ -2,9 +2,9 @@
 
 namespace Biome\Core\ORM;
 
-use Iterator;
+use Iterator, Countable;
 
-class QuerySet implements Iterator
+class QuerySet implements Iterator, Countable
 {
 	/**
 	 * Object related property.
@@ -66,7 +66,7 @@ class QuerySet implements Iterator
 		return $this;
 	}
 
-	public function count($field_name)
+	public function total($field_name)
 	{
 		return $this;
 	}
@@ -121,44 +121,50 @@ class QuerySet implements Iterator
 	}
 
 	/**
-	 *  Méthodes de l'interface itérateurs.
+	 * Countable interface
+	 */
+	public function count()
+	{
+		return count($this->_data_set);
+	}
+
+	/**
+	 *  Iterator interface
 	 */
 
-	/* Retourne l'objet courant. */
+	/* Return the current object. */
 	public function current()
 	{
 		return current($this->_data_set);
 	}
 
-	/* Retourne la clé de l'objet courant. */
+	/* Return the key of the current object. */
 	public function key()
 	{
 		return key($this->_data_set);
 	}
 
-	/* Avance d'un objet et retourne l'objet courant. */
+	/* Next object. */
 	public function next()
 	{
 		if($this->_data_set == NULL)
 		{
 			return FALSE;
 		}
-		next($this->_data_set);
-		return TRUE;
+		return next($this->_data_set);
 	}
 
-	/* Repart du début. */
+	/* Restart from the begining. */
 	public function rewind()
 	{
 		if($this->_data_set == NULL)
 		{
 			return FALSE;
 		}
-		reset($this->_data_set);
-		return TRUE;
+		return reset($this->_data_set);
 	}
 
-	/* Retourne TRUE s'il existe un objet courant. */
+	/* Return TRUE if some elements are availables. */
 	public function valid()
 	{
 		if(empty($this->_data_set))
@@ -166,7 +172,7 @@ class QuerySet implements Iterator
 			$this->fetch();
 		}
 
-		if($this->_data_set == NULL)
+		if(empty($this->_data_set))
 		{
 			return FALSE;
 		}
@@ -180,6 +186,7 @@ class QuerySet implements Iterator
 	public function fetch()
 	{
 		$object = $this->object_name;
+		$query_set = $this;
 
 		$this->_data_set = $this->_db_handler->query(
 			$this->object->parameters(),
@@ -187,10 +194,60 @@ class QuerySet implements Iterator
 			$this->filters,
 			$this->offset,
 			$this->limit,
-			function($row) use($object) {
-				$o = new $object($row);
+			function($row) use($object, $query_set) {
+				$o = new $object($row, $query_set);
 				return $o;
 		});
+
+		return $this;
+	}
+
+	/**
+	 * Get
+	 */
+	public function get($id)
+	{
+		$filters = array();
+		$filters[] = array($this->object->parameters()['primary_key'], '=', $id);
+		$object = $this->object_name;
+		$query_set = $this;
+
+		$obj = $this->_db_handler->query(
+			$this->object->parameters(),
+			$this->fields,
+			$filters,
+			$this->offset,
+			$this->limit,
+			function($row) use($object, $query_set) {
+				$o = new $object($row, $query_set);
+				return $o;
+		});
+
+		return reset($obj);
+	}
+
+	/**
+	 * Creation
+	 */
+	public function create($data, &$id)
+	{
+		$id = $this->_db_handler->create(
+			$this->object->parameters(),
+			$data
+		);
+		return $this;
+	}
+
+	/**
+	 * Update
+	 */
+	public function update($id, $data)
+	{
+		$this->_db_handler->create(
+			$this->object->parameters(),
+			$id,
+			$data
+		);
 
 		return $this;
 	}
