@@ -14,7 +14,7 @@
 				<li><a href="#">Home</a></li>
 			</ul>
 
-			<?php echo $content; ?>
+			<?php echo $this->getContent(); ?>
 
 		</div>
 	</div>

@@ -1,1 +1,1 @@
-<div class="container-fluid"><?php echo $content; ?></div>
+<div class="container-fluid"><?php echo $this->getContent(); ?></div>

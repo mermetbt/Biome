@@ -6,19 +6,9 @@ use Biome\Core\View\Component;
 
 class Loop extends Component
 {
-	public function render()
+	public function getVar()
 	{
-		$var = $this->attributes['var'];
-
-		$inner = '';
-		foreach($this->getValue() AS $v)
-		{
-			$this->setContext($var, $v);
-			$inner .= $this->renderChildren();
-			$this->unsetContext($var);
-		}
-
-		return $this->renderComponent($inner);
+		return $this->attributes['var'];
 	}
 
 	public function getValue()

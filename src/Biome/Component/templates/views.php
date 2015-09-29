@@ -15,7 +15,7 @@
 	</style>
 </head>
 <body>
-	<?php echo $content; ?>
+	<?php echo $this->getContent(); ?>
 	<script src="<?php echo URL::getAsset('packages/jquery/dist/jquery.min.js') ?>"></script>
 	<script src="<?php echo URL::getAsset('packages/bootstrap/dist/js/bootstrap.min.js') ?>"></script>
 </body>

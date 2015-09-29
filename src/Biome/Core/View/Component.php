@@ -23,12 +23,11 @@ class Component extends NodeLoader
 
 	public function render()
 	{
-		$content = $this->renderChildren();
-		$content = $this->renderComponent($content);
+		$content = $this->renderComponent();
 		return $content;
 	}
 
-	public function renderComponent($content)
+	public function renderComponent()
 	{
 		$component_template_file = __DIR__ . '/../../Component/templates/' . $this->name . '.php';
 		if(file_exists($component_template_file))
@@ -46,12 +45,10 @@ class Component extends NodeLoader
 		return $content;
 	}
 
-	public function renderChildren()
+	public function getContent($child_name = NULL, array $attribute = NULL)
 	{
 		ob_start();
-
 		$this->rec_renderChildren($this->value);
-
 		$content = ob_get_contents();
 		ob_end_clean();
 		return $content;
