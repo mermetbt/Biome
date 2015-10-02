@@ -54,6 +54,10 @@ class QuerySet implements Iterator, Countable
 			{
 				$this->fields[] = $field_name;
 			}
+			else
+			{
+				throw new \Exception('Fetching an unexisting field ('.$field_name.') for object ' . $this->object_name . '!');
+			}
 		}
 		return $this;
 	}
@@ -94,11 +98,22 @@ class QuerySet implements Iterator, Countable
 	/**
 	 * Selection methods.
 	 */
-	public function filter(array...$filters)
+	public function filter(array...$filters_parameters)
 	{
-		foreach($filters AS $filter)
+		/* Function parameters */
+		foreach($filters_parameters AS $filters_group)
 		{
-			$this->filters[] = $filter;
+			/* Array of filters. */
+			foreach($filters_group AS $filter)
+			{
+				$field_name = $filter[0];
+				if(!$this->object->hasField($field_name))
+				{
+					throw new \Exception('Filtering on an unexisting field ('.$field_name.') for object ' . $this->object_name . '!');
+				}
+
+				$this->filters[] = $filter;
+			}
 		}
 		return $this;
 	}
@@ -125,6 +140,7 @@ class QuerySet implements Iterator, Countable
 	 */
 	public function count()
 	{
+		$this->valid();
 		return count($this->_data_set);
 	}
 

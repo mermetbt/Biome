@@ -12,11 +12,22 @@ class AuthController extends Controller
 
 	public function postLogin(AuthCollection $c)
 	{
-		echo 'Authentication of ', $c->user->firstname, ' ', $c->user->lastname, '<br/>';
+		$result = $c->user->fetch('mail', 'password');
+		if($result === NULL)
+		{
+			echo 'No result! <br/>';
+		}
 
-		$c->user->fetch('firstname', 'lastname');
-
-		echo 'Id:', $c->user->getId(), '<br/>';
+		if($c->isAuthenticated())
+		{
+			echo 'User authenticated! <br/>';
+			echo 'Authentication of ', $c->user->firstname, ' ', $c->user->lastname, '<br/>';
+			echo 'Id:', $c->user->getId(), '<br/>';
+		}
+		else
+		{
+			echo 'Authentication failed! <br/>';
+		}
 
 		echo '<a href="', URL::fromRoute(),'">Go back!</a>';
 	}

@@ -121,16 +121,31 @@ class Component extends NodeLoader
 		return $this->value;
 	}
 
-	public function getChildren($component_name)
+	public function getChildren($component_name, $level = 0, &$children = array())
 	{
+		if($level > 0)
+		{
+			$sub_level = $level - 1;
+		}
+
 		foreach($this->getChilds() AS $c)
 		{
+			if(!($c instanceof Component))
+			{
+				continue;
+			}
 			if($c->name == $component_name)
 			{
-				return $c;
+				$children[] = $c;
+			}
+
+			if($level !== 0)
+			{
+				$c->getChildren($component_name, $level-1, $children);
 			}
 		}
-		return NULL;
+
+		return $children;
 	}
 
 	/**

@@ -67,17 +67,18 @@ trait ContextManager
 		}
 	}
 
-	public function fetchVariable($value)
+	public function fetchVariables($value)
 	{
 		$matches = array();
-		preg_match('/#{(.*)}/', $value, $matches);
+		preg_match_all('/#{([^}]+)}/', $value, $matches);
 
-		if(!isset($matches[1]))
+		$variables = array();
+		foreach($matches[0] AS $index => $pattern)
 		{
-			return $value;
+			$variables[$pattern] = $matches[1][$index];
 		}
 
-		return $matches[1];
+		return $variables;
 	}
 
 	/**
@@ -108,6 +109,11 @@ trait ContextManager
 				$result = $result->$end();
 			}
 			else
+			if(method_exists($result, $end))
+			{
+				$result = $result->$end();
+			}
+			else
 			{
 				$result = $result->$end;
 			}
@@ -134,34 +140,49 @@ trait ContextManager
 
 	public function fetchValue($value)
 	{
-		$var = $this->fetchVariable($value);
-
-		if(empty($var))
+		if(!is_string($value))
 		{
-			return $value;
+			throw new \Exception('Value is not a string!');
 		}
 
-		$result = $this->rec_fetchValue($var);
-		return $result;
+		$variables = $this->fetchVariables($value);
+
+		foreach($variables AS $key => $var)
+		{
+			$result = $this->rec_fetchValue($var);
+			// Replacing in a string
+			if(!is_array($result) && !is_object($result))
+			{
+				if($result === FALSE)
+				{
+					$result = '0';
+				}
+				$value = str_replace($key, $result, $value);
+			}
+			// Return an object or an array
+			else
+			{
+				return $result;
+			}
+		}
+
+		return $value;
 	}
 
 	public function fetchField($value)
 	{
-		$var = $this->fetchVariable($value);
+		$variables = $this->fetchVariables($value);
 
-		if(empty($var))
+		foreach($variables AS $key => $var)
 		{
-			return $value;
+			$raw = explode('.', $var);
+			$field = end($raw);
+			unset($raw[count($raw)-1]);
+
+			$object = $this->rec_fetchValue(join('.', $raw));
+			$field_object = $object->getField($field);
 		}
-
-		$raw = explode('.', $var);
-		$field = end($raw);
-		unset($raw[count($raw)-1]);
-
-		$object = $this->rec_fetchValue(join('.', $raw));
-		$field_object = $object->getField($field);
 
 		return $field_object;
 	}
-
 }

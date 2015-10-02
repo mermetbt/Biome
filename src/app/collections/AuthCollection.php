@@ -20,4 +20,9 @@ class AuthCollection extends SessionCollection
 		$list[] = clone $user;
 		$this->users = $list;
 	}
+
+	public function isAuthenticated()
+	{
+		return $this->user->getId() > 0;
+	}
 }

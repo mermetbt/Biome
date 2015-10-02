@@ -16,7 +16,13 @@ class Field extends Component
 	{
 		if(!isset($this->attributes['name']))
 		{
-			return str_replace('.', '/', $this->fetchVariable($this->attributes['value']));
+			$variables = $this->fetchVariables($this->attributes['value']);
+			$name = '';
+			foreach($variables AS $var)
+			{
+				$name .= str_replace('.', '/', $var);
+			}
+			return $name;
 		}
 		$this->name = $this->attributes['name'];
 	}

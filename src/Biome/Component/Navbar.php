@@ -8,9 +8,9 @@ class Navbar extends Component
 {
 	public function render()
 	{
-		$form = $this->getChildren('form');
+		$forms = $this->getChildren('form', -1);
 
-		if($form != NULL)
+		foreach($forms AS $form)
 		{
 			$form->addClasses('navbar-form');
 		}

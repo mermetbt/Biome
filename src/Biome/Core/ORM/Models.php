@@ -62,6 +62,10 @@ abstract class Models implements ObjectInterface
 
 	public function hasField($field_name)
 	{
+		if(!is_string($field_name))
+		{
+			throw new \Exception('hasField must have a string in parameter! Found: ' . print_r($field_name, true));
+		}
 		return isset($this->_structure[$field_name]);
 	}
 
@@ -201,6 +205,7 @@ abstract class Models implements ObjectInterface
 				$filters[] = array($f, '=', $this->$f);
 			}
 		}
+
 		$result = self::all()->filter($filters);
 		$count = count($result);
 		if($count > 1)
@@ -213,16 +218,27 @@ abstract class Models implements ObjectInterface
 			return NULL;
 		}
 
-		$obj = current($result);
-		foreach($this->_structure AS $name => $f)
+		$obj = $result->current();
+
+		if(!$obj instanceof Models)
+		{
+			throw new \Exception('Internal Error: The QuerySet doesn\'t return an object of instance Models! ' . print_r($obj, true));
+		}
+
+		foreach($this->_structure AS $f_name => $field)
 		{
 			$f = $obj->getField($f_name);
+
+			// Reset the field
+			unset($this->_values['old'][$f_name]);
+
+			// Set the value from the database
 			if($f->isReady())
 			{
 				$this->_values['old'][$f_name] = $obj->$f_name;
-				unset($this->_values['old'][$f_name]);
 			}
 		}
+
 		return $this;
 	}
 
