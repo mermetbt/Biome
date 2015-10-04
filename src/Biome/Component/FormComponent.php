@@ -4,7 +4,7 @@ namespace Biome\Component;
 
 use Biome\Core\View\Component;
 
-class Form extends Component
+class FormComponent extends Component
 {
 	public function getAction()
 	{

@@ -44,8 +44,9 @@ class NodeLoader implements Element
 		if($child['value'] instanceof Component)
 		{
 			$child['value']->fullname	= $child['name'];
-			$child['value']->name		= strtolower(substr(get_class($child['value']), 16));
+			$child['value']->name		= strtolower(substr(get_class($child['value']), strlen('Biome\\Component\\'), -strlen('Component')));
 			$child['value']->attributes = $child['attributes'];
+			$child['value']->building();
 			return $child['value'];
 		}
 
@@ -65,5 +66,7 @@ class NodeLoader implements Element
 	}
 
 	public function xmlSerialize(Writer $writer) {}
+
+	public function building() { return TRUE; }
 
 }

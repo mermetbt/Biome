@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <biome:views xmlns:biome="http://github.com/mermetbt/Biome/">
-	<biome:navbar>
 
-		<biome:condition if="!#{auth.isAuthenticated}">
-			<biome:form class="navbar-right" controller="auth" action="login">
-				<biome:field value="#{auth.user.mail}" placeholder="Email" label=""/>
-				<biome:field value="#{auth.user.password}" placeholder="Password" label=""/>
-				<biome:button class="btn-success" value="Sign in" action="#{auth.login}"/>
-			</biome:form>
-		</biome:condition>
-
-		<biome:condition if="#{auth.isAuthenticated}">
-			<div class="navbar-right">
-				<biome:variable value="#{auth.user.firstname}"/>
-				<span> - </span>
-				<biome:variable value="#{auth.user.lastname}"/>
-			</div>
-		</biome:condition>
-	</biome:navbar>
+	<biome:include src="elements/navbar.xml"/>
 
 	<biome:view action="index">
 		<span>My main controller !</span>

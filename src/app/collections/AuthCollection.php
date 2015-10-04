@@ -25,4 +25,10 @@ class AuthCollection extends SessionCollection
 	{
 		return $this->user->getId() > 0;
 	}
+
+	public function logout()
+	{
+		$this->user->detach();
+		return TRUE;
+	}
 }

@@ -9,6 +9,7 @@ class Response extends \Symfony\Component\HttpFoundation\Response
 	public function redirect($controller = NULL, $action = NULL, $item = NULL, $module = NULL)
 	{
 		$url = \URL::fromRoute($controller, $action, $item, $module);
-		return new RedirectResponse($url);
+		$response = new RedirectResponse($url);
+		return new Response($response->getContent());
 	}
 }

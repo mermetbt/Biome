@@ -4,7 +4,7 @@ namespace Biome\Component;
 
 use Biome\Core\View\Component;
 
-class Navbar extends Component
+class NavbarComponent extends Component
 {
 	public function render()
 	{

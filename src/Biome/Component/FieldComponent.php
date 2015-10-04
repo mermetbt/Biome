@@ -4,7 +4,7 @@ namespace Biome\Component;
 
 use Biome\Core\View\Component;
 
-class Field extends Component
+class FieldComponent extends Component
 {
 	public function render()
 	{

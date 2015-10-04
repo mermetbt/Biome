@@ -49,11 +49,19 @@ class Controller
 			$this->response = $result;
 		}
 
+		if($this->response instanceof Response)
+		{
+			if($this->response->isRedirect())
+			{
+				return $this->response;
+			}
+		}
+
 		if($type == 'GET')
 		{
 			// Render view
 			$content = $this->view->render();
-			if(!empty($content))
+			if(!empty($content) && $this->response instanceof Response)
 			{
 				$this->response->setContent($content);
 			}

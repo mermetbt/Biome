@@ -4,7 +4,7 @@ namespace Biome\Component;
 
 use Biome\Core\View\Component;
 
-class A extends Component
+class AComponent extends Component
 {
 	public function getURL()
 	{

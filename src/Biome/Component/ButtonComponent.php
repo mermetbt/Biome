@@ -4,7 +4,7 @@ namespace Biome\Component;
 
 use Biome\Core\View\Component;
 
-class Button extends Component
+class ButtonComponent extends Component
 {
 	public function render()
 	{

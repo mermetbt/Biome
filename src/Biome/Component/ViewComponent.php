@@ -4,7 +4,7 @@ namespace Biome\Component;
 
 use Biome\Core\View\Component;
 
-class View extends Component
+class ViewComponent extends Component
 {
 	public function getAction()
 	{

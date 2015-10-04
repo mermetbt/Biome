@@ -5,7 +5,7 @@ namespace Biome\Core;
 use Biome\Core\HTTP\Request;
 use Biome\Core\HTTP\Response;
 
-use Sabre\Xml\Reader;
+use Biome\Core\View\TemplateReader;
 
 class View
 {
@@ -51,43 +51,11 @@ class View
 				return FALSE;
 			}
 		}
-
-		$xml_contents = file_get_contents($path);
-		$reader = new Reader();
-
-		/**
-		 * Loading components
-		 */
-		$components = scandir(__DIR__ . '/../Component/');
-		$components_list = array();
-		foreach($components AS $file)
-		{
-			if($file[0] == '.')
-			{
-				continue;
-			}
-
-			if(substr($file, -4) != '.php')
-			{
-				continue;
-			}
-
-			$componentName = substr($file, 0, -4);
-			$components_list['{http://github.com/mermetbt/Biome/}' . strtolower($componentName)] = 'Biome\\Component\\'.$componentName;
-		}
-
-		$reader->elementMap = $components_list;
-
-		/**
-		 * Parsing XML template
-		 */
-
-		$reader->xml($xml_contents);
-		$tree = $reader->parse();
+		$tree = TemplateReader::loadFilename($path);
 
 		View\Component::$view = $this;
 
-		if($tree['value'] instanceof \Biome\Component\Views)
+		if($tree['value'] instanceof \Biome\Component\ViewsComponent)
 		{
 			$node = $tree['value'];
 			$node->load($action);

@@ -4,7 +4,7 @@ namespace Biome\Component;
 
 use Biome\Core\View\Component;
 
-class Condition extends Component
+class ConditionComponent extends Component
 {
 	public function isValid()
 	{

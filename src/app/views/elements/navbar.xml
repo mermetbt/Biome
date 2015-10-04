@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<biome:views xmlns:biome="http://github.com/mermetbt/Biome/">
+
+	<biome:navbar>
+		<biome:condition if="!#{auth.isAuthenticated}">
+			<biome:form class="navbar-right" controller="auth" action="login">
+				<biome:field value="#{auth.user.mail}" placeholder="Email" label=""/>
+				<biome:field value="#{auth.user.password}" placeholder="Password" label=""/>
+				<biome:button class="btn-success" value="Sign in" action="#{auth.login}"/>
+			</biome:form>
+		</biome:condition>
+
+		<biome:condition if="#{auth.isAuthenticated}">
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#">
+						<biome:variable value="#{auth.user.firstname}"/>
+						<span> - </span>
+						<biome:variable value="#{auth.user.lastname}"/>
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a href="#">Profile</a></li>
+						<li role="separator" class="divider"></li>
+						<li><biome:a controller="auth" action="logout"><span>Logout</span></biome:a></li>
+					</ul>
+				</li>
+			</ul>
+		</biome:condition>
+
+	</biome:navbar>
+
+</biome:views>

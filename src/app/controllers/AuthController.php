@@ -7,7 +7,7 @@ class AuthController extends Controller
 {
 	public function getLogin()
 	{
-		//TODO: Redirect to the main page
+		return $this->response()->redirect();
 	}
 
 	public function postLogin(AuthCollection $c)
@@ -34,7 +34,7 @@ class AuthController extends Controller
 
 	public function getSignup()
 	{
-		//TODO: Redirect to the main page
+		return $this->response()->redirect();
 	}
 
 	public function postSignup(AuthCollection $c)
@@ -62,5 +62,13 @@ class AuthController extends Controller
 		echo 'New user set to ', $u->firstname, ' ', $u->lastname, '<br/>';
 
 		echo '<a href="', URL::fromRoute(),'">Go back!</a>';
+	}
+
+	public function getLogout()
+	{
+		$c = Collection::get('auth');
+		$c->logout();
+
+		return $this->response()->redirect();
 	}
 }

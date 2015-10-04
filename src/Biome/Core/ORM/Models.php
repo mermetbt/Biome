@@ -2,6 +2,8 @@
 
 namespace Biome\Core\ORM;
 
+use Biome\Core\ORM\Field\PrimaryField;
+
 abstract class Models implements ObjectInterface
 {
 	protected $_structure;
@@ -239,6 +241,12 @@ abstract class Models implements ObjectInterface
 			}
 		}
 
+		return $this;
+	}
+
+	public function detach()
+	{
+		$this->setId(NULL);
 		return $this;
 	}
 

@@ -4,13 +4,13 @@ namespace Biome\Component;
 
 use Biome\Core\View\Component;
 
-class Views extends Component
+class ViewsComponent extends Component
 {
 	public function load($action)
 	{
 		foreach($this->value AS $index => $v)
 		{
-			if($v instanceof View)
+			if($v instanceof ViewComponent)
 			{
 				if($v->getAction() != $action)
 				{
