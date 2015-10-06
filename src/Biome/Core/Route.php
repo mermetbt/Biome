@@ -69,7 +69,7 @@ class Route extends RouteCollection
 						$route_path .= $controller_name . '/' . strtolower($name);
 					}
 
-					$method = function(Request $request, Response $response) use($type, $controller_name, $name, $meta) {
+					$method = function(Request $request, Response $response, array $args) use($type, $controller_name, $name, $meta) {
 						/* Initialize the controller. */
 						$ctrl = new $meta['controller']($request, $response);
 

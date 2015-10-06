@@ -136,6 +136,11 @@ abstract class Models implements ObjectInterface
 		return TRUE;
 	}
 
+	public function hasChanges()
+	{
+		return isset($this->_values['new']);
+	}
+
 	/**
 	 * Retrieve the object in the database.
 	 */
@@ -276,7 +281,7 @@ abstract class Models implements ObjectInterface
 			$this->sync();
 		}
 		else
-		if(!empty($this->_values['new']))
+		if($this->hasChanges())
 		{
 			$this->_query_set->update($id, $this->_values['new']);
 			$this->sync();

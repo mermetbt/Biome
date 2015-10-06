@@ -7,6 +7,8 @@ use Biome\Core\ORM\ObjectLoader;
 use Biome\Core\HTTP\Request;
 use Biome\Core\HTTP\Response;
 
+use Biome\Core\View\Flash;
+
 class Controller
 {
 	protected $request;
@@ -16,6 +18,11 @@ class Controller
 	{
 		$this->request	= $request;
 		$this->response = $response;
+	}
+
+	public function flash()
+	{
+		return Flash::getInstance();
 	}
 
 	public function request()
@@ -28,11 +35,23 @@ class Controller
 		return $this->response;
 	}
 
+	protected function preRoute() { return TRUE; }
+
+	protected function postRoute(Response $response) { return $response; }
+
 	public function process($type, $controller_name, $action_name, $method_name, $parameters)
 	{
+		/**
+		 * preRoute
+		 */
+		if(!$this->preRoute())
+		{
+			return $this->response();
+		}
+
 		if($type == 'GET')
 		{
-			$this->view = new View($this->request, $this->response);
+			$this->view = new View($this->request, $this->response());
 			$this->view->load($controller_name, $action_name);
 		}
 
@@ -49,23 +68,17 @@ class Controller
 			$this->response = $result;
 		}
 
-		if($this->response instanceof Response)
-		{
-			if($this->response->isRedirect())
-			{
-				return $this->response;
-			}
-		}
-
-		if($type == 'GET')
+		if($type == 'GET' && !$this->response->isRedirection())
 		{
 			// Render view
 			$content = $this->view->render();
-			if(!empty($content) && $this->response instanceof Response)
+			if(!empty($content))
 			{
 				$this->response->setContent($content);
 			}
 		}
+
+		$this->response = $this->postRoute($this->response);
 
 		return $this->response;
 	}

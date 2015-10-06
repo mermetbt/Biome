@@ -183,9 +183,9 @@ class MySQLHandler
 		$this->db()->query($query);
 
 		$count = $this->db()->getAffectedRows();
-		if($count !== 1)
+		if($count > 1)
 		{
-			throw new \Exception('Update operation operated on ' . $count . ' row(s)!');
+			throw new \Exception('Update operation operated on ' . $count . ' row(s)! (' . $query . ')');
 		}
 		return TRUE;
 	}

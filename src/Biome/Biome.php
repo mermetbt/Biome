@@ -22,7 +22,11 @@ class Biome
 		/* Initializing the Framework. */
 		Error::init();
 
-		$request = URL::getRequest();
+		Biome::registerService('request', function() {
+			return Request::createFromGlobals();
+		});
+
+		$request = Biome::getService('request');
 
 		/* Routing. */
 		$router = new Route($request, array(__DIR__ . '/../app/controllers/', self::getDir('controllers')));

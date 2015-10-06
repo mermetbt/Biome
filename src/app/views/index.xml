@@ -4,42 +4,39 @@
 	<biome:include src="elements/navbar.xml"/>
 
 	<biome:view action="index">
-		<span>My main controller !</span>
-		<br/>
-		<a href="index/test">Test</a>
-		<br/>
-
-		<biome:a controller="index" action="unset"><span>Reset the session</span></biome:a>
 
 		<div class="row">
-			<div class="col-lg-4">
+			<div class="col-lg-4 pull-right">
 				<div class="well">
-					<h3>Session collection example</h3>
-					<h2>Sign up!</h2>
-					<biome:form>
-						<biome:field value="#{auth.user.firstname}"/>
-						<biome:field value="#{auth.user.lastname}"/>
-						<biome:field value="#{auth.user.mail}"/>
-						<biome:field value="#{auth.user.password}"/>
-						<biome:button class="btn-success" value="Sign up" action="#{auth.signup}"/>
-					</biome:form>
-				</div>
-			</div>
-			<div class="col-lg-4">
-				<div class="well">
-					<h3>Object example</h3>
 					<h2>Sign up!</h2>
 					<biome:form>
 						<biome:field value="#{user.firstname}"/>
 						<biome:field value="#{user.lastname}"/>
 						<biome:field value="#{user.mail}"/>
 						<biome:field value="#{user.password}"/>
-						<biome:button class="btn-success" value="Sign up" action="#{auth.signup_obj}"/>
+						<biome:button class="btn-success" value="Sign up" action="#{auth.signup}"/>
 					</biome:form>
 				</div>
 			</div>
-		</div>
 
+			<div class="col-lg-8">
+				<div class="well">
+					<span>My main controller !</span>
+					<br/>
+					<a href="index/test">Test</a>
+					<br/>
+				</div>
+			</div>
+			<div class="col-lg-8">
+				<biome:panel title="Framework control">
+					<biome:a class="btn btn-default" controller="index" action="unset"><span>Reset the session</span></biome:a>
+				</biome:panel>
+			</div>
+		</div>
+	</biome:view>
+
+	<biome:view action="test">
+		<span>Test!</span><br/>
 		<h3>Users registered!</h3>
 		<ul>
 			<biome:loop value="#{auth.users}" var="user">
@@ -53,10 +50,7 @@
 				<li><biome:variable value="#{u.user_id}"/><span>: </span><biome:variable value="#{u.firstname}"/><span> - </span><biome:variable value="#{u.lastname}"/></li>
 			</biome:loop>
 		</ul>
-	</biome:view>
 
-	<biome:view action="test">
-		<span>Test!</span><br/>
 		<a href="../">Go back!</a>
 	</biome:view>
 </biome:views>

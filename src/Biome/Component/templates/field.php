@@ -1,8 +1,8 @@
 <?php
-$errors = $this->getErrors();
+$field = $this->getField();
 
 $class = 'form-group';
-if(!empty($errors))
+if($field->hasErrors())
 {
 	$class .= ' has-error';
 }
@@ -25,8 +25,12 @@ if(!empty($label))
 
 ?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php
 
-if(!empty($errors) && $show_error_messages)
+if($show_error_messages)
 {
-	?><span id="<?php echo $id; ?>_help" class="help-block"><?php echo join('<br/>', $errors); ?></span><?php
+	$errors = $field->getErrors();
+	if(!empty($errors))
+	{
+		?><span id="<?php echo $id; ?>_help" class="help-block"><?php echo join('<br/>', $errors); ?></span><?php
+	}
 }
 ?></div>  <?php

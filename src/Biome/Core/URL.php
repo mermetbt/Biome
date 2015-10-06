@@ -2,22 +2,16 @@
 
 namespace Biome\Core;
 
-use Biome\Core\HTTP\Request;
-
 class URL
 {
-	protected static $request = NULL;
-
 	public static function getRequest()
 	{
-		self::$request = Request::createFromGlobals();
-
-		return self::$request;
+		return \Biome\Biome::getService('request');
 	}
 
 	public static function getBaseURL()
 	{
-		return self::$request->getBaseUrl();
+		return self::getRequest()->getBaseUrl();
 	}
 
 	public static function getAsset($asset_path)

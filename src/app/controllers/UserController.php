@@ -1,9 +1,6 @@
 <?php
 
-use Biome\Core\Controller;
-use Biome\Core\Collection;
-
-class UserController extends Controller
+class UserController extends BaseController
 {
 	public function getProfile()
 	{
@@ -11,7 +8,17 @@ class UserController extends Controller
 
 	public function postSave(AuthCollection $c)
 	{
-		$c->user->save();
+		if(!$c->user->save())
+		{
+			$this->flash()->error('Update failure!');
+			return $this->response()->redirect();
+		}
+
+		$this->flash()->success('Profile updated!');
+
 		return $this->response()->redirect();
 	}
+
+	public function getList() { }
+
 }

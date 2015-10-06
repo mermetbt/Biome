@@ -4,7 +4,16 @@
 	<biome:navbar>
 
 		<ul class="nav navbar-nav">
-			<li><a href="#">Home</a></li>
+			<biome:condition if="#{auth.isAuthenticated}">
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#">
+						Administration
+					</a>
+					<ul class="dropdown-menu">
+						<li><biome:a controller="user" action="list"><span>Users</span></biome:a></li>
+					</ul>
+				</li>
+			</biome:condition>
 		</ul>
 
 		<biome:condition if="!#{auth.isAuthenticated}">
@@ -34,5 +43,9 @@
 		</biome:condition>
 
 	</biome:navbar>
+
+	<div style="height: 5px;"></div>
+
+	<biome:flash/>
 
 </biome:views>
