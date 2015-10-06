@@ -156,11 +156,17 @@ class Component extends NodeLoader
 
 	public function getId()
 	{
+		if(!empty($this->id))
+		{
+			return $this->id;
+		}
+
 		if(!isset($this->attributes['id']))
 		{
 			$this->id = md5(rand());
 			return $this->id;
 		}
+
 		$this->id = $this->attributes['id'];
 		return $this->id;
 	}

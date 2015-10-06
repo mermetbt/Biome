@@ -16,7 +16,7 @@
 				<div class="well">
 					<h3>Session collection example</h3>
 					<h2>Sign up!</h2>
-					<biome:form controller="auth" action="signup">
+					<biome:form>
 						<biome:field value="#{auth.user.firstname}"/>
 						<biome:field value="#{auth.user.lastname}"/>
 						<biome:field value="#{auth.user.mail}"/>
@@ -29,7 +29,7 @@
 				<div class="well">
 					<h3>Object example</h3>
 					<h2>Sign up!</h2>
-					<biome:form controller="auth" action="signup_obj">
+					<biome:form>
 						<biome:field value="#{user.firstname}"/>
 						<biome:field value="#{user.lastname}"/>
 						<biome:field value="#{user.mail}"/>

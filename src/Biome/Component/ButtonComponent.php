@@ -20,4 +20,19 @@ class ButtonComponent extends Component
 		}
 		return 'Submit';
 	}
+
+	public function getAction()
+	{
+		$action = $this->attributes['action'];
+
+		$actions = $this->fetchVariables($action);
+
+		$var = reset($actions);
+		$raw = explode('.', $var);
+
+		$controller = $raw[0];
+		$action = $raw[1];
+
+		return \URL::fromRoute($controller, $action);
+	}
 }
