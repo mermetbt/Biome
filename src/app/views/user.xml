@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<biome:views xmlns:biome="http://github.com/mermetbt/Biome/">
+
+	<biome:include src="elements/navbar.xml"/>
+
+	<biome:view action="profile">
+
+		<h3>Profile</h3>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="well">
+					<biome:form controller="user" action="save">
+						<biome:field value="#{auth.user.firstname}"/>
+						<biome:field value="#{auth.user.lastname}"/>
+						<biome:field value="#{auth.user.mail}"/>
+						<biome:field value="#{auth.user.password}"/>
+						<biome:button class="btn-success" value="Save" action="#{user.save}"/>
+					</biome:form>
+				</div>
+			</div>
+		</div>
+
+	</biome:view>
+
+</biome:views>

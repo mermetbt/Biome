@@ -39,6 +39,8 @@ class MySQLConnector
 
 		$this->_instance->autocommit(FALSE);
 		$this->_instance->set_charset('utf8');
+
+		return TRUE;
 	}
 
 	public function isConnected()

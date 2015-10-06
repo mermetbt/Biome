@@ -2,6 +2,11 @@
 <biome:views xmlns:biome="http://github.com/mermetbt/Biome/">
 
 	<biome:navbar>
+
+		<ul class="nav navbar-nav">
+			<li><a href="#">Home</a></li>
+		</ul>
+
 		<biome:condition if="!#{auth.isAuthenticated}">
 			<biome:form class="navbar-right" controller="auth" action="login">
 				<biome:field value="#{auth.user.mail}" placeholder="Email" label=""/>
@@ -20,7 +25,7 @@
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="#">Profile</a></li>
+						<li><biome:a controller="user" action="profile"><span>Profile</span></biome:a></li>
 						<li role="separator" class="divider"></li>
 						<li><biome:a controller="auth" action="logout"><span>Logout</span></biome:a></li>
 					</ul>

@@ -23,7 +23,7 @@ class AuthCollection extends SessionCollection
 
 	public function isAuthenticated()
 	{
-		return $this->user->getId() > 0;
+		return $this->user->getId() !== NULL;
 	}
 
 	public function logout()

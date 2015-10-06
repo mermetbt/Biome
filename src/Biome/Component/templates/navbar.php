@@ -7,12 +7,9 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#"><?php echo $view->getTitle() ?></a>
+			<a class="navbar-brand" href="<?php echo URL::fromRoute(); ?>"><?php echo $view->getTitle() ?></a>
 		</div>
 		<div id="navbar" class="navbar-collapse collapse">
-			<ul class="nav navbar-nav">
-				<li><a href="#">Home</a></li>
-			</ul>
 
 			<?php echo $this->getContent(); ?>
 

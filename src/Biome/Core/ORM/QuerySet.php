@@ -259,7 +259,7 @@ class QuerySet implements Iterator, Countable
 	 */
 	public function update($id, $data)
 	{
-		$this->_db_handler->create(
+		$this->_db_handler->update(
 			$this->object->parameters(),
 			$id,
 			$data

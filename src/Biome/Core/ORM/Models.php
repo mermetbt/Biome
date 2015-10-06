@@ -270,6 +270,7 @@ abstract class Models implements ObjectInterface
 			$this->sync();
 		}
 		else
+		if(!empty($this->_values['new']))
 		{
 			$this->_query_set->update($id, $this->_values['new']);
 			$this->sync();

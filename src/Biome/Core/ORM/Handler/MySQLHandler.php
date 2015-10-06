@@ -7,18 +7,20 @@ use Biome\Biome;
 
 class MySQLHandler
 {
-	protected $_hDB = NULL;
-
 	public function __construct(QuerySet $qs)
 	{
-		$this->_hDB = Biome::getService('mysql');
+	}
+
+	protected function db()
+	{
+		return Biome::getService('mysql');
 	}
 
 	public function query($parameters, $fields, $filters, $offset, $limit, $objectMapper)
 	{
 		$query = $this->generateQuery($parameters, $fields, $filters, $offset, $limit);
 
-		$result = $this->_hDB->query($query);
+		$result = $this->db()->query($query);
 
 		$data = array();
 		while($row = $result->fetch_assoc())
@@ -72,7 +74,7 @@ class MySQLHandler
 			{
 				continue;
 			}
-			$groups[] = '`' . $field_name . '`="' . $this->_hDB->real_escape_string($value) . '"';
+			$groups[] = '`' . $field_name . '`="' . $this->db()->real_escape_string($value) . '"';
 		}
 
 		$query .= join(', ', $groups);
@@ -91,7 +93,7 @@ class MySQLHandler
 			{
 				continue;
 			}
-			$groups[] = '`' . $field_name . '`="' . $this->_hDB->real_escape_string($value) . '"';
+			$groups[] = '`' . $field_name . '`="' . $this->db()->real_escape_string($value) . '"';
 		}
 
 		$query .= join(', ', $groups);
@@ -112,9 +114,9 @@ class MySQLHandler
 		$where = array();
 		foreach($filters AS $filter)
 		{
-			$column = $this->_hDB->real_escape_string($filter[0]);
-			$operator = $this->_hDB->real_escape_string($filter[1]);
-			$value = $this->_hDB->real_escape_string($filter[2]);
+			$column = $this->db()->real_escape_string($filter[0]);
+			$operator = $this->db()->real_escape_string($filter[1]);
+			$value = $this->db()->real_escape_string($filter[2]);
 
 			$where[] = '`' . $table . '`.`'. $column . '`' . $operator . '"' . $value . '"';
 		}
@@ -161,9 +163,9 @@ class MySQLHandler
 
 		$query = $this->generateInsert($database, $table, $data);
 
-		$this->_hDB->query($query);
+		$this->db()->query($query);
 
-		$id = $this->_hDB->getInsertedId();
+		$id = $this->db()->getInsertedId();
 		return $id;
 	}
 
@@ -176,11 +178,11 @@ class MySQLHandler
 		$filters[]	= array($parameters['primary_key'], '=', $id);
 
 		$query = $this->generateUpdate($database, $table, $data);
-		$query .= $this->generateWhere($filters);
+		$query .= $this->generateWhere($table, $filters);
 
-		$this->_hDB->query($query);
+		$this->db()->query($query);
 
-		$count = $this->_hDB->getAffectedRows();
+		$count = $this->db()->getAffectedRows();
 		if($count !== 1)
 		{
 			throw new \Exception('Update operation operated on ' . $count . ' row(s)!');
