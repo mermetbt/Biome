@@ -12,6 +12,11 @@ class AuthController extends Controller
 
 	public function postLogin(AuthCollection $c)
 	{
+		if(!$c->user->validate('mail', 'password'))
+		{
+			return $this->response()->redirect();
+		}
+
 		$result = $c->user->fetch('mail', 'password');
 		if($result === NULL)
 		{
@@ -39,11 +44,10 @@ class AuthController extends Controller
 
 	public function postSignup(AuthCollection $c)
 	{
-// 		if(empty($c->user->mail))
-// 		{
-// 			$msg = print_r($this->request()->request, true);
-// 			throw new Exception($msg);
-// 		}
+		if(!$c->user->validate())
+		{
+			return $this->response()->redirect();
+		}
 
 		echo 'New mail set to ', $c->user->mail, '<br/>';
 		$c->storeUser($c->user);
@@ -55,9 +59,13 @@ class AuthController extends Controller
 		echo 'New user set to ', $u->firstname, ' ', $u->lastname, '<br/>';
 
 		$c = Collection::get('auth');
-		$c->storeUser($u);
 
-		$u->save();
+		if(!$u->save())
+		{
+			return $this->response()->redirect();
+		}
+
+		$c->storeUser($u);
 
 		echo 'New user set to ', $u->firstname, ' ', $u->lastname, '<br/>';
 

@@ -262,6 +262,12 @@ abstract class Models implements ObjectInterface
 
 		$id = $this->getId();
 
+		/* Check required fields */
+		if(!$this->validate())
+		{
+			return FALSE;
+		}
+
 		// Creation
 		if($id === NULL)
 		{
@@ -277,6 +283,30 @@ abstract class Models implements ObjectInterface
 		}
 
 		return TRUE;
+	}
+
+	public function validate(...$fields)
+	{
+		$errors = FALSE;
+		foreach($this->_structure AS $field_name => $field)
+		{
+			if(!empty($fields) && !in_array($field_name, $fields))
+			{
+				continue;
+			}
+
+			$value = $this->$field_name;
+			if($field->isRequired())
+			{
+				if(empty($value))
+				{
+					$field->setError('required', 'Field "' . $field->getLabel() . '" is required!');
+					$errors = TRUE;
+				}
+			}
+		}
+
+		return !$errors;
 	}
 
 	/**

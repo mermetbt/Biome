@@ -32,6 +32,17 @@ class FieldComponent extends Component
 		return $this->fetchValue($this->attributes['value']);
 	}
 
+	public function getField()
+	{
+		if(empty($this->attributes['value']))
+		{
+			return NULL;
+		}
+
+		$field = $this->fetchField($this->attributes['value']);
+		return $field;
+	}
+
 	public function getType()
 	{
 		if(isset($this->attributes['type']))
@@ -42,6 +53,18 @@ class FieldComponent extends Component
 		$field = $this->fetchField($this->attributes['value']);
 
 		return $field->getType();
+	}
+
+	public function getErrors()
+	{
+		$field = $this->getField();
+
+		if(empty($field))
+		{
+			return array();
+		}
+
+		return $field->getErrors();
 	}
 
 	public function getPlaceholder()
@@ -60,5 +83,14 @@ class FieldComponent extends Component
 			return $this->fetchField($this->attributes['value'])->getLabel();
 		}
 		$this->name = $this->attributes['label'];
+	}
+
+	public function showErrors()
+	{
+		if(isset($this->attributes['error']))
+		{
+			return $this->attributes['error'] == '1';
+		}
+		return TRUE;
 	}
 }

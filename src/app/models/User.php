@@ -30,9 +30,11 @@ class User extends Models
 								->setLabel('Lastname');
 
 		$this->mail			= EmailField::create()
-								->setLabel('E-Mail');
+								->setLabel('E-Mail')
+								->setRequired(TRUE);
 
 		$this->password		= PasswordField::create(32)
-								->setLabel('Password');
+								->setLabel('Password')
+								->setRequired(TRUE);
 	}
 }
