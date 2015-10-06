@@ -333,7 +333,12 @@ abstract class Models implements ObjectInterface
 	 */
 	public static function get($id)
 	{
-		return self::all()->get($id);
+		$object = self::all()->get($id);
+		if(empty($object))
+		{
+			throw new \Exception('Object ' . get_called_class() . ' of id ' . $id . ' not found!');
+		}
+		return $object;
 	}
 
 	/**

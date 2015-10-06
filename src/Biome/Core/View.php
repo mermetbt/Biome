@@ -2,9 +2,6 @@
 
 namespace Biome\Core;
 
-use Biome\Core\HTTP\Request;
-use Biome\Core\HTTP\Response;
-
 use Biome\Core\View\TemplateReader;
 
 class View
@@ -12,16 +9,9 @@ class View
 	protected $_tree = NULL;
 	protected $_variables = array();
 
-	protected $_request = NULL;
-	protected $_response = NULL;
-
 	protected $_title = 'Biome';
 
-	public function __construct(Request $request, Response $response)
-	{
-		$this->_request = $request;
-		$this->_response = $response;
-	}
+	public function __construct() {}
 
 	public function __set($variable, $value)
 	{
@@ -80,10 +70,5 @@ class View
 	public function getTitle()
 	{
 		return $this->_title;
-	}
-
-	public function getBaseUrl()
-	{
-		return $this->_request->getBaseUrl();
 	}
 }

@@ -25,7 +25,7 @@
 		</div>
 	</biome:view>
 
-	<biome:view action="list">
+	<biome:view action="index">
 		<h3>Users</h3>
 		<div class="row">
 			<div class="col-lg-8">
@@ -63,6 +63,12 @@
 				</biome:panel>
 			</div>
 		</div>
+	</biome:view>
+
+	<biome:view action="edit">
+		<h3>User</h3>
+		<biome:variable value="#{user.user_id}"/><br/>
+		<biome:variable value="#{user.mail}"/>
 	</biome:view>
 
 </biome:views>

@@ -22,14 +22,20 @@ class Biome
 		/* Initializing the Framework. */
 		Error::init();
 
+		/* Registering default services. */
 		Biome::registerService('request', function() {
 			return Request::createFromGlobals();
 		});
 
+		Biome::registerService('view', function() {
+			return new \Biome\Core\View();
+		});
+
+		/* Starting. */
 		$request = Biome::getService('request');
 
 		/* Routing. */
-		$router = new Route($request, array(__DIR__ . '/../app/controllers/', self::getDir('controllers')));
+		$router = new Route(array(__DIR__ . '/../app/controllers/', self::getDir('controllers')));
 		$router->autoroute();
 
 		/* Dispatch. */

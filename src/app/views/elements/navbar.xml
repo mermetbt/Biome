@@ -10,7 +10,7 @@
 						Administration
 					</a>
 					<ul class="dropdown-menu">
-						<li><biome:a controller="user" action="list"><span>Users</span></biome:a></li>
+						<li><biome:a controller="user"><span>Users</span></biome:a></li>
 					</ul>
 				</li>
 			</biome:condition>

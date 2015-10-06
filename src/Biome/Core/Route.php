@@ -10,17 +10,16 @@ use Biome\Core\HTTP\Response;
 
 class Route extends RouteCollection
 {
-	protected $_request = NULL;
 	protected $_controllers_dir = array();
 
-	public function __construct(Request $request, array $controllers_dir = array())
+	public function __construct(array $controllers_dir = array())
 	{
+		$request = \Biome\Biome::getService('request');
 		$container = new Container();
 		$container->add('Symfony\Component\HttpFoundation\Request', $request);
 		$container->add('Symfony\Component\HttpFoundation\Response', 'Biome\Core\HTTP\Response');
 
 		parent::__construct($container);
-		$this->_request = $request;
 		$this->_controllers_dir = $controllers_dir;
 	}
 
@@ -66,15 +65,27 @@ class Route extends RouteCollection
 					$route_path = '/';
 					if(!($controller_name == 'index' && $name == 'index'))
 					{
-						$route_path .= $controller_name . '/' . strtolower($name);
+						$route_path .= $controller_name . '/';
+						if(!empty($meta['url_parameters']))
+						{
+							$raw = $meta['url_parameters'];
+							$route_path .= '{' . $raw[0] . '}/';
+						}
+						$route_path .= strtolower($name);
 					}
 
 					$method = function(Request $request, Response $response, array $args) use($type, $controller_name, $name, $meta) {
 						/* Initialize the controller. */
 						$ctrl = new $meta['controller']($request, $response);
 
+						$method_params = array();
+						foreach($meta['parameters'] AS $param)
+						{
+							$method_params[] = $this->parameterInjection($param['type'], $param['name'], $param['required'], $args);
+						}
+
 						/* Execute the action. */
-						return $ctrl->process($type, $controller_name, $name, $meta['action'], $meta['parameters']);
+						return $ctrl->process($type, $controller_name, $name, $meta['action'], $method_params);
 					};
 
 					$this->addRoute($type, $route_path, $method);
@@ -144,6 +155,7 @@ class Route extends RouteCollection
 			 * Parameters
 			 */
 			$param_list = array();
+			$url_param_list = array();
 			$parameters = $method->getParameters();
 			foreach($parameters AS $param)
 			{
@@ -159,7 +171,11 @@ class Route extends RouteCollection
 				}
 				$name = $param->getName();
 				$required = !$param->allowsNull();
-				$param_list[] = array('type' => $type, 'name' => $name, 'required' => $required);
+				$param_list[$name] = array('type' => $type, 'name' => $name, 'required' => $required);
+				if(empty($type))
+				{
+					$url_param_list[] = $name;
+				}
 			}
 
 			/**
@@ -168,6 +184,7 @@ class Route extends RouteCollection
 			$routes[$method_type][$method_name] = array(
 												'controller' => $method->getDeclaringClass()->getName(),
 												'action' => $method->getName(),
+												'url_parameters' => $url_param_list,
 												'parameters' => $param_list
 			);
 		}
@@ -186,5 +203,83 @@ class Route extends RouteCollection
 		$type = ($raw[1][0] == '$') ? '' : $raw[1];
 
 		return $type;
+	}
+
+	protected function parameterInjection($type, $name, $required, $args)
+	{
+		$request = \Biome\Biome::getService('request');
+
+		$value = NULL;
+		if(empty($type))
+		{
+			return $args[$name];
+		}
+
+		switch($type)
+		{
+			// Default PHP type
+			case 'string':
+			case 'int':
+				return $value;
+				break;
+			default: // Class injection
+
+		}
+
+		/**
+		 * Collection injection
+		 */
+		if(substr($type, -strlen('Collection')) == 'Collection')
+		{
+			// Instanciate the collection
+			$collection_name = strtolower(substr($type, 0, -strlen('Collection')));
+			$value = Collection::get($collection_name);
+
+			// Check if data are sent
+			foreach($request->request->keys() AS $key)
+			{
+				if(strncmp($collection_name . '/', $key, strlen($collection_name . '/')) == 0)
+				{
+					$raw = explode('/', $key);
+					$total = count($raw);
+
+					$iter = $value;
+					for($i = 1; $i < $total-1; $i++)
+					{
+						$iter = $iter->$raw[$i];
+					}
+					$v = $request->request->get($key);
+					$iter->$raw[$i] = $v;
+				}
+			}
+		}
+		else
+		/**
+		 * Object injection
+		 */
+		{
+			$object_name = strtolower($type);
+			$value = ObjectLoader::load($object_name);
+
+			// Check if data are sent
+			foreach($request->request->keys() AS $key)
+			{
+				if(strncmp($object_name . '/', $key, strlen($object_name . '/')) == 0)
+				{
+					$raw = explode('/', $key);
+					$total = count($raw);
+
+					$iter = $value;
+					for($i = 1; $i < $total-1; $i++)
+					{
+						$iter = $iter->$raw[$i];
+					}
+					$v = $request->request->get($key);
+					$iter->$raw[$i] = $v;
+				}
+			}
+		}
+
+		return $value;
 	}
 }

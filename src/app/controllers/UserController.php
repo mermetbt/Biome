@@ -2,9 +2,7 @@
 
 class UserController extends BaseController
 {
-	public function getProfile()
-	{
-	}
+	public function getProfile() { }
 
 	public function postSave(AuthCollection $c)
 	{
@@ -19,6 +17,11 @@ class UserController extends BaseController
 		return $this->response()->redirect();
 	}
 
-	public function getList() { }
+	public function getIndex() { }
 
+	public function getEdit($user_id)
+	{
+		$u = User::get($user_id);
+		$this->view->user = $u;
+	}
 }

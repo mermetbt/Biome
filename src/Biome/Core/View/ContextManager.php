@@ -122,6 +122,14 @@ trait ContextManager
 			return $result;
 		}
 
+		/* No item found, check view. */
+		$view = \Biome\Biome::getService('view');
+		$result = $view->$raw[0];
+		if($result !== NULL)
+		{
+			return $result;
+		}
+
 		/* No item found, check collections. */
 		$result = Collection::get($raw[0]);
 		if($result !== NULL)
@@ -129,6 +137,7 @@ trait ContextManager
 			return $result;
 		}
 
+		/* No item found, check objects. */
 		$result = ObjectLoader::load($raw[0]);
 		if($result !== NULL)
 		{

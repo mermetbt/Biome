@@ -8,8 +8,19 @@ class AComponent extends Component
 {
 	public function getURL()
 	{
-		$controller = $this->attributes['controller'];
-		$action = $this->attributes['action'];
+		$controller = NULL;
+		$action = NULL;
+
+		if(isset($this->attributes['controller']))
+		{
+			$controller = $this->attributes['controller'];
+		}
+
+		if(isset($this->attributes['action']))
+		{
+			$action = $this->attributes['action'];
+		}
+
 		return \URL::fromRoute($controller, $action);
 	}
 }

@@ -39,7 +39,7 @@ class Controller
 
 	protected function postRoute(Response $response) { return $response; }
 
-	public function process($type, $controller_name, $action_name, $method_name, $parameters)
+	public function process($type, $controller_name, $action_name, $method_name, $method_params)
 	{
 		/**
 		 * preRoute
@@ -51,14 +51,8 @@ class Controller
 
 		if($type == 'GET')
 		{
-			$this->view = new View($this->request, $this->response());
+			$this->view = \Biome\Biome::getService('view');
 			$this->view->load($controller_name, $action_name);
-		}
-
-		$method_params = array();
-		foreach($parameters AS $param)
-		{
-			$method_params[] = $this->parameterInjection($param['type'], $param['name'], $param['required']);
 		}
 
 		$result = call_user_func_array(array($this, $method_name), $method_params);
@@ -81,81 +75,5 @@ class Controller
 		$this->response = $this->postRoute($this->response);
 
 		return $this->response;
-	}
-
-	protected function parameterInjection($type, $name, $required)
-	{
-		$value = NULL;
-		if(empty($type))
-		{
-			return $value;
-		}
-
-		switch($type)
-		{
-			// Default PHP type
-			case 'string':
-			case 'int':
-				return $value;
-				break;
-			default: // Class injection
-
-		}
-
-		/**
-		 * Collection injection
-		 */
-		if(substr($type, -strlen('Collection')) == 'Collection')
-		{
-			// Instanciate the collection
-			$collection_name = strtolower(substr($type, 0, -strlen('Collection')));
-			$value = Collection::get($collection_name);
-
-			// Check if data are sent
-			foreach($this->request()->request->keys() AS $key)
-			{
-				if(strncmp($collection_name . '/', $key, strlen($collection_name . '/')) == 0)
-				{
-					$raw = explode('/', $key);
-					$total = count($raw);
-
-					$iter = $value;
-					for($i = 1; $i < $total-1; $i++)
-					{
-						$iter = $iter->$raw[$i];
-					}
-					$v = $this->request()->request->get($key);
-					$iter->$raw[$i] = $v;
-				}
-			}
-		}
-		else
-		/**
-		 * Object injection
-		 */
-		{
-			$object_name = strtolower($type);
-			$value = ObjectLoader::load($object_name);
-
-			// Check if data are sent
-			foreach($this->request()->request->keys() AS $key)
-			{
-				if(strncmp($object_name . '/', $key, strlen($object_name . '/')) == 0)
-				{
-					$raw = explode('/', $key);
-					$total = count($raw);
-
-					$iter = $value;
-					for($i = 1; $i < $total-1; $i++)
-					{
-						$iter = $iter->$raw[$i];
-					}
-					$v = $this->request()->request->get($key);
-					$iter->$raw[$i] = $v;
-				}
-			}
-		}
-
-		return $value;
 	}
 }
