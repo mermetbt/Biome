@@ -34,11 +34,7 @@ class Collection implements Serializable
 		/**
 		 * TODO: Replace this dirty code by an autoload.
 		 */
-		$dirs = array(
-			__DIR__ . '/../../app/collections/',
-			$dir =  \Biome\Biome::getDir('collections')
-		);
-
+		$dirs = \Biome\Biome::getDirs('collections');
 		foreach($dirs AS $d)
 		{
 			if(!file_exists($d))

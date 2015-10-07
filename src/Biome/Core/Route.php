@@ -12,9 +12,7 @@ use Biome\Core\HTTP\Response;
 
 class Route extends RouteCollection
 {
-	protected $_controllers_dir = array();
-
-	public function __construct(array $controllers_dir = array())
+	public function __construct()
 	{
 		$request = \Biome\Biome::getService('request');
 		$container = new Container();
@@ -22,7 +20,6 @@ class Route extends RouteCollection
 		$container->add('Symfony\Component\HttpFoundation\Response', 'Biome\Core\HTTP\Response');
 
 		parent::__construct($container);
-		$this->_controllers_dir = $controllers_dir;
 	}
 
 	/**
@@ -34,8 +31,9 @@ class Route extends RouteCollection
 		 * Generating all routes.
 		 * TODO: Caching
 		 */
+		$controllers_dirs = \Biome\Biome::getDirs('controllers');
 		$routes = array();
-		foreach($this->_controllers_dir AS $dir)
+		foreach($controllers_dirs AS $dir)
 		{
 			$files = scandir($dir);
 			foreach($files AS $file)

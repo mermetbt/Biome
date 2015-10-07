@@ -3,6 +3,7 @@
 namespace Biome\Core\ORM;
 
 use Biome\Core\ORM\Field\PrimaryField;
+use Biome\Core\ORM\Inspector\ModelInspectorInterface;
 
 abstract class Models implements ObjectInterface
 {
@@ -438,5 +439,14 @@ abstract class Models implements ObjectInterface
 		$str .= ']';
 
 		return $str;
+	}
+
+	public function inspectModel(ModelInspectorInterface $inspector)
+	{
+		$inspector->handleParameters($this->parameters());
+		foreach($this->_structure AS $field)
+		{
+			$inspector->handleField($field);
+		}
 	}
 }

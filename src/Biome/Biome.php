@@ -10,9 +10,8 @@ use Biome\Core\HTTP\Response;
 
 class Biome
 {
-	protected static $directories	= array();
+	protected static $directories	= NULL;
 	protected static $_services		= array();
-
 	protected static $_end_actions	= array();
 
 	public static function start()
@@ -35,7 +34,7 @@ class Biome
 		$request = Biome::getService('request');
 
 		/* Routing. */
-		$router = new Route(array(__DIR__ . '/../app/controllers/', self::getDir('controllers')));
+		$router = new Route();
 		$router->autoroute();
 
 		/* Dispatch. */
@@ -52,12 +51,76 @@ class Biome
 		}
 	}
 
-	public static function registerDirs(array $dirs)
+	public static function shell()
 	{
-		self::$directories = $dirs;
+		/* Initializing the Framework. */
+		//Error::init();
+
+		echo 'Biome Shell', PHP_EOL;
+		echo '-----------', PHP_EOL;
+
+		$dirs = self::getDirs('commands');
+		foreach($dirs AS $dir)
+		{
+			$files = scandir($dir);
+			foreach($files AS $file)
+			{
+				if($file[0] == '.')
+				{
+					continue;
+				}
+
+				include_once($dir . '/' . $file);
+
+				$command = substr($file, 0, -4);
+				echo substr($command, 0, -strlen('Command')), PHP_EOL;
+
+				$command::listCommands();
+			}
+		}
+
+		$cmd = new $command();
+		$cmd->showCreateTable();
+
+		/* Commit. */
+		foreach(self::$_end_actions AS $action)
+		{
+			$action();
+		}
 	}
 
-	public static function getDir($type)
+	private static function initDirs()
+	{
+		if(self::$directories !== NULL)
+		{
+			return TRUE;
+		}
+
+		self::$directories = array();
+
+		$dirs = array(
+			'controllers'	=> __DIR__ . '/../app/controllers/',
+			'models'		=> __DIR__ . '/../app/models/',
+			'views'			=> __DIR__ . '/../app/views/',
+			'components'	=> __DIR__ . '/../app/components/',
+			'collections'	=> __DIR__ . '/../app/collections/',
+			'commands'		=> __DIR__ . '/../app/commands/',
+		);
+		self::registerDirs($dirs);
+		return TRUE;
+	}
+
+	public static function registerDirs(array $dirs)
+	{
+		self::initDirs();
+		foreach($dirs AS $type => $dir)
+		{
+			self::$directories[$type][$dir] = $dir;
+		}
+		return TRUE;
+	}
+
+	public static function getDirs($type)
 	{
 		return self::$directories[$type];
 	}

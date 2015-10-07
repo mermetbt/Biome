@@ -17,8 +17,8 @@ abstract class AbstractField
 
 	public static function create()
 	{
-		$class_name = get_called_class();
-		return new $class_name(func_get_args());
+		$reflector = new \ReflectionClass(get_called_class());
+		return $reflector->newInstanceArgs(func_get_args());
 	}
 
 	public function getType()

@@ -10,11 +10,7 @@ class ObjectLoader
 		/**
 		 * TODO: Replace this dirty code by an autoload.
 		 */
-		$dirs = array(
-			__DIR__ . '/../../../app/models',
-			\Biome\Biome::getDir('models')
-		);
-
+		$dirs = \Biome\Biome::getDirs('models');
 		foreach($dirs AS $d)
 		{
 			if(!file_exists($d))

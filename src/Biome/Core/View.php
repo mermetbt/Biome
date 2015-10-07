@@ -42,15 +42,21 @@ class View
 		/**
 		 * Opening template file
 		 */
-		$path = \Biome\Biome::getDir('views') . '/' . $controller .'.xml';
-		if(!file_exists($path))
+		$dirs = \Biome\Biome::getDirs('views');
+		foreach($dirs AS $dir)
 		{
-			$path = __DIR__ . '/../../app/views/' . $controller . '.xml';
+			$path = $dir . '/' . $controller .'.xml';
 			if(!file_exists($path))
 			{
-				return FALSE;
+				continue;
 			}
 		}
+
+		if(!file_exists($path))
+		{
+			throw new \Exception('Missing template file for ' . $controller . '->' . $action);
+		}
+
 		$tree = TemplateReader::loadFilename($path);
 
 		View\Component::$view = $this;
