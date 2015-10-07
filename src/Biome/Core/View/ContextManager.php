@@ -4,6 +4,7 @@ namespace Biome\Core\View;
 
 use Biome\Core\Collection;
 use Biome\Core\ORM\ObjectLoader;
+use Biome\Core\ORM\Models;
 
 trait ContextManager
 {
@@ -189,6 +190,10 @@ trait ContextManager
 			unset($raw[count($raw)-1]);
 
 			$object = $this->rec_fetchValue(join('.', $raw));
+			if(!$object instanceof Models)
+			{
+				return NULL;
+			}
 			$field_object = $object->getField($field);
 		}
 

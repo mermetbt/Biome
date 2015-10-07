@@ -9,6 +9,9 @@ class AuthCollection extends SessionCollection
 		'users' => array()
 	);
 
+	public $password = '';
+	public $password_confirm = '';
+
 	public function getUsers()
 	{
 		return $this->users;

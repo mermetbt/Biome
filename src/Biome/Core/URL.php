@@ -33,14 +33,14 @@ class URL
 			$url .= '/' . $controller;
 		}
 
-		if($action)
-		{
-			$url .= '/' . $action;
-		}
-
 		if($item)
 		{
 			$url .= '/' . $item;
+		}
+
+		if($action)
+		{
+			$url .= '/' . $action;
 		}
 
 		return $url;

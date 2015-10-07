@@ -5,6 +5,8 @@ namespace Biome\Core;
 use League\Route\RouteCollection;
 use League\Container\Container;
 
+use Biome\Core\ORM\ObjectLoader;
+
 use Biome\Core\HTTP\Request;
 use Biome\Core\HTTP\Response;
 

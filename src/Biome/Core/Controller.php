@@ -2,8 +2,6 @@
 
 namespace Biome\Core;
 
-use Biome\Core\ORM\ObjectLoader;
-
 use Biome\Core\HTTP\Request;
 use Biome\Core\HTTP\Response;
 

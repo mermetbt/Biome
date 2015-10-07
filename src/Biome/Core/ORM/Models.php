@@ -144,15 +144,18 @@ abstract class Models implements ObjectInterface
 	/**
 	 * Retrieve the object in the database.
 	 */
-	public function sync()
+	public function sync($id = NULL)
 	{
-		$id = $this->getId();
 		if($id === NULL)
 		{
-			return $this;
+			$id = $this->getId();
+			if($id === NULL)
+			{
+				return $this;
+			}
 		}
 
-		$obj = $this->_query_set->get($id);
+		$obj = self::all()->get($id);
 
 		// Reset object.
 		unset($this->_values['new']);
@@ -249,6 +252,9 @@ abstract class Models implements ObjectInterface
 		return $this;
 	}
 
+	/**
+	 * Detach this element from the database.
+	 */
 	public function detach()
 	{
 		$this->setId(NULL);
@@ -290,6 +296,25 @@ abstract class Models implements ObjectInterface
 		return TRUE;
 	}
 
+	/**
+	 * Delete this elements in the database.
+	 */
+	public function delete()
+	{
+		$id = $this->getId();
+		if($id === NULL)
+		{
+			return FALSE;
+		}
+
+		self::all()->delete($id);
+
+		return TRUE;
+	}
+
+	/**
+	 * Execute the validators on this object.
+	 */
 	public function validate(...$fields)
 	{
 		$errors = FALSE;
@@ -312,6 +337,22 @@ abstract class Models implements ObjectInterface
 		}
 
 		return !$errors;
+	}
+
+	public function getErrors()
+	{
+		$errors = array();
+		foreach($this->_structure AS $f_name => $field)
+		{
+			if($field->hasErrors())
+			{
+				foreach($field->getErrors() AS $title => $error)
+				{
+					$errors[] = $error;
+				}
+			}
+		}
+		return $errors;
 	}
 
 	/**

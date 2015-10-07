@@ -10,6 +10,8 @@ class AComponent extends Component
 	{
 		$controller = NULL;
 		$action = NULL;
+		$item = NULL;
+		$module = NULL;
 
 		if(isset($this->attributes['controller']))
 		{
@@ -21,6 +23,16 @@ class AComponent extends Component
 			$action = $this->attributes['action'];
 		}
 
-		return \URL::fromRoute($controller, $action);
+		if(isset($this->attributes['item']))
+		{
+			$item = $this->fetchValue($this->attributes['item']);
+		}
+
+		if(isset($this->attributes['module']))
+		{
+			$module = $this->attributes['module'];
+		}
+
+		return \URL::fromRoute($controller, $action, $item, $module);
 	}
 }

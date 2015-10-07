@@ -267,4 +267,17 @@ class QuerySet implements Iterator, Countable
 
 		return $this;
 	}
+
+	/**
+	 * Delete
+	 */
+	public function delete($id)
+	{
+		$this->_db_handler->delete(
+			$this->object->parameters(),
+			$id
+		);
+
+		return $this;
+	}
 }

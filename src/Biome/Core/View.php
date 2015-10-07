@@ -6,12 +6,22 @@ use Biome\Core\View\TemplateReader;
 
 class View
 {
+	private $_view_state = NULL;
+
 	protected $_tree = NULL;
 	protected $_variables = array();
 
 	protected $_title = 'Biome';
 
-	public function __construct() {}
+	public function __construct()
+	{
+		$this->_view_state = md5(rand());
+	}
+
+	public function getViewState()
+	{
+		return $this->_view_state;
+	}
 
 	public function __set($variable, $value)
 	{

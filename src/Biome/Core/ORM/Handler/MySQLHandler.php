@@ -101,6 +101,12 @@ class MySQLHandler
 		return $query;
 	}
 
+	protected function generateDelete($database, $table)
+	{
+		$query = 'DELETE FROM `' . $database . '`.`' . $table . '` ';
+		return $query;
+	}
+
 	protected function generateWhere($table, $filters)
 	{
 		if(empty($filters))
@@ -190,8 +196,24 @@ class MySQLHandler
 		return TRUE;
 	}
 
-	public function delete($parameters, $filters)
+	public function delete($parameters, $id)
 	{
+		$database	= $parameters['database'];
+		$table		= $parameters['table'];
 
+		$filters	= array();
+		$filters[]	= array($parameters['primary_key'], '=', $id);
+
+		$query = $this->generateDelete($database, $table);
+		$query .= $this->generateWhere($table, $filters);
+
+		$this->db()->query($query);
+
+		$count = $this->db()->getAffectedRows();
+		if($count > 1)
+		{
+			throw new \Exception('Delete operation operated on ' . $count . ' row(s)! (' . $query . ')');
+		}
+		return TRUE;
 	}
 }

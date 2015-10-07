@@ -17,14 +17,19 @@ class Collection implements Serializable
 		if($collection_name === NULL)
 		{
 			// Retrieve the current collection.
+			$class_name = get_called_class();
 		}
-
-		if(!empty(self::$_collections_set[$collection_name]))
+		else
 		{
-			return self::$_collections_set[$collection_name];
+			$class_name = $collection_name . 'Collection';
 		}
 
-		$class_name = $collection_name . 'Collection';
+		$class_name = strtolower($class_name);
+
+		if(!empty(self::$_collections_set[$class_name]))
+		{
+			return self::$_collections_set[$class_name];
+		}
 
 		/**
 		 * TODO: Replace this dirty code by an autoload.
@@ -59,7 +64,7 @@ class Collection implements Serializable
 
 		$c = new $class_name();
 
-		self::$_collections_set[$collection_name] = $c;
+		self::$_collections_set[$class_name] = $c;
 
 		return $c;
 	}

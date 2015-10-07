@@ -2,7 +2,7 @@
 $field = $this->getField();
 
 $class = 'form-group';
-if($field->hasErrors())
+if($field !== NULL && $field->hasErrors())
 {
 	$class .= ' has-error';
 }
@@ -16,7 +16,7 @@ $name = $this->getName();
 $value = $this->getValue();
 $placeholder = $this->getPlaceholder();
 $label = $this->getLabel();
-$show_error_messages = $this->showErrors();
+$show_error_messages = $this->showErrors() && $field !== NULL;
 
 if(!empty($label))
 {
