@@ -44,7 +44,6 @@
 								<th>Firstname</th>
 								<th>Lastname</th>
 								<th>Mail</th>
-								<th>Password</th>
 								<th></th>
 								<th></th>
 							</tr>
@@ -55,7 +54,6 @@
 								<td><biome:variable value="#{u.firstname}"/></td>
 								<td><biome:variable value="#{u.lastname}"/></td>
 								<td><biome:variable value="#{u.mail}"/></td>
-								<td><biome:variable value="#{u.password}"/></td>
 								<td><biome:a class="btn btn-sm btn-default" controller="user" action="edit" item="#{u.user_id}"><span>Edit</span></biome:a></td>
 								<td><biome:a class="btn btn-sm btn-danger" controller="user" action="delete" item="#{u.user_id}"><span>Delete</span></biome:a></td>
 							</tr>

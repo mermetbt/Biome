@@ -2,6 +2,8 @@
 
 namespace Biome\Core\ORM;
 
+use Biome\Core\ORM\Converter\ConverterInterface;
+
 abstract class AbstractField
 {
 	protected $name;
@@ -10,6 +12,8 @@ abstract class AbstractField
 	protected $required = FALSE;
 
 	protected $_error_list = array();
+
+	protected $_apply_converter = array();
 
 	public static function create()
 	{
@@ -31,16 +35,39 @@ abstract class AbstractField
 		return TRUE;
 	}
 
+	/**
+	 * Formatter
+	 */
 	public function applyGet($value)
 	{
+		foreach($this->_apply_converter AS $converter)
+		{
+			$value = $converter->get($value);
+		}
+
 		return $value;
 	}
 
 	public function applySet($value)
 	{
+		foreach($this->_apply_converter AS $converter)
+		{
+			$value = $converter->set($value);
+		}
+
 		return $value;
 	}
 
+	public function setConverter(ConverterInterface $converter)
+	{
+		$class_name = get_class($converter);
+		$this->_apply_converter[$class_name] = $converter;
+		return $this;
+	}
+
+	/**
+	 * Errors handling (validation).
+	 */
 	public function setError($type, $message)
 	{
 		$this->_error_list[$type] = $message;

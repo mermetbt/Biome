@@ -115,6 +115,35 @@ abstract class Models implements ObjectInterface
 		}
 	}
 
+	public function getRawValue($attribute)
+	{
+		$f = $this->getField($attribute);
+
+		if(isset($this->_values['new'][$attribute]))
+		{
+			return $this->_values['new'][$attribute];
+		}
+
+		if(isset($this->_values['old'][$attribute]))
+		{
+			return $this->_values['old'][$attribute];
+		}
+
+		// Fetch attribute if object has an ID.
+		$pk = $this->parameters()['primary_key'];
+		if(isset($this->$pk))
+		{
+			$this->_query_set->fields($attribute)->fetch();
+
+			return $this->getRawValue($attribute);
+		}
+		else
+		{
+			// Otherwise return the default value.
+			return $f->getDefaultValue();
+		}
+	}
+
 	/**
 	 * Return the identifier of the current object.
 	 */
@@ -166,7 +195,7 @@ abstract class Models implements ObjectInterface
 			$f = $obj->getField($f_name);
 			if($f->isReady())
 			{
-				$this->_values['old'][$f_name] = $obj->$f_name;
+				$this->_values['old'][$f_name] = $obj->getRawValue($f_name);
 			}
 		}
 		return $this;
@@ -189,7 +218,7 @@ abstract class Models implements ObjectInterface
 		{
 			foreach($fields AS $f)
 			{
-				$filters[] = array($f, '=', $this->$f);
+				$filters[] = array($f, '=', $this->getRawValue($f));
 			}
 		}
 		else
@@ -212,7 +241,7 @@ abstract class Models implements ObjectInterface
 					continue;
 				}
 
-				$filters[] = array($f, '=', $this->$f);
+				$filters[] = array($f, '=', $this->getRawValue($f));
 			}
 		}
 
@@ -245,7 +274,7 @@ abstract class Models implements ObjectInterface
 			// Set the value from the database
 			if($f->isReady())
 			{
-				$this->_values['old'][$f_name] = $obj->$f_name;
+				$this->_values['old'][$f_name] = $obj->getRawValue($f_name);
 			}
 		}
 
@@ -325,7 +354,7 @@ abstract class Models implements ObjectInterface
 				continue;
 			}
 
-			$value = $this->$field_name;
+			$value = $this->getRawValue($field_name);
 			if($field->isRequired())
 			{
 				if(empty($value))
@@ -388,5 +417,26 @@ abstract class Models implements ObjectInterface
 	public static function filter($where)
 	{
 		return self::all()->filter($where);
+	}
+
+	/**
+	 *
+	 */
+	public function __toString()
+	{
+		$str = 'Model ' . get_class($this);
+
+		$str .= ' [<br/>';
+
+		foreach($this->_structure AS $f_name => $f)
+		{
+			$old = isset($this->_values['old'][$f_name]) ? $this->_values['old'][$f_name] : '';
+			$new = isset($this->_values['new'][$f_name]) ? $this->_values['new'][$f_name] : '';
+
+			$str .= $f_name . " => " . $old . " - " . $new . '<br/>';
+		}
+		$str .= ']';
+
+		return $str;
 	}
 }

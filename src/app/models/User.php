@@ -7,6 +7,8 @@ use Biome\Core\ORM\Field\TextField;
 use Biome\Core\ORM\Field\EmailField;
 use Biome\Core\ORM\Field\PasswordField;
 
+use Biome\Core\ORM\Converter\PasswordConverter;
+
 class User extends Models
 {
 	public function parameters()
@@ -35,6 +37,7 @@ class User extends Models
 
 		$this->password		= PasswordField::create(32)
 								->setLabel('Password')
-								->setRequired(TRUE);
+								->setRequired(TRUE)
+								->setConverter(new PasswordConverter());
 	}
 }

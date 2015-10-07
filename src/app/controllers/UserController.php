@@ -73,27 +73,6 @@ class UserController extends BaseController
 		return $this->response()->redirect();
 	}
 
-	public function postUpdate(UsersCollection $c)
-	{
-		if($c->password != $c->password_confirm)
-		{
-			$this->flash()->error('Password doesn\'t match!');
-			return $this->response()->redirect();
-		}
-
-		$c->user->password = $c->password;
-		if($c->user->save())
-		{
-			$this->flash()->success('Password updated!');
-		}
-		else
-		{
-			$this->flash()->error('Unable to update the user!', join(', ', $c->user->getErrors()));
-		}
-
-		return $this->response()->redirect();
-	}
-
 	public function getIndex() { }
 
 	public function getCreate() { }
