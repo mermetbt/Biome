@@ -50,7 +50,7 @@ class SQLModelInspector implements ModelInspectorInterface
 		switch($field->getType())
 		{
 			case 'primary':
-				$type = 'INT(10) unsigned';
+				$type = 'INT(10) unsigned PRIMARY KEY';
 				$default = 'NOT NULL AUTO_INCREMENT';
 				break;
 			case 'text':
@@ -77,7 +77,7 @@ class SQLModelInspector implements ModelInspectorInterface
 		$query .= join(',' . PHP_EOL, $this->fields) . PHP_EOL;
 		$query .= ');' . PHP_EOL;
 
-		$query .= 'ALTER TABLE `' . $this->table . '` ADD PRIMARY KEY (' . join(', ', $this->primary_keys) . ');' . PHP_EOL;
+		//$query .= 'ALTER TABLE `' . $this->table . '` ADD PRIMARY KEY (' . join(', ', $this->primary_keys) . ');' . PHP_EOL;
 
 		return $query;
 	}

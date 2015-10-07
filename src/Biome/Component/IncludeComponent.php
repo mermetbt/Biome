@@ -12,6 +12,7 @@ class IncludeComponent extends Component
 		$filename = $this->attributes['src'];
 
 		$dirs = \Biome\Biome::getDirs('views');
+		$template_file = '';
 		foreach($dirs AS $dir)
 		{
 			$path = $dir . '/' . $filename;
@@ -19,14 +20,15 @@ class IncludeComponent extends Component
 			{
 				continue;
 			}
+			$template_file = $path;
 		}
 
-		if(!file_exists($path))
+		if(!file_exists($template_file))
 		{
 			throw new \Exception('Unable to load template file: ' . $filename);
 		}
 
-		$nodes = TemplateReader::loadFilename($path);
+		$nodes = TemplateReader::loadFilename($template_file);
 
 // 		print_r($nodes);
 //

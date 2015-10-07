@@ -43,6 +43,7 @@ class View
 		 * Opening template file
 		 */
 		$dirs = \Biome\Biome::getDirs('views');
+		$template_file = '';
 		foreach($dirs AS $dir)
 		{
 			$path = $dir . '/' . $controller .'.xml';
@@ -50,14 +51,15 @@ class View
 			{
 				continue;
 			}
+			$template_file = $path;
 		}
 
-		if(!file_exists($path))
+		if(!file_exists($template_file))
 		{
 			throw new \Exception('Missing template file for ' . $controller . '->' . $action);
 		}
 
-		$tree = TemplateReader::loadFilename($path);
+		$tree = TemplateReader::loadFilename($template_file);
 
 		View\Component::$view = $this;
 
