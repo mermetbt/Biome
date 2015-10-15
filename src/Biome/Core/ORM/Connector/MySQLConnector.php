@@ -37,10 +37,24 @@ class MySQLConnector
 			throw new \Exception('Unable to connect to the database!');
 		}
 
+		if(isset($this->_parameters['database']))
+		{
+			$this->_instance->select_db($this->_parameters['database']);
+		}
+
 		$this->_instance->autocommit(FALSE);
 		$this->_instance->set_charset('utf8');
 
 		return TRUE;
+	}
+
+	public function getDatabase()
+	{
+		if(isset($this->_parameters['database']))
+		{
+			return $this->_parameters['database'];
+		}
+		return NULL;
 	}
 
 	public function isConnected()

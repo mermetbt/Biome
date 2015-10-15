@@ -152,7 +152,7 @@ class MySQLHandler
 
 	public function generateQuery($parameters, $fields, $filters, $offset, $limit)
 	{
-		$database	= $parameters['database'];
+		$database	= !empty($parameters['database']) ? $parameters['database'] : $this->db()->getDatabase();
 		$table		= $parameters['table'];
 
 		$query = $this->generateSelect($database, $table, $fields);
@@ -164,7 +164,7 @@ class MySQLHandler
 
 	public function create($parameters, $data)
 	{
-		$database	= $parameters['database'];
+		$database	= !empty($parameters['database']) ? $parameters['database'] : $this->db()->getDatabase();
 		$table		= $parameters['table'];
 
 		$query = $this->generateInsert($database, $table, $data);
@@ -177,7 +177,7 @@ class MySQLHandler
 
 	public function update($parameters, $id, $data)
 	{
-		$database	= $parameters['database'];
+		$database	= !empty($parameters['database']) ? $parameters['database'] : $this->db()->getDatabase();
 		$table		= $parameters['table'];
 
 		$filters	= array();
@@ -198,7 +198,7 @@ class MySQLHandler
 
 	public function delete($parameters, $id)
 	{
-		$database	= $parameters['database'];
+		$database	= !empty($parameters['database']) ? $parameters['database'] : $this->db()->getDatabase();
 		$table		= $parameters['table'];
 
 		$filters	= array();

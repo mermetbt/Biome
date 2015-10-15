@@ -11,6 +11,7 @@
 					</a>
 					<ul class="dropdown-menu">
 						<li><biome:a controller="user"><span>Users</span></biome:a></li>
+						<li><biome:a controller="role"><span>Roles</span></biome:a></li>
 					</ul>
 				</li>
 			</biome:condition>

@@ -14,7 +14,6 @@ class User extends Models
 	public function parameters()
 	{
 		return array(
-					'database'		=> 'biome',
 					'table'			=> 'users',
 					'primary_key'	=> 'user_id',
 		);

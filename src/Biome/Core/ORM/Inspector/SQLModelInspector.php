@@ -14,24 +14,17 @@ class SQLModelInspector implements ModelInspectorInterface
 
 	public function handleParameters(array $parameters)
 	{
-		$this->database	= $parameters['database'];
+		$this->database	= !empty($parameters['database']) ? $parameters['database'] : NULL;
 		$this->table	= $parameters['table'];
 
-		if(is_array($parameters['primary_key']))
-		{
-			$this->primary_keys	= $parameters['primary_key'];
-		}
-		else
-		{
-			$this->primary_keys	= array($parameters['primary_key']);
-		}
+		$this->primary_keys	=  is_array($parameters['primary_key']) ? $parameters['primary_key'] : array($parameters['primary_key']);
 	}
 
 	public function handleField(AbstractField $field)
 	{
-		$name = $field->getName();
-		$defaultValue = $field->getDefaultValue();
-		$required = $field->isRequired();
+		$name			= $field->getName();
+		$defaultValue	= $field->getDefaultValue();
+		$required		= $field->isRequired();
 
 		$default = '';
 		if($required)
@@ -50,7 +43,7 @@ class SQLModelInspector implements ModelInspectorInterface
 		switch($field->getType())
 		{
 			case 'primary':
-				$type = 'INT(10) unsigned PRIMARY KEY';
+				$type = 'INT(10) unsigned';
 				$default = 'NOT NULL AUTO_INCREMENT';
 				break;
 			case 'text':
@@ -64,20 +57,34 @@ class SQLModelInspector implements ModelInspectorInterface
 			case 'float':
 				$type = 'DOUBLE';
 				break;
+			case 'many2one':
+				$type = 'INT(10) unsigned';
+				break;
 			default:
-				$type = '';
+				return FALSE;
+		}
+
+		if(in_array($name, $this->primary_keys))
+		{
+			$default = 'NOT NULL';
 		}
 
 		$this->fields[$name] = '`' . $name . '` ' . $type . ' ' . $default;
+
+		return TRUE;
 	}
 
 	public function generate()
 	{
 		$query = 'CREATE TABLE `' . $this->table . '` (' . PHP_EOL;
-		$query .= join(',' . PHP_EOL, $this->fields) . PHP_EOL;
-		$query .= ');' . PHP_EOL;
+		$query .= join(',' . PHP_EOL, $this->fields);
 
-		//$query .= 'ALTER TABLE `' . $this->table . '` ADD PRIMARY KEY (' . join(', ', $this->primary_keys) . ');' . PHP_EOL;
+		if(!empty($this->primary_keys))
+		{
+			$query .= ',' . PHP_EOL . 'PRIMARY KEY(`' . join('`, `', $this->primary_keys) . '`)';
+		}
+		$query .=  PHP_EOL;
+		$query .= ');' . PHP_EOL;
 
 		return $query;
 	}
