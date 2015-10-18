@@ -4,8 +4,10 @@ use Biome\Core\ORM\Models;
 
 use Biome\Core\ORM\Field\PrimaryField;
 use Biome\Core\ORM\Field\TextField;
+use Biome\Core\ORM\Field\BooleanField;
 use Biome\Core\ORM\Field\EmailField;
 use Biome\Core\ORM\Field\PasswordField;
+use Biome\Core\ORM\Field\Many2ManyField;
 
 use Biome\Core\ORM\Converter\PasswordConverter;
 
@@ -38,5 +40,11 @@ class User extends Models
 								->setLabel('Password')
 								->setRequired(TRUE)
 								->setConverter(new PasswordConverter());
+
+		$this->user_visible	= BooleanField::create()
+								->setLabel('Visible');
+
+		$this->roles		= Many2ManyField::create('Role', 'role_id', 'UserRole', 'user_id')
+								->setLabel('Roles');
 	}
 }

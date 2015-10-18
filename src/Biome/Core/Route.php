@@ -259,7 +259,7 @@ class Route extends RouteCollection
 		 */
 		{
 			$object_name = strtolower($type);
-			$value = ObjectLoader::load($object_name);
+			$value = ObjectLoader::get($object_name);
 
 			// Check if data are sent
 			foreach($request->request->keys() AS $key)

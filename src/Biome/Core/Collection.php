@@ -100,7 +100,7 @@ class Collection implements Serializable
 		{
 			if(is_string($this->map[$attribute_name]))
 			{
-				$this->_instances[$attribute_name] = ObjectLoader::load($this->map[$attribute_name]);
+				$this->_instances[$attribute_name] = ObjectLoader::get($this->map[$attribute_name]);
 			}
 			else
 			{

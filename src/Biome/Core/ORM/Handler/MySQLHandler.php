@@ -3,6 +3,7 @@
 namespace Biome\Core\ORM\Handler;
 
 use Biome\Core\ORM\QuerySet;
+use Biome\Core\ORM\LazyFetcher;
 use Biome\Biome;
 
 class MySQLHandler
@@ -27,9 +28,13 @@ class MySQLHandler
 		{
 			$o = $objectMapper($row);
 			$id = $o->getId();
-			if($id == NULL)
+			if($id === NULL)
 			{
 				throw new \Exception('No ID for object : ' . print_r($row, true));
+			}
+			if(is_array($id))
+			{
+				$id = join(',', $id);
 			}
 			$data[$id] = $o;
 		}
@@ -107,6 +112,24 @@ class MySQLHandler
 		return $query;
 	}
 
+	protected function handleValue($value)
+	{
+		if($value instanceof LazyFetcher)
+		{
+			$values = $value->fetch();
+			if(is_array($values))
+			{
+				foreach($values AS $i => $v)
+				{
+					$values[$i] = $this->db()->real_escape_string($v);
+				}
+			}
+			return $values;
+		}
+
+		return $this->db()->real_escape_string($value);
+	}
+
 	protected function generateWhere($table, $filters)
 	{
 		if(empty($filters))
@@ -117,17 +140,35 @@ class MySQLHandler
 		/**
 		 * Restrictions.
 		 */
-		$where = array();
+		$wheres = array();
 		foreach($filters AS $filter)
 		{
 			$column = $this->db()->real_escape_string($filter[0]);
 			$operator = $this->db()->real_escape_string($filter[1]);
-			$value = $this->db()->real_escape_string($filter[2]);
 
-			$where[] = '`' . $table . '`.`'. $column . '`' . $operator . '"' . $value . '"';
+			$value = $this->handleValue($filter[2]);
+
+			$where = '`' . $table . '`.`'. $column . '` ' . $operator . ' ';
+			if(is_array($value))
+			{
+				if(empty($value))
+				{
+					$where .= '(NULL)';
+				}
+				else
+				{
+					$where .= '(' . join(', ', $value) . ')';
+				}
+			}
+			else
+			{
+				$where .= '"' . $value . '"';
+			}
+
+			$wheres[] = $where;
 		}
 
-		return ' WHERE ' . join(' AND ', $where);
+		return ' WHERE ' . join(' AND ', $wheres);
 	}
 
 	protected function generateLimit($offset = NULL, $limit = NULL)

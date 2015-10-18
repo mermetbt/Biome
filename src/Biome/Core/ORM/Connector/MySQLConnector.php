@@ -9,6 +9,9 @@ class MySQLConnector
 	protected $_instance	= NULL;
 	protected $_parameters	= array();
 
+	protected $_logger		= FALSE;
+	protected $_queries_log	= array();
+
 	private function __construct() { }
 
 	public static function getInstance($name = 'default')
@@ -46,6 +49,17 @@ class MySQLConnector
 		$this->_instance->set_charset('utf8');
 
 		return TRUE;
+	}
+
+	public function setQueryLogger($enable = TRUE)
+	{
+		$this->_logger = $enable === TRUE;
+		return $this->_logger;
+	}
+
+	public function getQueriesLog()
+	{
+		return $this->_queries_log;
 	}
 
 	public function getDatabase()
@@ -100,6 +114,11 @@ class MySQLConnector
 		if(!$this->isConnected())
 		{
 			$this->connect();
+		}
+
+		if($this->_logger)
+		{
+			$this->_queries_log[] = $query;
 		}
 
 		$result = $this->_instance->query($query);

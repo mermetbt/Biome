@@ -29,9 +29,16 @@ class QuerySet implements Iterator, Countable
 	public function __construct($object_name)
 	{
 		$this->object_name	= $object_name;
-		$this->object		= ObjectLoader::load($object_name);
-
 		$this->_db_handler = new Handler\MySQLHandler($this);
+	}
+
+	protected function object()
+	{
+		if($this->object === NULL)
+		{
+			$this->object		= ObjectLoader::get($this->object_name, array(), $this);
+		}
+		return $this->object;
 	}
 
 	/**
@@ -50,7 +57,7 @@ class QuerySet implements Iterator, Countable
 		$this->fields = array();
 		foreach($fields AS $field_name)
 		{
-			if($this->object->hasField($field_name))
+			if($this->object()->hasField($field_name))
 			{
 				$this->fields[] = $field_name;
 			}
@@ -107,7 +114,7 @@ class QuerySet implements Iterator, Countable
 			foreach($filters_group AS $filter)
 			{
 				$field_name = $filter[0];
-				if(!$this->object->hasField($field_name))
+				if(!$this->object()->hasField($field_name))
 				{
 					throw new \Exception('Filtering on an unexisting field ('.$field_name.') for object ' . $this->object_name . '!');
 				}
@@ -132,6 +139,16 @@ class QuerySet implements Iterator, Countable
 	{
 		$this->offset	= $offset;
 		$this->limit	= $limit;
+		return $this;
+	}
+
+	/**
+	 * QuerySet Operations
+	 */
+	public function associate($local_attribute_name, QuerySet $query_set, $field_name)
+	{
+		$l = new LazyFetcher($query_set, $field_name);
+		$this->filter(array(array($local_attribute_name, 'in', $l)));
 		return $this;
 	}
 
@@ -205,13 +222,28 @@ class QuerySet implements Iterator, Countable
 		$query_set = $this;
 
 		$this->_data_set = $this->_db_handler->query(
-			$this->object->parameters(),
+			$this->object()->parameters(),
 			$this->fields,
 			$this->filters,
 			$this->offset,
 			$this->limit,
-			function($row) use($object, $query_set) {
-				$o = new $object($row, $query_set);
+			function($row) use($query_set) {
+				$object_name	= $query_set->object_name;
+				$object			= $query_set->object();
+
+				$fields = $object->getFieldsName();
+				foreach($fields AS $field_name)
+				{
+					$field = $object->getField($field_name);
+
+					if($field instanceof QuerySetFieldInterface)
+					{
+						$row[$field_name]	= $field->generateQuerySet($query_set, $field_name);
+					}
+				}
+
+				/* Instanciate object. */
+				$o = ObjectLoader::get($object_name, $row, $query_set);
 				return $o;
 		});
 
@@ -223,23 +255,8 @@ class QuerySet implements Iterator, Countable
 	 */
 	public function get($id)
 	{
-		$filters = array();
-		$filters[] = array($this->object->parameters()['primary_key'], '=', $id);
-		$object = $this->object_name;
-		$query_set = $this;
-
-		$obj = $this->_db_handler->query(
-			$this->object->parameters(),
-			$this->fields,
-			$filters,
-			$this->offset,
-			$this->limit,
-			function($row) use($object, $query_set) {
-				$o = new $object($row, $query_set);
-				return $o;
-		});
-
-		return reset($obj);
+		$this->filter(array(array($this->object()->parameters()['primary_key'], '=', $id)))->fetch();
+		return reset($this->_data_set);
 	}
 
 	/**
@@ -248,7 +265,7 @@ class QuerySet implements Iterator, Countable
 	public function create($data, &$id)
 	{
 		$id = $this->_db_handler->create(
-			$this->object->parameters(),
+			$this->object()->parameters(),
 			$data
 		);
 		return $this;
@@ -260,7 +277,7 @@ class QuerySet implements Iterator, Countable
 	public function update($id, $data)
 	{
 		$this->_db_handler->update(
-			$this->object->parameters(),
+			$this->object()->parameters(),
 			$id,
 			$data
 		);
@@ -274,7 +291,7 @@ class QuerySet implements Iterator, Countable
 	public function delete($id)
 	{
 		$this->_db_handler->delete(
-			$this->object->parameters(),
+			$this->object()->parameters(),
 			$id
 		);
 

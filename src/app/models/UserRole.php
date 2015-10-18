@@ -17,10 +17,10 @@ class UserRole extends Models
 
 	public function fields()
 	{
-		$this->role_id		= Many2OneField::create('Role')
+		$this->role_id		= PrimaryField::create()
 								->setLabel('Role');
 
-		$this->user_id		= Many2OneField::create('User')
+		$this->user_id		= PrimaryField::create()
 								->setLabel('User');
 	}
 }

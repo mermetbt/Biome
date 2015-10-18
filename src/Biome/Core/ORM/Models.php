@@ -16,14 +16,20 @@ abstract class Models implements ObjectInterface
 	{
 		$this->_query_set = $qs;
 
+		/**
+		 * Fields.
+		 */
 		$this->fields();
 
+		/**
+		 * Set the values.
+		 */
 		foreach($values AS $attribute => $value)
 		{
 			if(!isset($this->_structure[$attribute]))
 			{
-				continue;
-				//throw new \Exception('Undefined field ' . $attribute . ' in object ' . get_class($this) . '!');
+				//continue;
+				throw new \Exception('Undefined field ' . $attribute . ' in object ' . get_class($this) . '!');
 			}
 			$this->_values['old'][$attribute] = $value;
 		}
@@ -70,6 +76,11 @@ abstract class Models implements ObjectInterface
 			throw new \Exception('hasField must have a string in parameter! Found: ' . print_r($field_name, true));
 		}
 		return isset($this->_structure[$field_name]);
+	}
+
+	public function getFieldsName()
+	{
+		return array_keys($this->_structure);
 	}
 
 	/**
@@ -148,21 +159,57 @@ abstract class Models implements ObjectInterface
 	/**
 	 * Return the identifier of the current object.
 	 */
-	public function getId()
+	public function getId($field = NULL)
 	{
-		$pk = $this->parameters()['primary_key'];
-		$id = $this->$pk;
-		if(!empty($id))
+		$pks = $this->parameters()['primary_key'];
+		if(is_array($pks))
 		{
-			return $id;
+			if($field != NULL)
+			{
+				$id = $this->$field;
+				if(empty($id))
+				{
+					return NULL;
+				}
+				return $id;
+			}
+
+			$id = array();
+			foreach($pks AS $pk)
+			{
+				$value = $this->$pk;
+				if(!empty($value))
+				{
+					$id[] = $value;
+				}
+			}
 		}
-		return NULL;
+		else
+		{
+			$id = $this->$pks;
+		}
+
+		if(empty($id))
+		{
+			return NULL;
+		}
+
+		return $id;
 	}
 
 	private function setId($id)
 	{
-		$pk = $this->parameters()['primary_key'];
-		$this->_values['old'][$pk] = $id;
+		$pks = $this->parameters()['primary_key'];
+		if(is_array($pks))
+		{
+			foreach($pks AS $index => $pk)
+			{
+				$this->_values['old'][$pk] = $id[$index];
+			}
+			return TRUE;
+		}
+
+		$this->_values['old'][$pks] = $id;
 		return TRUE;
 	}
 

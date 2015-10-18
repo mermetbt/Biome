@@ -39,7 +39,7 @@ class DatabaseCommand extends AbstractCommand
 		 */
 		foreach($objects AS $object_name)
 		{
-			$object = ObjectLoader::load($object_name);
+			$object = ObjectLoader::get($object_name);
 
 			$sql_inspector = new SQLModelInspector();
 			$object->inspectModel($sql_inspector);

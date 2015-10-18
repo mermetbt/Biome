@@ -139,7 +139,7 @@ trait ContextManager
 		}
 
 		/* No item found, check objects. */
-		$result = ObjectLoader::load($raw[0]);
+		$result = ObjectLoader::get($raw[0]);
 		if($result !== NULL)
 		{
 			return $result;
