@@ -47,10 +47,16 @@ class Controller
 			return $this->response();
 		}
 
-		if($type == 'GET')
+		$rendering = ($type == 'GET') ? TRUE : FALSE;
+
+		$this->view = \Biome\Biome::getService('view');
+		try
 		{
-			$this->view = \Biome\Biome::getService('view');
 			$this->view->load($controller_name, $action_name);
+		}
+		catch(\Biome\Core\View\Exception\TemplateNotFoundException $e)
+		{
+			$rendering = FALSE;
 		}
 
 		$result = call_user_func_array(array($this, $method_name), $method_params);
@@ -60,7 +66,7 @@ class Controller
 			$this->response = $result;
 		}
 
-		if($type == 'GET' && !$this->response->isRedirection())
+		if($rendering && !$this->response->isRedirection())
 		{
 			// Render view
 			$content = $this->view->render();

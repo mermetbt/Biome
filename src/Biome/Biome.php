@@ -26,9 +26,12 @@ class Biome
 			return Request::createFromGlobals();
 		});
 
-		Biome::registerService('view', function() {
-			return new \Biome\Core\View();
-		});
+		if(!Biome::hasService('view'))
+		{
+			Biome::registerService('view', function() {
+				return new \Biome\Core\View();
+			});
+		}
 
 		/* Starting. */
 		$request = Biome::getService('request');
@@ -144,6 +147,11 @@ class Biome
 		}
 		self::$_services[$service_name]['function'] = $callable;
 		return TRUE;
+	}
+
+	public static function hasService($service_name)
+	{
+		return isset(self::$_services[$service_name]);
 	}
 
 	public static function getService($service_name)

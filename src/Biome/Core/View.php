@@ -56,7 +56,7 @@ class View
 
 		if(!file_exists($template_file))
 		{
-			throw new \Exception('Missing template file for ' . $controller . '->' . $action);
+			throw new \Biome\Core\View\Exception\TemplateNotFoundException('Missing template file for ' . $controller . '->' . $action);
 		}
 
 		$tree = TemplateReader::loadFilename($template_file);

@@ -3,6 +3,7 @@
 namespace Biome\Core\ORM\Inspector;
 
 use Biome\Core\ORM\AbstractField;
+use Biome\Core\ORM\RawSQL;
 
 class SQLModelInspector implements ModelInspectorInterface
 {
@@ -32,12 +33,26 @@ class SQLModelInspector implements ModelInspectorInterface
 			$default = 'NOT NULL';
 			if($defaultValue)
 			{
-				$default .= ' DEFAULT "' . $defaultValue . '"';
+				if($defaultValue instanceof RawSQL)
+				{
+					$default .= ' DEFAULT ' . $defaultValue->get() . '';
+				}
+				else
+				{
+					$default .= ' DEFAULT "' . $defaultValue . '"';
+				}
 			}
 		}
 		else
 		{
-			$default = 'DEFAULT NULL';
+			if($defaultValue instanceof RawSQL)
+			{
+				$default .= $defaultValue->get();
+			}
+			else
+			{
+				$default = 'DEFAULT NULL';
+			}
 		}
 
 		switch($field->getType())
@@ -50,6 +65,15 @@ class SQLModelInspector implements ModelInspectorInterface
 			case 'password':
 			case 'email':
 				$type = 'VARCHAR(' . $field->getSize() . ')';
+				break;
+			case 'datetime':
+				$type = 'TIMESTAMP';
+				break;
+			case 'textarea':
+				$type = 'TEXT';
+				break;
+			case 'boolean':
+				$type = 'TINYINT(1)';
 				break;
 			case 'int':
 				$type = 'INT';

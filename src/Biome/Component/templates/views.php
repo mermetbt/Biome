@@ -8,6 +8,21 @@
     <meta name="author" content="">
 	<title><?php echo $view->getTitle() ?></title>
 	<link href="<?php echo URL::getAsset('packages/bootstrap/dist/css/bootstrap.min.css') ?>" rel="stylesheet">
+	<link href="<?php echo URL::getAsset('packages/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet">
+	<link href="<?php echo URL::getAsset('css/style.css') ?>" rel="stylesheet">
+	<?php
+		$css_list = $this->getCss();
+		foreach($css_list AS $css_file)
+		{
+			?><link href="<?php echo URL::getAsset('css/' . $css_file) ?>" rel="stylesheet"><?php
+		}
+	?>
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 	<style>
 	body {
 		padding-top: 50px;
@@ -15,7 +30,9 @@
 	</style>
 </head>
 <body>
-	<?php echo $this->getContent(); ?>
+	<div id="wrapper">
+		<?php echo $this->getContent(); ?>
+	</div>
 	<script src="<?php echo URL::getAsset('packages/jquery/dist/jquery.min.js') ?>"></script>
 	<script src="<?php echo URL::getAsset('packages/bootstrap/dist/js/bootstrap.min.js') ?>"></script>
 </body>

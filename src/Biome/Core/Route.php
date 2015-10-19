@@ -32,6 +32,7 @@ class Route extends RouteCollection
 		 * TODO: Caching
 		 */
 		$controllers_dirs = \Biome\Biome::getDirs('controllers');
+		$controllers_dirs = array_reverse($controllers_dirs);
 		$routes = array();
 		foreach($controllers_dirs AS $dir)
 		{
@@ -49,6 +50,11 @@ class Route extends RouteCollection
 				}
 
 				$controller_name = substr($file, 0, -14);
+				// Skip if already defined!
+				if(isset($routes[$controller_name]))
+				{
+					continue;
+				}
 				include_once($dir . '/' . $file);
 				$class_name = $controller_name . 'Controller';
 				$routes[$controller_name] = $this->getRoutesFromClassName($class_name);

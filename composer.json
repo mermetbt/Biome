@@ -1,32 +1,33 @@
 {
-    "name": "mermetbt/biome",
-    "description": "Biome Framework",
-    "type": "library",
-    "require": {
-        "php": ">=5.5.0",
-        "psr/log": "^1.0@dev",
-        "koala-framework/composer-extra-assets": "^1.1@dev",
-        "league/route": "^1.0@dev",
-        "filp/whoops": "1.1.7",
-        "sabre/xml": "1.2.0"
-    },
-    "license": "GPL-2.0",
-    "authors": [
-        {
-            "name": "Timothé Mermet-Buffet",
-            "email": "mermetbt@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "autoload": {
-        "psr-0": {
-            "Biome": "src/"
-        }
-    },
-    "extra": {
-        "require-bower": {
-            "jquery": "*",
-	    "bootstrap": "*"
-        }
-    }
+	"name": "mermetbt/biome",
+	"description": "Biome Framework",
+	"type": "library",
+	"require": {
+		"php": ">=5.5.0",
+		"psr/log": "^1.0@dev",
+		"koala-framework/composer-extra-assets": "^1.1@dev",
+		"league/route": "^1.0@dev",
+		"filp/whoops": "1.1.7",
+		"sabre/xml": "1.2.0"
+	},
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Timothé Mermet-Buffet",
+			"email": "mermetbt@gmail.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"autoload": {
+		"psr-0": {
+			"Biome": "src/"
+		}
+	},
+	"extra": {
+		"require-bower": {
+			"jquery": "*",
+			"bootstrap": "*",
+			"font-awesome": "*",
+		}
+	}
 }

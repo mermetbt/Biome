@@ -42,7 +42,9 @@ class User extends Models
 								->setConverter(new PasswordConverter());
 
 		$this->user_visible	= BooleanField::create()
-								->setLabel('Visible');
+								->setLabel('Visible')
+								->setRequired(TRUE)
+								->setDefaultValue(TRUE);
 
 		$this->roles		= Many2ManyField::create('Role', 'role_id', 'UserRole', 'user_id')
 								->setLabel('Roles');

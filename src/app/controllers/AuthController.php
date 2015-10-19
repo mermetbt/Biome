@@ -10,6 +10,11 @@ class AuthController extends Controller
 		return $this->response()->redirect();
 	}
 
+	public function getSignin()
+	{
+		return $this->getLogin();
+	}
+
 	public function getSignup()
 	{
 		return $this->response()->redirect();
@@ -19,6 +24,7 @@ class AuthController extends Controller
 	{
 		if(!$c->user->validate('mail', 'password'))
 		{
+			$this->flash()->error('Invalid Mail or password!');
 			return $this->response()->redirect();
 		}
 
@@ -29,6 +35,11 @@ class AuthController extends Controller
 		}
 
 		return $this->response()->redirect();
+	}
+
+	public function postSignin(AuthCollection $c)
+	{
+		$this->postLogin($c);
 	}
 
 	public function postSignup(User $user)
