@@ -234,6 +234,16 @@ abstract class Models implements ObjectInterface
 
 		$obj = self::all()->get($id);
 
+		if($obj === FALSE)
+		{
+			throw new \Exception('Object not found! id=' . $id);
+		}
+
+		if(!$obj instanceof Models)
+		{
+			throw new \Exception('Internal Error: The QuerySet doesn\'t return an object of instance Models! ' . print_r($obj, true));
+		}
+
 		// Reset object.
 		unset($this->_values['new']);
 		unset($this->_values['old']);

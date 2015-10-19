@@ -23,7 +23,8 @@ function generateMenu(array $menu_list)
 		}
 		else
 		{
-			echo '<a href="javascript:;" data-toggle="collapse" data-target="#demo">';
+			$target = uniqid();
+			echo '<a href="javascript:;" data-toggle="collapse" data-target="#', $target, '">';
 			if(!empty($icon))
 			{
 				echo '<i class="', $icon, '"></i>';
@@ -31,7 +32,7 @@ function generateMenu(array $menu_list)
 
 			echo ' ', $title, '<i class="fa fa-fw fa-caret-down"></i></a>';
 			echo '</a>';
-			echo '<ul id="demo" class="collapse">';
+			echo '<ul id="', $target, '" class="collapse">';
 			generateMenu($submenu);
 			echo '</ul>';
 		}

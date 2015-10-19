@@ -8,7 +8,9 @@
     <meta name="author" content="">
 	<title><?php echo $view->getTitle() ?></title>
 	<link href="<?php echo URL::getAsset('packages/bootstrap/dist/css/bootstrap.min.css') ?>" rel="stylesheet">
-	<link href="<?php echo URL::getAsset('packages/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet">
+	<link href="<?php echo URL::getAsset('packages/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css') ?>" rel="stylesheet">
+	<link href="<?php echo URL::getAsset('packages/datatables-responsive/css/dataTables.responsive.css') ?>" rel="stylesheet">
+
 	<link href="<?php echo URL::getAsset('css/style.css') ?>" rel="stylesheet">
 	<?php
 		$css_list = $this->getCss();
@@ -23,11 +25,6 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	<style>
-	body {
-		padding-top: 50px;
-	}
-	</style>
 </head>
 <body>
 	<div id="wrapper">
@@ -35,5 +32,15 @@
 	</div>
 	<script src="<?php echo URL::getAsset('packages/jquery/dist/jquery.min.js') ?>"></script>
 	<script src="<?php echo URL::getAsset('packages/bootstrap/dist/js/bootstrap.min.js') ?>"></script>
+	<script src="<?php echo URL::getAsset('packages/datatables/media/js/jquery.dataTables.min.js') ?>"></script>
+	<script src="<?php echo URL::getAsset('packages/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js') ?>"></script>
+
+    <script>
+    $(document).ready(function() {
+        $('.biome-datatable').DataTable({
+                responsive: true
+        });
+    });
+    </script>
 </body>
 </html>

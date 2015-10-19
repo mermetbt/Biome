@@ -87,7 +87,16 @@ class Route extends RouteCollection
 						$method_params = array();
 						foreach($meta['parameters'] AS $param)
 						{
-							$method_params[] = $this->parameterInjection($param['type'], $param['name'], $param['required'], $args);
+							if(is_callable($param['type']))
+							{
+								$type_param = $param['type']($ctrl);
+							}
+							else
+							{
+								$type_param = $param['type'];
+							}
+
+							$method_params[] = $this->parameterInjection($type_param, $param['name'], $param['required'], $args);
 						}
 
 						/* Execute the action. */
@@ -175,6 +184,17 @@ class Route extends RouteCollection
 				{
 					$type = $this->extractParamTypeFromString((string)$param);
 				}
+
+				if(strtolower($type) == 'biome\core\orm\models')
+				{
+					$type = function($controller) { return $controller->objectName(); };
+				}
+				else
+				if(strtolower($type) == 'biome\core\collection')
+				{
+					$type = function($controller) { return $controller->collectionName() . 'Collection'; };
+				}
+
 				$name = $param->getName();
 				$required = !$param->allowsNull();
 				$param_list[$name] = array('type' => $type, 'name' => $name, 'required' => $required);

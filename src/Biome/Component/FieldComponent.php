@@ -6,7 +6,7 @@ use Biome\Core\View\Component;
 
 use Biome\Core\ORM\AbstractField;
 
-class FieldComponent extends Component
+class FieldComponent extends VariableComponent
 {
 	public function render()
 	{
@@ -27,28 +27,6 @@ class FieldComponent extends Component
 			return $name;
 		}
 		$this->name = $this->attributes['name'];
-	}
-
-	public function getValue()
-	{
-		if(!isset($this->attributes['value']))
-		{
-			return NULL;
-		}
-
-		return $this->fetchValue($this->attributes['value']);
-	}
-
-	public function getField()
-	{
-		if(empty($this->attributes['value']))
-		{
-			return NULL;
-		}
-
-		$field = $this->fetchField($this->attributes['value']);
-
-		return $field;
 	}
 
 	public function getType()
@@ -87,24 +65,6 @@ class FieldComponent extends Component
 			return $this->attributes['placeholder'];
 		}
 		return '';
-	}
-
-	public function getLabel()
-	{
-		if(!isset($this->attributes['label']))
-		{
-			$field = $this->getField();
-			if(!$field instanceof AbstractField)
-			{
-				throw new \Exception('Attribute "label" must be defined on field component!');
-			}
-
-			return $field->getLabel();
-		}
-
-		$this->name = $this->attributes['label'];
-
-		return $this->name;
 	}
 
 	public function showErrors()

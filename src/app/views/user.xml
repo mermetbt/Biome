@@ -4,7 +4,8 @@
 	<biome:include src="elements/navbar.xml"/>
 
 	<biome:view action="profile">
-		<h3>Profile</h3>
+		<biome:title title="Profile"/>
+
 		<div class="row">
 			<div class="col-lg-8">
 				<biome:panel title="User informations">
@@ -32,33 +33,23 @@
 	</biome:view>
 
 	<biome:view action="index">
-		<h3>Users</h3>
+		<biome:title title="Users"/>
+
 		<div class="row">
 			<div class="col-lg-8">
 				<biome:panel>
 					<biome:a class="btn btn-success" controller="user" action="create"><span>New</span></biome:a>
-					<table class="table table-striped table-hover">
-						<thead>
-							<tr>
-								<th>User ID</th>
-								<th>Firstname</th>
-								<th>Lastname</th>
-								<th>Mail</th>
-								<th></th>
-								<th></th>
-							</tr>
-						</thead>
-						<biome:loop value="#{users.users}" var="u">
-							<tr>
-								<td><biome:variable value="#{u.user_id}"/></td>
-								<td><biome:variable value="#{u.firstname}"/></td>
-								<td><biome:variable value="#{u.lastname}"/></td>
-								<td><biome:variable value="#{u.mail}"/></td>
-								<td><biome:a class="btn btn-sm btn-default" controller="user" action="edit" item="#{u.user_id}"><span>Edit</span></biome:a></td>
-								<td><biome:a class="btn btn-sm btn-danger" controller="user" action="delete" item="#{u.user_id}"><span>Delete</span></biome:a></td>
-							</tr>
-						</biome:loop>
-					</table>
+
+					<biome:datatable value="#{users.users}" var="u">
+						<biome:variable value="#{u.user_id}"/>
+						<biome:variable value="#{u.firstname}"/>
+						<biome:variable value="#{u.lastname}"/>
+						<biome:variable value="#{u.mail}"/>
+
+						<biome:a class="btn btn-sm btn-default" controller="user" action="edit" item="#{u.user_id}"><span>Edit</span></biome:a>
+						<biome:a class="btn btn-sm btn-danger" controller="user" action="delete" item="#{u.user_id}"><span>Delete</span></biome:a>
+					</biome:datatable>
+
 				</biome:panel>
 			</div>
 			<div class="col-lg-4">
@@ -70,7 +61,8 @@
 	</biome:view>
 
 	<biome:view action="edit">
-		<h3>User</h3>
+		<biome:title title="Users"/>
+
 		<div class="row">
 			<div class="col-lg-8">
 				<biome:panel title="User informations">
@@ -88,27 +80,19 @@
 			</div>
 			<div class="col-lg-4">
 				<biome:panel title="Informations">
-					<table class="table table-striped table-hover">
-						<thead>
-							<tr>
-								<th>Role Name</th>
-								<th></th>
-							</tr>
-						</thead>
-						<biome:loop value="#{users.user.roles}" var="r">
-							<tr>
-								<td><biome:variable value="#{r.role_name}"/></td>
-								<td><biome:a class="btn btn-sm btn-danger" controller="role" action="delete" item="#{r.role_id}"><span>Delete</span></biome:a></td>
-							</tr>
-						</biome:loop>
-					</table>
+
+					<biome:datatable value="#{users.user.roles}" var="r">
+						<biome:variable value="#{r.role_name}"/>
+					</biome:datatable>
+
 				</biome:panel>
 			</div>
 		</div>
 	</biome:view>
 
 	<biome:view action="create">
-		<h3>Add new user</h3>
+		<biome:title title="Add new user"/>
+
 		<biome:panel title="User informations">
 			<biome:form>
 				<biome:field value="#{user.firstname}"/>

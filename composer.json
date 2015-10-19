@@ -27,7 +27,9 @@
 		"require-bower": {
 			"jquery": "*",
 			"bootstrap": "*",
-			"font-awesome": "*"
+			"font-awesome": "*",
+			"datatables": "*",
+			"datatables-plugins": "*"
 		}
 	}
 }

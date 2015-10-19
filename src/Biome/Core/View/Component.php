@@ -121,7 +121,7 @@ class Component extends NodeLoader
 		return $this->value;
 	}
 
-	public function getChildren($component_name, $level = 0, &$children = array())
+	public function getChildren($component_name = NULL, $level = 0, &$children = array())
 	{
 		if($level > 0)
 		{
@@ -134,7 +134,8 @@ class Component extends NodeLoader
 			{
 				continue;
 			}
-			if($c->name == $component_name)
+
+			if($component_name === NULL || $c->name == $component_name)
 			{
 				$children[] = $c;
 			}

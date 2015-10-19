@@ -168,6 +168,10 @@ class QuerySet implements Iterator, Countable
 	/* Return the current object. */
 	public function current()
 	{
+		if(!$this->valid())
+		{
+			return FALSE;
+		}
 		return current($this->_data_set);
 	}
 

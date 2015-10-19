@@ -93,7 +93,7 @@ class Collection implements Serializable
 	{
 		if(!isset($this->map[$attribute_name]))
 		{
-			throw new \Exception('No mapping defined in collection for attribute ' . $attribute_name . '!');
+			throw new \Exception('No mapping defined in collection ' . get_class() . ' for attribute ' . $attribute_name . '!');
 		}
 
 		if(!isset($this->_instances[$attribute_name]))

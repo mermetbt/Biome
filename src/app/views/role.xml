@@ -4,29 +4,18 @@
 	<biome:include src="elements/navbar.xml"/>
 
 	<biome:view action="index">
-		<h3>Roles</h3>
+		<biome:title title="Roles"/>
 		<div class="row">
 			<div class="col-lg-8">
 				<biome:panel>
 					<biome:a class="btn btn-success" controller="role" action="create"><span>New</span></biome:a>
-					<table class="table table-striped table-hover">
-						<thead>
-							<tr>
-								<th>Role ID</th>
-								<th>Role</th>
-								<th></th>
-								<th></th>
-							</tr>
-						</thead>
-						<biome:loop value="#{roles.roles}" var="r">
-							<tr>
-								<td><biome:variable value="#{r.role_id}"/></td>
-								<td><biome:variable value="#{r.role_name}"/></td>
-								<td><biome:a class="btn btn-sm btn-default" controller="role" action="edit" item="#{r.role_id}"><span>Edit</span></biome:a></td>
-								<td><biome:a class="btn btn-sm btn-danger" controller="role" action="delete" item="#{r.role_id}"><span>Delete</span></biome:a></td>
-							</tr>
-						</biome:loop>
-					</table>
+
+					<biome:datatable value="#{roles.roles}" var="r">
+						<biome:variable value="#{r.role_id}"/>
+						<biome:variable value="#{r.role_name}"/>
+						<biome:a class="btn btn-sm btn-default" controller="role" action="edit" item="#{r.role_id}"><span>Edit</span></biome:a>
+						<biome:a class="btn btn-sm btn-danger" controller="role" action="delete" item="#{r.role_id}"><span>Delete</span></biome:a>
+					</biome:datatable>
 				</biome:panel>
 			</div>
 			<div class="col-lg-4">
@@ -38,7 +27,7 @@
 	</biome:view>
 
 	<biome:view action="edit">
-		<h3>Role</h3>
+		<biome:title title="Roles"/>
 		<div class="row">
 			<div class="col-lg-8">
 				<biome:panel title="Role informations">
@@ -72,7 +61,7 @@
 	</biome:view>
 
 	<biome:view action="create">
-		<h3>Add new role</h3>
+		<biome:title title="Add new roles"/>
 		<biome:panel title="Role informations">
 			<biome:form>
 				<biome:field value="#{role.role_name}"/>
