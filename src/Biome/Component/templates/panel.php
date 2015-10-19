@@ -2,7 +2,7 @@
 
 $title = $this->getTitle();
 
-?><div class="panel panel-default"><?php
+?><div class="<?php echo $this->getClasses(); ?>"><?php
 
 if(!empty($title))
 {

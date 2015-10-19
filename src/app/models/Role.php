@@ -22,7 +22,8 @@ class Role extends Models
 								->setLabel('Role ID');
 
 		$this->role_name	= TextField::create(32)
-								->setLabel('Role');
+								->setLabel('Role')
+								->setRequired(TRUE);
 
 		$this->users		= Many2ManyField::create('User', 'user_id', 'UserRole', 'role_id')
 								->setLabel('Users');

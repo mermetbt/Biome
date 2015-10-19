@@ -15,8 +15,9 @@ foreach($flash->getErrors() AS $title => $msg)
 		?><button type="button" class="close" data-dismiss="alert" aria-label="Close"><?php
 		?><span aria-hidden="true">&times;</span></button><?php
 
-		?><h4><?php echo $title; ?></h4><?php
-		?><p><?php echo $msg; ?></p><?php
+		?><i class="glyphicon glyphicon-remove"></i> <?php
+		?><strong><?php echo $title; ?></strong><?php
+		echo $msg;
 	?></div><?php
 }
 
@@ -26,8 +27,9 @@ foreach($flash->getWarnings() AS $title => $msg)
 		?><button type="button" class="close" data-dismiss="alert" aria-label="Close"><?php
 		?><span aria-hidden="true">&times;</span></button><?php
 
-		?><h4><?php echo $title; ?></h4><?php
-		?><p><?php echo $msg; ?></p><?php
+		?><i class="fa fa-exclamation-triangle "></i> <?php
+		?><strong><?php echo $title; ?></strong><?php
+		echo $msg;
 	?></div><?php
 }
 
@@ -37,8 +39,9 @@ foreach($flash->getInfos() AS $title => $msg)
 		?><button type="button" class="close" data-dismiss="alert" aria-label="Close"><?php
 		?><span aria-hidden="true">&times;</span></button><?php
 
-		?><h4><?php echo $title; ?></h4><?php
-		?><p><?php echo $msg; ?></p><?php
+		?><i class="fa fa-info-circle"></i> <?php
+		?><strong><?php echo $title; ?></strong><?php
+		echo $msg;
 	?></div><?php
 }
 
@@ -48,8 +51,9 @@ foreach($flash->getSuccess() AS $title => $msg)
 		?><button type="button" class="close" data-dismiss="alert" aria-label="Close"><?php
 		?><span aria-hidden="true">&times;</span></button><?php
 
-		?><h4><?php echo $title; ?></h4><?php
-		?><p><?php echo $msg; ?></p><?php
+		?><i class="glyphicon glyphicon-ok"></i> <?php
+		?><strong><?php echo $title; ?></strong><?php
+		echo $msg;
 	?></div><?php
 }
 

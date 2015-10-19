@@ -27,10 +27,12 @@ class User extends Models
 								->setLabel('User ID');
 
 		$this->firstname	= TextField::create(32)
-								->setLabel('Firstname');
+								->setLabel('Firstname')
+								->setRequired(TRUE);
 
 		$this->lastname		= TextField::create(32)
-								->setLabel('Lastname');
+								->setLabel('Lastname')
+								->setRequired(TRUE);
 
 		$this->mail			= EmailField::create()
 								->setLabel('E-Mail')
