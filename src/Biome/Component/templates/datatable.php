@@ -12,9 +12,11 @@ $column_list	= $this->getChildren('column');
  */
 echo '<thead><tr>';
 
+$columns = array();
 foreach($column_list AS $column)
 {
 	echo '<th>', $column->getTitle(), '</th>';
+	$columns[] = array('name' => $column->getName(), 'searchable' => $column->isSearchable(), 'orderable' => $column->isOrderable());
 }
 
 echo '</tr></thead>';
@@ -48,15 +50,21 @@ echo '</tbody>';
 
 ?></table></div><?php
 
-$this->view->javascript(function() use($id) {
+$datatable_options = array(
+	'paging' => $this->hasPaging(),
+	'searching' => $this->isSearchable(),
+	'ordering' => $this->isOrderable(),
+	'responsive' => TRUE,
+	'serverSide' => TRUE,
+	'ajax' => URL::getUri() . '?partial=' . $id,
+	'columns' => $columns
+);
+
+$this->view->javascript(function() use($id, $datatable_options) {
 
 ?>
 $(document).ready(function() {
-	$('#<?php echo $id; ?>').DataTable({
-			responsive: true,
-			serverSide: true,
-			ajax: '<?php echo URL::getUri(), '?partial=', $id; ?>'
-	});
+	$('#<?php echo $id; ?>').DataTable(<?php echo json_encode($datatable_options); ?>);
 });
 <?php
 

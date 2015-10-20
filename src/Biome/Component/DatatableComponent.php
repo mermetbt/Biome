@@ -32,6 +32,33 @@ class DatatableComponent extends Component
 		return $value;
 	}
 
+	public function isOrderable()
+	{
+		if(!isset($this->attributes['orderable']))
+		{
+			return FALSE;
+		}
+		return $this->attributes['orderable'] == 1;
+	}
+
+	public function isSearchable()
+	{
+		if(!isset($this->attributes['searchable']))
+		{
+			return FALSE;
+		}
+		return $this->attributes['searchable'] == 1;
+	}
+
+	public function hasPaging()
+	{
+		if(!isset($this->attributes['pagination']))
+		{
+			return TRUE;
+		}
+		return $this->attributes['pagination'] == 1;
+	}
+
 	public function handleAjaxRequest(Request $request)
 	{
 		$var			= $this->getVar();
@@ -40,7 +67,11 @@ class DatatableComponent extends Component
 
 		if($object_list instanceof QuerySet)
 		{
-			$object_list->limit($request->get('start'), $request->get('length'));
+			$length = $request->get('length');
+			if($length > 0)
+			{
+				$object_list->limit($request->get('start'), $length);
+			}
 		}
 
 		$data = array();
@@ -57,10 +88,21 @@ class DatatableComponent extends Component
 			$data[] = $item;
 		}
 
+		if($object_list instanceof QuerySet)
+		{
+			$recordsTotal = $object_list->getTotalCount();
+			$recordsFiltered = $recordsTotal;
+		}
+		else
+		{
+			$recordsTotal = count($data);
+			$recordsFiltered = $recordsTotal;
+		}
+
 		$results = array(
 			'draw' => (int)$request->get('draw'),
-			'recordsTotal' => $object_list->getTotalCount(),
-			'recordsFiltered' => $object_list->getTotalCount(),
+			'recordsTotal' => $recordsTotal,
+			'recordsFiltered' => $recordsFiltered,
 			'data' => $data
 		);
 
