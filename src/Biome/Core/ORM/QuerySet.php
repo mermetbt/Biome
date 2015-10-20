@@ -26,6 +26,8 @@ class QuerySet implements Iterator, Countable
 	protected $_db_handler		= NULL;
 	protected $_data_set		= array();
 
+	protected $total_count		= 0;
+
 	public function __construct($object_name)
 	{
 		$this->object_name	= $object_name;
@@ -217,6 +219,11 @@ class QuerySet implements Iterator, Countable
 		return current($this->_data_set) != NULL;
 	}
 
+	public function getTotalCount()
+	{
+		return $this->total_count;
+	}
+
 	/**
 	 * Fetch the result from the parameters.
 	 */
@@ -249,7 +256,8 @@ class QuerySet implements Iterator, Countable
 				/* Instanciate object. */
 				$o = ObjectLoader::get($object_name, $row, $query_set);
 				return $o;
-		});
+		},
+			$this->total_count);
 
 		return $this;
 	}

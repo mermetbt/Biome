@@ -19,6 +19,11 @@ class URL
 		return self::getBaseURL() . '/' . $asset_path;
 	}
 
+	public static function getUri()
+	{
+		return self::getRequest()->getUri();
+	}
+
 	public static function fromRoute($controller = NULL, $action = NULL, $item = NULL, $module = NULL)
 	{
 		$url = self::getBaseURL();

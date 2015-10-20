@@ -66,6 +66,17 @@ class Controller
 			$this->response = $result;
 		}
 
+		// Ajax Request
+		if($this->request->isXmlHttpRequest())
+		{
+			$rendering = FALSE;
+			$partial_rendering = $this->request->get('partial');
+			if($partial_rendering)
+			{
+				$this->view->ajaxHandle($partial_rendering);
+			}
+		}
+
 		if($rendering && !$this->response->isRedirection())
 		{
 			// Render view

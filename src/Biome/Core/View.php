@@ -12,6 +12,7 @@ class View
 	protected $_variables = array();
 
 	protected $_title = 'Biome';
+	protected $_rawJavascript = array();
 
 	public function __construct()
 	{
@@ -80,6 +81,14 @@ class View
 		return $this->_tree->render();
 	}
 
+	public function ajaxHandle($node_id)
+	{
+		return $this->_tree->ajaxHandle($node_id);
+	}
+
+	/**
+	 * Meta-informations of the page.
+	 */
 	public function setTitle($title)
 	{
 		$this->_title = $title;
@@ -88,5 +97,29 @@ class View
 	public function getTitle()
 	{
 		return $this->_title;
+	}
+
+	/**
+	 * Javascript management.
+	 */
+	public function javascript($func)
+	{
+		$this->_rawJavascript[] = $func;
+		return $this;
+	}
+
+	public function printJavascript()
+	{
+		foreach($this->_rawJavascript AS $func)
+		{
+			if(is_callable($func))
+			{
+				$func();
+			}
+			else
+			{
+				echo $func;
+			}
+		}
 	}
 }

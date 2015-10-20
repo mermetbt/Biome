@@ -2,6 +2,8 @@
 
 namespace Biome\Core\ORM\Converter;
 
+use Biome\Core\Utils\DateTime;
+
 class DateTimeConverter implements ConverterInterface
 {
 	public function get($value)

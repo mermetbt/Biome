@@ -11,10 +11,18 @@
 					<biome:a class="btn btn-success" controller="role" action="create"><span>New</span></biome:a>
 
 					<biome:datatable value="#{roles.roles}" var="r">
-						<biome:variable value="#{r.role_id}"/>
-						<biome:variable value="#{r.role_name}"/>
-						<biome:a class="btn btn-sm btn-default" controller="role" action="edit" item="#{r.role_id}"><span>Edit</span></biome:a>
-						<biome:a class="btn btn-sm btn-danger" controller="role" action="delete" item="#{r.role_id}"><span>Delete</span></biome:a>
+						<biome:column headerTitle="#">
+							<biome:variable value="#{r.role_id}"/>
+						</biome:column>
+
+						<biome:column headerTitle="Role">
+							<biome:variable value="#{r.role_name}"/>
+						</biome:column>
+
+						<biome:column>
+							<biome:a class="btn btn-sm btn-default" controller="role" action="edit" item="#{r.role_id}"><span>Edit</span></biome:a>
+							<biome:a class="btn btn-sm btn-danger" controller="role" action="delete" item="#{r.role_id}"><span>Delete</span></biome:a>
+						</biome:column>
 					</biome:datatable>
 				</biome:panel>
 			</div>

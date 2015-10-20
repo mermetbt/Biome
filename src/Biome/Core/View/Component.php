@@ -2,6 +2,8 @@
 
 namespace Biome\Core\View;
 
+use Biome\Core\HTTP\Request;
+
 class Component extends NodeLoader
 {
 	protected	$id			= '';
@@ -14,6 +16,18 @@ class Component extends NodeLoader
 	public static $view	= NULL;
 
 	use ContextManager;
+
+	protected static $_counter = 1;
+
+	/**
+	 *
+	 * Components dependencies injection.
+	 *
+	 */
+	public function __get($varname)
+	{
+		return \Biome\Biome::getService($varname);
+	}
 
 	/**
 	 *
@@ -112,6 +126,50 @@ class Component extends NodeLoader
 	}
 
 	/**
+	 * AJAX Handling.
+	 */
+	public function ajaxHandle($node_id)
+	{
+		return $this->rec_ajaxHandle($this->value, $node_id);
+	}
+
+	protected function rec_ajaxHandle($nodes, $node_id)
+	{
+		foreach($nodes AS $node)
+		{
+			if($node instanceof Component)
+			{
+				if($node->getId() == $node_id)
+				{
+					$request = $this->request;
+					$node->handleAjaxRequest($request);
+					return TRUE;
+				}
+
+				if($node->ajaxHandle($node_id))
+				{
+					return TRUE;
+				}
+			}
+			else
+			if(is_array($node))
+			{
+				if(is_array($node['value']))
+				{
+					if($this->rec_ajaxHandle($node['value'], $node_id))
+					{
+						return TRUE;
+					}
+				}
+			}
+		}
+
+		return FALSE;
+	}
+
+	public function handleAjaxRequest(Request $request) { }
+
+	/**
 	 *
 	 * Component subcomponents management.
 	 *
@@ -164,7 +222,7 @@ class Component extends NodeLoader
 
 		if(!isset($this->attributes['id']))
 		{
-			$this->id = md5(rand());
+			$this->id = 'biome_' . (self::$_counter++);
 			return $this->id;
 		}
 

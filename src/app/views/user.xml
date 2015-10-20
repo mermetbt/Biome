@@ -41,13 +41,26 @@
 					<biome:a class="btn btn-success" controller="user" action="create"><span>New</span></biome:a>
 
 					<biome:datatable value="#{users.users}" var="u">
-						<biome:variable value="#{u.user_id}"/>
-						<biome:variable value="#{u.firstname}"/>
-						<biome:variable value="#{u.lastname}"/>
-						<biome:variable value="#{u.mail}"/>
+						<biome:column headerTitle="#">
+							<biome:variable value="#{u.user_id}"/>
+						</biome:column>
 
-						<biome:a class="btn btn-sm btn-default" controller="user" action="edit" item="#{u.user_id}"><span>Edit</span></biome:a>
-						<biome:a class="btn btn-sm btn-danger" controller="user" action="delete" item="#{u.user_id}"><span>Delete</span></biome:a>
+						<biome:column headerTitle="Firstname">
+							<biome:variable value="#{u.firstname}"/>
+						</biome:column>
+
+						<biome:column headerTitle="Lastname">
+							<biome:variable value="#{u.lastname}"/>
+						</biome:column>
+
+						<biome:column headerTitle="E-Mail">
+							<biome:variable value="#{u.mail}"/>
+						</biome:column>
+
+						<biome:column>
+							<biome:a class="btn btn-sm btn-default" controller="user" action="edit" item="#{u.user_id}"><span>Edit</span></biome:a>
+							<biome:a class="btn btn-sm btn-danger" controller="user" action="delete" item="#{u.user_id}"><span>Delete</span></biome:a>
+						</biome:column>
 					</biome:datatable>
 
 				</biome:panel>
@@ -82,7 +95,9 @@
 				<biome:panel title="Informations">
 
 					<biome:datatable value="#{users.user.roles}" var="r">
-						<biome:variable value="#{r.role_name}"/>
+						<biome:column headerTitle="Role">
+							<biome:variable value="#{r.role_name}"/>
+						</biome:column>
 					</biome:datatable>
 
 				</biome:panel>

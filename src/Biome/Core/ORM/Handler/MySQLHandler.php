@@ -17,7 +17,7 @@ class MySQLHandler
 		return Biome::getService('mysql');
 	}
 
-	public function query($parameters, $fields, $filters, $offset, $limit, $objectMapper)
+	public function query($parameters, $fields, $filters, $offset, $limit, $objectMapper, &$total_count)
 	{
 		$query = $this->generateQuery($parameters, $fields, $filters, $offset, $limit);
 
@@ -39,12 +39,19 @@ class MySQLHandler
 			$data[$id] = $o;
 		}
 
+		$result = $this->db()->query('SELECT FOUND_ROWS() AS total;');
+
+		while($row = $result->fetch_assoc())
+		{
+			$total_count = $row['total'];
+		}
+
 		return $data;
 	}
 
 	protected function generateSelect($database, $table, $fields)
 	{
-		$query = 'SELECT ';
+		$query = 'SELECT SQL_CALC_FOUND_ROWS ';
 
 		/**
 		 * Fields selection

@@ -1,69 +1,63 @@
 <?php
 
-$var = $this->getVar();
-$object_list = $this->getValue();
-$field_list = $this->getChildren();
+$id				= $this->getId();
+$var			= $this->getVar();
+$object_list	= $this->getValue();
+$column_list	= $this->getChildren('column');
 
-/**
- * Building rows.
- */
-$body = '<tbody>';
-
-$header_title = array();
-
-foreach($object_list AS $v)
-{
-	$this->setContext($var, $v);
-
-	$body .= '<tr>';
-
-	/**
-	 * Render columns.
-	 */
-
-	foreach($field_list AS $index => $fieldComponent)
-	{
-		if(method_exists($fieldComponent, 'getLabel'))
-		{
-			$header_title[$index] = $fieldComponent->getLabel();
-		}
-		else
-		{
-			$header_title[$index] = '';
-		}
-
-		$body .= '<td>';
-		$body .= $fieldComponent->render();
-		$body .= '</td>';
-	}
-
-	//$body .= '<td><a class="btn btn-sm btn-default" href="' . URL::fromRoute('cylinder', 'edit', $v->getId()) . '">Edit</a></td>';
-	//$body .= '<td><a class="btn btn-sm btn-danger" href="' . URL::fromRoute('cylinder', 'delete', $v->getId()) . '">Delete</a></td>';
-
-	$body .= '</tr>';
-
-	$this->unsetContext($var);
-}
-
-$body .= '</tbody>';
+?><div class="dataTable_wrapper"><table id="<?php echo $id ?>" class="<?php echo $this->getClasses(); ?>"><?php
 
 /**
  * Building header.
  */
-$header = '<thead><tr>';
+echo '<thead><tr>';
 
-foreach($header_title AS $title)
+foreach($column_list AS $column)
 {
-	$header .= '<th>' . $title . '</th>';
+	echo '<th>', $column->getTitle(), '</th>';
 }
 
-//$header .= '<th></th><th></th>'; // Buttons
-$header .= '</tr></thead>';
+echo '</tr></thead>';
 
-?><div class="dataTable_wrapper"><table id="<?php echo $this->getId(); ?>" class="<?php echo $this->getClasses(); ?>"><?php
+/**
+ * Building rows.
+ */
+echo '<tbody>';
 
-echo $header;
+// foreach($object_list AS $v)
+// {
+// 	$this->setContext($var, $v);
+//
+// 	echo '<tr>';
+//
+// 	/**
+// 	 * Render columns.
+// 	 */
+//
+// 	foreach($column_list AS $column)
+// 	{
+// 		echo '<td>', $column->render(), '</td>';
+// 	}
+//
+// 	echo '</tr>';
+//
+// 	$this->unsetContext($var);
+// }
 
-echo $body;
+echo '</tbody>';
 
 ?></table></div><?php
+
+$this->view->javascript(function() use($id) {
+
+?>
+$(document).ready(function() {
+	$('#<?php echo $id; ?>').DataTable({
+			responsive: true,
+			serverSide: true,
+			ajax: '<?php echo URL::getUri(), '?partial=', $id; ?>'
+	});
+});
+<?php
+
+});

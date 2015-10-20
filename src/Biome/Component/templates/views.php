@@ -36,12 +36,8 @@
 	<script src="<?php echo URL::getAsset('packages/datatables/media/js/jquery.dataTables.min.js') ?>"></script>
 	<script src="<?php echo URL::getAsset('packages/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js') ?>"></script>
 
-    <script>
-    $(document).ready(function() {
-        $('.biome-datatable').DataTable({
-                responsive: true
-        });
-    });
+    <script type="text/javascript">
+		<?php echo $this->view->printJavascript(); ?>
     </script>
 </body>
 </html>

@@ -46,6 +46,7 @@ class NodeLoader implements Element
 			$child['value']->fullname	= $child['name'];
 			$child['value']->name		= strtolower(substr(get_class($child['value']), strlen('Biome\\Component\\'), -strlen('Component')));
 			$child['value']->attributes = $child['attributes'];
+			$child['value']->getId(); // Generate ID.
 			$child['value']->building();
 			return $child['value'];
 		}
