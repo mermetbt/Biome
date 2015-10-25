@@ -17,6 +17,7 @@ class QuerySet implements Iterator, Countable
 	 */
 	protected $fields	= NULL;
 	protected $filters	= array();
+	protected $orders	= array();
 	protected $offset	= NULL;
 	protected $limit	= NULL;
 
@@ -129,6 +130,7 @@ class QuerySet implements Iterator, Countable
 
 	public function order_by($field)
 	{
+		$this->orders[] = $field;
 		return $this;
 	}
 
@@ -236,6 +238,7 @@ class QuerySet implements Iterator, Countable
 			$this->object()->parameters(),
 			$this->fields,
 			$this->filters,
+			$this->orders,
 			$this->offset,
 			$this->limit,
 			function($row) use($query_set) {
@@ -249,7 +252,16 @@ class QuerySet implements Iterator, Countable
 
 					if($field instanceof QuerySetFieldInterface)
 					{
-						$row[$field_name]	= $field->generateQuerySet($query_set, $field_name);
+						if(isset($row[$field_name]))
+						{
+							$field_name_local = substr($field_name, 0, -3);
+							$row[$field_name_local] = $field->getObject($row[$field_name]);
+						}
+						else
+						{
+							$field_name_local = $field_name;
+							$row[$field_name_local]	= $field->generateQuerySet($query_set, $field_name);
+						}
 					}
 				}
 
@@ -267,8 +279,9 @@ class QuerySet implements Iterator, Countable
 	 */
 	public function get($id)
 	{
-		$this->filter(array(array($this->object()->parameters()['primary_key'], '=', $id)))->fetch();
-		return reset($this->_data_set);
+		$new_qs = clone $this;
+		$new_qs->filter(array(array($this->object()->parameters()['primary_key'], '=', $id)));
+		return $new_qs->current();
 	}
 
 	/**

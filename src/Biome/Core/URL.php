@@ -24,7 +24,7 @@ class URL
 		return self::getRequest()->getUri();
 	}
 
-	public static function fromRoute($controller = NULL, $action = NULL, $item = NULL, $module = NULL)
+	public static function fromRoute($controller = NULL, $action = NULL, $item = NULL, $module = NULL, $page = NULL)
 	{
 		$url = self::getBaseURL();
 
@@ -46,6 +46,11 @@ class URL
 		if($action)
 		{
 			$url .= '/' . $action;
+		}
+
+		if($page)
+		{
+			$url .= '/' . $page;
 		}
 
 		return $url;

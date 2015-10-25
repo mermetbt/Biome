@@ -10,7 +10,7 @@
 	<link href="<?php echo URL::getAsset('packages/bootstrap/dist/css/bootstrap.min.css') ?>" rel="stylesheet">
 	<link href="<?php echo URL::getAsset('packages/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet">
 	<link href="<?php echo URL::getAsset('packages/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css') ?>" rel="stylesheet">
-	<link href="<?php echo URL::getAsset('packages/datatables-responsive/css/dataTables.responsive.css') ?>" rel="stylesheet">
+	<link href="<?php echo URL::getAsset('packages/datatables-responsive-helper/files/1.10/css/datatables.responsive.css') ?>" rel="stylesheet">
 
 	<link href="<?php echo URL::getAsset('css/style.css') ?>" rel="stylesheet">
 	<?php
@@ -35,6 +35,7 @@
 	<script src="<?php echo URL::getAsset('packages/bootstrap/dist/js/bootstrap.min.js') ?>"></script>
 	<script src="<?php echo URL::getAsset('packages/datatables/media/js/jquery.dataTables.min.js') ?>"></script>
 	<script src="<?php echo URL::getAsset('packages/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js') ?>"></script>
+	<script src="<?php echo URL::getAsset('packages/datatables-responsive-helper/files/1.10/js/datatables.responsive.js') ?>"></script>
 
     <script type="text/javascript">
 		<?php echo $this->view->printJavascript(); ?>

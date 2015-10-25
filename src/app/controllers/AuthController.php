@@ -39,7 +39,7 @@ class AuthController extends Controller
 
 	public function postSignin(AuthCollection $c)
 	{
-		$this->postLogin($c);
+		return $this->postLogin($c);
 	}
 
 	public function postSignup(User $user)

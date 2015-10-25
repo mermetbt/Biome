@@ -29,7 +29,8 @@
 			"bootstrap": "*",
 			"font-awesome": "*",
 			"datatables": "*",
-			"datatables-plugins": "*"
+			"datatables-plugins": "*",
+			"datatables-responsive-helper": "*"
 		}
 	}
 }

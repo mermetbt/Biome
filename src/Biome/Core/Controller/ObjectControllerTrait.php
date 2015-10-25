@@ -5,6 +5,7 @@ namespace Biome\Core\Controller;
 use Biome\Core\Controller;
 use Biome\Core\Collection;
 use Biome\Core\ORM\Models;
+use Biome\Core\ORM\ObjectLoader;
 
 trait ObjectControllerTrait
 {
@@ -21,6 +22,7 @@ trait ObjectControllerTrait
 	public function getDelete($object_id)
 	{
 		$object_name = $this->objectName();
+		ObjectLoader::load($object_name);
 		$object = $object_name::get($object_id);
 
 		if($object->delete())

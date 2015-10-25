@@ -28,4 +28,11 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 		return $m2o_object_name::all()->associate($this->foreign_key, $query_set, $field_name);
 	}
 
+	public function getObject($primary_key_value)
+	{
+		$m2o_object_name	= $this->object_name;
+		$object = ObjectLoader::get($m2o_object_name);
+		$object->sync($primary_key_value);
+		return $object;
+	}
 }

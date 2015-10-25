@@ -38,8 +38,9 @@
 		<div class="row">
 			<div class="col-lg-8">
 				<biome:panel>
-					<biome:a class="btn btn-success" controller="user" action="create"><span>New</span></biome:a>
+					<biome:a class="btn btn-success" controller="user" action="create"><i class="fa fa-plus"></i><span> New</span></biome:a>
 
+					<br/><br/>
 					<biome:datatable value="#{users.users}" var="u">
 						<biome:column headerTitle="#">
 							<biome:variable value="#{u.user_id}"/>
@@ -58,8 +59,9 @@
 						</biome:column>
 
 						<biome:column>
-							<biome:a class="btn btn-sm btn-default" controller="user" action="edit" item="#{u.user_id}"><span>Edit</span></biome:a>
-							<biome:a class="btn btn-sm btn-danger" controller="user" action="delete" item="#{u.user_id}"><span>Delete</span></biome:a>
+							<biome:a class="btn btn-sm btn-default" controller="user" action="edit" item="#{u.user_id}"><i class="fa fa-pencil"></i><span> Edit</span></biome:a>
+							<span style="padding: 5px;"></span>
+							<biome:a class="btn btn-sm btn-danger" controller="user" action="delete" item="#{u.user_id}"><i class="fa fa-trash"></i><span> Delete</span></biome:a>
 						</biome:column>
 					</biome:datatable>
 
@@ -94,7 +96,7 @@
 			<div class="col-lg-4">
 				<biome:panel title="Informations">
 
-					<biome:datatable value="#{users.user.roles}" var="r">
+					<biome:datatable value="#{users.user.roles}" var="r" pagination="false" searchable="false">
 						<biome:column headerTitle="Role">
 							<biome:variable value="#{r.role_name}"/>
 						</biome:column>

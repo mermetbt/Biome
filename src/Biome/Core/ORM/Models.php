@@ -3,6 +3,7 @@
 namespace Biome\Core\ORM;
 
 use Biome\Core\ORM\Field\PrimaryField;
+use Biome\Core\ORM\Field\Many2OneField;
 use Biome\Core\ORM\Inspector\ModelInspectorInterface;
 
 abstract class Models implements ObjectInterface
@@ -56,6 +57,14 @@ abstract class Models implements ObjectInterface
 	public function setField($field_name, AbstractField $field)
 	{
 		$field->setName($field_name);
+
+		// TODO: Find a way to make a clean management of field.
+		if($field instanceof Many2OneField)
+		{
+			$field_name_local = substr($field_name, 0, -3);
+			$this->_structure[$field_name_local] = $field;
+		}
+
 		$this->_structure[$field_name] = $field;
 		return TRUE;
 	}
@@ -91,10 +100,13 @@ abstract class Models implements ObjectInterface
 		$f = $this->getField($attribute);
 
 		$new = $f->applySet($value);
-		if(!isset($this->_values['old'][$attribute]) || $new !== $this->_values['old'][$attribute])
+		if(!isset($this->_values['old'][$attribute]) ||
+			$new !== $this->_values['old'][$attribute] ||
+			(isset($this->_values['new'][$attribute]) && $new !== $this->_values['new'][$attribute]))
 		{
 			$this->_values['new'][$attribute] = $new;
 		}
+
 		return TRUE;
 	}
 
@@ -123,7 +135,13 @@ abstract class Models implements ObjectInterface
 		else
 		{
 			// Otherwise return the default value.
-			return $f->getDefaultValue();
+			$default = $f->getDefaultValue();
+			if($default instanceof RawSQL)
+			{
+				return NULL;
+			}
+
+			return $default;
 		}
 	}
 
@@ -166,11 +184,17 @@ abstract class Models implements ObjectInterface
 		{
 			if($field != NULL)
 			{
+				if(!in_array($field, $pks))
+				{
+					return NULL;
+				}
+
 				$id = $this->$field;
 				if(empty($id))
 				{
 					return NULL;
 				}
+
 				return $id;
 			}
 
@@ -266,7 +290,7 @@ abstract class Models implements ObjectInterface
 	 */
 	public function fetch(...$fields)
 	{
-		if($this->getId() !== NULL)
+		if($this->getId() != NULL)
 		{
 			return $this;
 		}
@@ -412,6 +436,11 @@ abstract class Models implements ObjectInterface
 				continue;
 			}
 
+			if($field instanceof Many2OneField && substr($field_name, -3) != '_id')
+			{
+				continue;
+			}
+
 			$value = $this->getRawValue($field_name);
 			if($field->isRequired())
 			{
@@ -490,6 +519,9 @@ abstract class Models implements ObjectInterface
 		{
 			$old = isset($this->_values['old'][$f_name]) ? $this->_values['old'][$f_name] : '';
 			$new = isset($this->_values['new'][$f_name]) ? $this->_values['new'][$f_name] : '';
+
+			$old = is_string($old) ? $old : '(NAS)';
+			$new = is_string($new) ? $new : '(NAS)';
 
 			$str .= $f_name . " => " . $old . " - " . $new . '<br/>';
 		}

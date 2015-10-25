@@ -17,11 +17,17 @@ class MySQLHandler
 		return Biome::getService('mysql');
 	}
 
-	public function query($parameters, $fields, $filters, $offset, $limit, $objectMapper, &$total_count)
+	public function query($parameters, $fields, $filters, $orders, $offset, $limit, $objectMapper, &$total_count)
 	{
-		$query = $this->generateQuery($parameters, $fields, $filters, $offset, $limit);
+		$query = $this->generateQuery($parameters, $fields, $filters, $orders, $offset, $limit);
 
 		$result = $this->db()->query($query);
+		$found_rows = $this->db()->query('SELECT FOUND_ROWS() AS total;');
+
+		while($row = $found_rows->fetch_assoc())
+		{
+			$total_count = $row['total'];
+		}
 
 		$data = array();
 		while($row = $result->fetch_assoc())
@@ -37,13 +43,6 @@ class MySQLHandler
 				$id = join(',', $id);
 			}
 			$data[$id] = $o;
-		}
-
-		$result = $this->db()->query('SELECT FOUND_ROWS() AS total;');
-
-		while($row = $result->fetch_assoc())
-		{
-			$total_count = $row['total'];
 		}
 
 		return $data;
@@ -178,6 +177,11 @@ class MySQLHandler
 		return ' WHERE ' . join(' AND ', $wheres);
 	}
 
+	protected function generateOrders($orders)
+	{
+		return ' ORDER BY ' . join(', ', $orders);
+	}
+
 	protected function generateLimit($offset = NULL, $limit = NULL)
 	{
 		if($offset === NULL && $limit === NULL)
@@ -198,13 +202,17 @@ class MySQLHandler
 		return ' LIMIT ' . $offset . ',' . $limit;
 	}
 
-	public function generateQuery($parameters, $fields, $filters, $offset, $limit)
+	public function generateQuery($parameters, $fields, $filters, $orders, $offset, $limit)
 	{
 		$database	= !empty($parameters['database']) ? $parameters['database'] : $this->db()->getDatabase();
 		$table		= $parameters['table'];
 
 		$query = $this->generateSelect($database, $table, $fields);
 		$query .= $this->generateWhere($table, $filters);
+		if(!empty($orders))
+		{
+			$query .= $this->generateOrders($orders);
+		}
 		$query .= $this->generateLimit($offset, $limit);
 
 		return $query;

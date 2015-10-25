@@ -8,8 +8,9 @@
 		<div class="row">
 			<div class="col-lg-8">
 				<biome:panel>
-					<biome:a class="btn btn-success" controller="role" action="create"><span>New</span></biome:a>
+					<biome:a class="btn btn-success" controller="role" action="create"><i class="fa fa-plus"></i><span> New</span></biome:a>
 
+					<br/><br/>
 					<biome:datatable value="#{roles.roles}" var="r">
 						<biome:column headerTitle="#">
 							<biome:variable value="#{r.role_id}"/>
@@ -20,8 +21,9 @@
 						</biome:column>
 
 						<biome:column>
-							<biome:a class="btn btn-sm btn-default" controller="role" action="edit" item="#{r.role_id}"><span>Edit</span></biome:a>
-							<biome:a class="btn btn-sm btn-danger" controller="role" action="delete" item="#{r.role_id}"><span>Delete</span></biome:a>
+							<biome:a class="btn btn-sm btn-default" controller="role" action="edit" item="#{r.role_id}"><i class="fa fa-pencil"></i><span> Edit</span></biome:a>
+							<span style="padding: 5px;"></span>
+							<biome:a class="btn btn-sm btn-danger" controller="role" action="delete" item="#{r.role_id}"><i class="fa fa-trash"></i><span> Delete</span></biome:a>
 						</biome:column>
 					</biome:datatable>
 				</biome:panel>
@@ -46,7 +48,12 @@
 				</biome:panel>
 			</div>
 			<div class="col-lg-4">
-				<biome:panel title="Informations">
+				<biome:panel title="Users">
+
+					<!--
+					<biome:a class="btn btn-success" controller="role" action="add" item="#{roles.role.role_id}"><i class="fa fa-plus"></i><span> Add</span></biome:a>
+					-->
+
 					<table class="table table-striped table-hover">
 						<thead>
 							<tr>
@@ -59,7 +66,7 @@
 							<tr>
 								<td><biome:variable value="#{u.firstname}"/></td>
 								<td><biome:variable value="#{u.lastname}"/></td>
-								<td><biome:a class="btn btn-sm btn-danger" controller="user" action="delete" item="#{u.user_id}"><span>Delete</span></biome:a></td>
+								<td><biome:a class="btn btn-sm btn-danger" controller="role" action="remove" item="#{roles.role.role_id}" page="#{u.user_id}"><i class="fa fa-minus"></i><span> Remove</span></biome:a></td>
 							</tr>
 						</biome:loop>
 					</table>
@@ -74,6 +81,29 @@
 			<biome:form>
 				<biome:field value="#{role.role_name}"/>
 				<biome:button class="btn-success" value="Create" action="#{role.create}"/>
+			</biome:form>
+		</biome:panel>
+	</biome:view>
+
+	<biome:view action="add">
+		<biome:title title="Affect role to users"/>
+
+		<biome:panel title="List">
+			<h4><biome:variable value="#{role.role_name}"/></h4>
+
+			<biome:form>
+				<ul>
+				<biome:loop value="#{users.users}" var="u">
+					<li>
+						<input type="checkbox" name="user[]" value="#{u.user_id}"/>
+						<span style="padding: 5px"></span>
+						<biome:variable value="#{u.firstname}"/>
+						<span style="padding: 3px"></span>
+						<biome:variable value="#{u.lastname}"/>
+					</li>
+				</biome:loop>
+				</ul>
+				<biome:button class="btn-success" value="Add" action="#{role.add}"/>
 			</biome:form>
 		</biome:panel>
 	</biome:view>
