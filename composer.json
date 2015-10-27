@@ -20,8 +20,9 @@
 	"minimum-stability": "dev",
 	"autoload": {
 		"psr-0": {
-			"Biome": "src/"
-		}
+			"Biome": "src/",
+		},
+		"classmap": ["src/app/controllers/", "src/app/collections/", "src/app/models/", "src/app/commands/"]
 	},
 	"extra": {
 		"require-bower": {

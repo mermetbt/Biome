@@ -14,10 +14,14 @@ class RequestCollection extends Collection
 
 		$view_state = Biome::getService('request')->request->get('_token');
 
-		if(!empty($_SESSION['collections_req'][$view_state][$class_name]))
+		if(!empty($_SESSION['collections_req'][$class_name][$view_state]))
 		{
-			$data = $_SESSION['collections_req'][$view_state][$class_name];
+			$data = $_SESSION['collections_req'][$class_name][$view_state];
 			$this->unserialize($data);
+		}
+		else
+		{
+			unset($_SESSION['collections_req'][$class_name]);
 		}
 	}
 
@@ -33,6 +37,6 @@ class RequestCollection extends Collection
 		{
 			$_SESSION['collections_req'] = array();
 		}
-		$_SESSION['collections_req'][$view_state][$class_name] = $data;
+		$_SESSION['collections_req'][$class_name][$view_state] = $data;
 	}
 }
