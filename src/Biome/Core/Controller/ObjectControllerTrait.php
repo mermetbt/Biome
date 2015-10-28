@@ -49,7 +49,7 @@ trait ObjectControllerTrait
 		}
 		else
 		{
-			$this->flash()->error('Unable to create the ' . $object_name . '!');
+			$this->flash()->error('Unable to create the ' . $object_name . '!', join(', ', $object->getErrors()));
 		}
 		return $this->response()->redirect();
 	}

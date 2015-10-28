@@ -55,16 +55,28 @@ class SQLModelInspector implements ModelInspectorInterface
 			}
 		}
 
+		if(in_array($name, $this->primary_keys))
+		{
+			$default = 'NOT NULL';
+		}
+
 		switch($field->getType())
 		{
 			case 'primary':
 				$type = 'INT(10) unsigned';
-				$default = 'NOT NULL AUTO_INCREMENT';
+				$default = 'NOT NULL';
+				if($field->getAutoId())
+				{
+					$default .= ' AUTO_INCREMENT';
+				}
 				break;
 			case 'text':
 			case 'password':
 			case 'email':
 				$type = 'VARCHAR(' . $field->getSize() . ')';
+				break;
+			case 'enum':
+				$type = 'VARCHAR(32)';
 				break;
 			case 'datetime':
 				$type = 'TIMESTAMP';
@@ -86,11 +98,6 @@ class SQLModelInspector implements ModelInspectorInterface
 				break;
 			default:
 				return FALSE;
-		}
-
-		if(in_array($name, $this->primary_keys))
-		{
-			$default = 'NOT NULL';
 		}
 
 		$this->fields[$name] = '`' . $name . '` ' . $type . ' ' . $default;

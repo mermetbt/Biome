@@ -260,7 +260,7 @@ abstract class Models implements ObjectInterface
 
 		if($obj === FALSE)
 		{
-			throw new \Exception('Object not found! id=' . $id);
+			throw new \Exception('Object ' . get_called_class() . ' not found! id=' . $id);
 		}
 
 		if(!$obj instanceof Models)
@@ -441,10 +441,11 @@ abstract class Models implements ObjectInterface
 				continue;
 			}
 
-			$value = $this->getRawValue($field_name);
 			if($field->isRequired())
 			{
-				if(empty($value))
+				$value = $this->getRawValue($field_name);
+
+				if(empty($value) && empty($field->getDefaultValue()))
 				{
 					$field->setError('required', 'Field "' . $field->getLabel() . '" is required!');
 					$errors = TRUE;
