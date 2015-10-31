@@ -23,7 +23,27 @@ if(!empty($label))
 	?><label for="<?php echo $id; ?>" class="control-label"><?php echo $label; ?></label> <?php
 }
 
-?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php
+$rights = \Biome\Biome::getService('rights');
+
+$viewable = $field === NULL || $rights->isAttributeView($field);
+
+if($viewable)
+{
+	$editable = $field === NULL || ($field->isEditable() && $rights->isAttributeEdit($field));
+
+	if(!$editable)
+	{
+		?><p class="form-control-static"><?php echo $value; ?></p><?php
+	}
+	else
+	{
+		?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php
+	}
+}
+else
+{
+	?><i class="fa fa-ban"></i><?php
+}
 
 if($show_error_messages)
 {

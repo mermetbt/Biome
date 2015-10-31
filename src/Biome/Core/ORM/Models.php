@@ -57,6 +57,7 @@ abstract class Models implements ObjectInterface
 	public function setField($field_name, AbstractField $field)
 	{
 		$field->setName($field_name);
+		$field->setModel(get_called_class());
 
 		// TODO: Find a way to make a clean management of field.
 		if($field instanceof Many2OneField)
@@ -121,6 +122,10 @@ abstract class Models implements ObjectInterface
 
 		if(isset($this->_values['old'][$attribute]))
 		{
+			if($this->_values['old'][$attribute] instanceof RawSQL)
+			{
+				return NULL;
+			}
 			return $f->applyGet($this->_values['old'][$attribute]);
 		}
 

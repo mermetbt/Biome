@@ -19,6 +19,14 @@ trait ObjectControllerTrait
 		$c->$object_name->sync($object_id);
 	}
 
+	public function getShow($object_id)
+	{
+		$collection_name = $this->collectionName();
+		$object_name = strtolower($this->objectName());
+		$c = Collection::get($collection_name);
+		$c->$object_name->sync($object_id);
+	}
+
 	public function getDelete($object_id)
 	{
 		$object_name = $this->objectName();
@@ -51,7 +59,7 @@ trait ObjectControllerTrait
 		{
 			$this->flash()->error('Unable to create the ' . $object_name . '!', join(', ', $object->getErrors()));
 		}
-		return $this->response()->redirect();
+		return $this->response()->redirect($object_name);
 	}
 
 	public function postEdit(Collection $collection)

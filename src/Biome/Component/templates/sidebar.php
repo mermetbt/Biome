@@ -10,6 +10,11 @@ function generateMenu(array $menu_list)
 		$class		= isset($menu['class']) ? $menu['class'] : '';
 		$submenu 	= isset($menu['submenu']) ? $menu['submenu'] : NULL;
 
+		if(URL::matchRequest($url))
+		{
+			$class = 'active';
+		}
+
 		echo '<li', (empty($class) ? '' : ' class="' . $class . '"') . '>';
 
 		if(empty($submenu))

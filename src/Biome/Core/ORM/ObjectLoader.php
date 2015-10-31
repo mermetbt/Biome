@@ -65,4 +65,41 @@ class ObjectLoader
 
 		return $object;
 	}
+
+	public static function getObjects()
+	{
+		$modelsDirs = \Biome\Biome::getDirs('models');
+
+		/**
+		 * List existings models.
+		 */
+		$objects_list = array();
+		foreach($modelsDirs AS $dir)
+		{
+			if(!file_exists($dir))
+			{
+				continue;
+			}
+			$filenames = scandir($dir);
+			foreach($filenames AS $file)
+			{
+				if($file[0] == '.')
+				{
+					continue;
+				}
+
+				$object_name = substr($file, 0, -4);
+				$objects_list[$object_name] = $object_name;
+			}
+		}
+
+		$objects = array();
+
+		foreach($objects_list AS $object_name)
+		{
+			$objects[$object_name] = self::get($object_name);
+		}
+
+		return $objects;
+	}
 }

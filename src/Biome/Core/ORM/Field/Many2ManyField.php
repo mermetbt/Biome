@@ -9,6 +9,8 @@ use Biome\Core\ORM\QuerySet;
 
 class Many2ManyField extends AbstractField implements QuerySetFieldInterface
 {
+	protected $editable = FALSE;
+
 	protected $object_name	= NULL;
 	protected $foreign_key	= NULL;
 
@@ -46,6 +48,7 @@ class Many2ManyField extends AbstractField implements QuerySetFieldInterface
 
 		// Handle Many2Many
 		$m2m_attribute_name	= $this->foreign_key;
+
 		return $m2m_object_name::all()->associate($m2m_attribute_name, $lnk_qs, $m2m_attribute_name);
 	}
 

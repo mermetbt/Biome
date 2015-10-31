@@ -6,10 +6,12 @@ use Biome\Core\ORM\Converter\ConverterInterface;
 
 abstract class AbstractField
 {
-	protected $name;
+	private $name;
+	private $model_name;
 	protected $label;
 	protected $default_value = NULL;
 	protected $required = FALSE;
+	protected $editable = TRUE;
 
 	protected $_error_list = array();
 
@@ -101,6 +103,17 @@ abstract class AbstractField
 		return $this->name;
 	}
 
+	public function setModel($model_name)
+	{
+		$this->model_name = $model_name;
+		return $this;
+	}
+
+	public function getModel()
+	{
+		return $this->model_name;
+	}
+
 	public function setDefaultValue($value)
 	{
 		$this->default_value = $value;
@@ -125,12 +138,23 @@ abstract class AbstractField
 
 	public function setRequired($required = TRUE)
 	{
-		$this->required = TRUE;
+		$this->required = $required == TRUE;
 		return $this;
 	}
 
 	public function isRequired()
 	{
 		return $this->required === TRUE;
+	}
+
+	public function isEditable()
+	{
+		return $this->editable;
+	}
+
+	public function setEditable($editable = TRUE)
+	{
+		$this->editable = $editable == TRUE;
+		return $this;
 	}
 }

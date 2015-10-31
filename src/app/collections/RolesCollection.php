@@ -13,7 +13,6 @@ class RolesCollection extends RequestCollection
 	{
 		if(empty($this->roles))
 		{
-			\Biome\Core\ORM\ObjectLoader::load('role');
 			$this->roles = Role::all();
 		}
 		return $this->roles;

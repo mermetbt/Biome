@@ -9,6 +9,8 @@ use Biome\Core\ORM\QuerySet;
 
 class One2ManyField extends AbstractField implements QuerySetFieldInterface
 {
+	protected $editable = FALSE;
+
 	protected $object_name	= NULL;
 	protected $foreign_key	= NULL;
 

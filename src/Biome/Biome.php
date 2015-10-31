@@ -5,6 +5,7 @@ namespace Biome;
 use Biome\Core\URL;
 use Biome\Core\Route;
 use Biome\Core\Error;
+use Biome\Core\Rights;
 use Biome\Core\HTTP\Request;
 use Biome\Core\HTTP\Response;
 
@@ -21,27 +22,12 @@ class Biome
 		/* Initializing the Framework. */
 		Error::init();
 
-		/* Registering default services. */
-		Biome::registerService('request', function() {
-			return Request::createFromGlobals();
-		});
-
-		if(!Biome::hasService('view'))
-		{
-			Biome::registerService('view', function() {
-				return new \Biome\Core\View();
-			});
-		}
+		self::declareServices();
 
 		/* Starting. */
 		$request = Biome::getService('request');
 
-		/* Routing. */
-		$router = new Route();
-		$router->autoroute();
-
-		/* Dispatch. */
-		$dispatcher = $router->getDispatcher();
+		$dispatcher = Biome::getService('dispatcher');
 		$response = $dispatcher->dispatch($request->getMethod(), $request->getPathInfo());
 
 		/* Send the response. */
@@ -51,6 +37,74 @@ class Biome
 		foreach(self::$_end_actions AS $action)
 		{
 			$action();
+		}
+	}
+
+	public static function tests()
+	{
+		self::declareServices();
+
+
+	}
+
+	protected static function declareServices()
+	{
+		/* Registering default services. */
+		Biome::registerService('request', function() {
+			return Request::createFromGlobals();
+		});
+
+		/**
+		 * Biome default view service.
+		 */
+		if(!Biome::hasService('view'))
+		{
+			Biome::registerService('view', function() {
+				return new \Biome\Core\View();
+			});
+		}
+
+		Biome::registerService('rights', function() {
+			$auth = \Biome\Core\Collection::get('auth');
+
+			if($auth->isAuthenticated())
+			{
+				$roles = $auth->user->roles;
+				foreach($roles AS $role)
+				{
+					$rights = Rights::loadFromJSON($role->role_rights);
+				}
+				return $rights;
+			}
+
+			$rights = Rights::loadFromArray(array());
+
+			$rights->setAttribute('User', 'mail', TRUE, TRUE);
+			$rights->setAttribute('User', 'password', TRUE, TRUE);
+
+			return $rights;
+		});
+
+		/**
+		 * Biome default route service.
+		 */
+		if(!Biome::hasService('router'))
+		{
+			Biome::registerService('router', function() {
+				$router = new Route();
+				$router->autoroute();
+				return $router;
+			});
+		}
+
+		/**
+		 * Biome default dispatch service.
+		 */
+		if(!Biome::hasService('dispatcher'))
+		{
+			Biome::registerService('dispatcher', function() {
+				return Biome::getService('router')->getDispatcher();
+			});
 		}
 	}
 

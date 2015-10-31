@@ -8,6 +8,16 @@ class DateTimeConverter implements ConverterInterface
 {
 	public function get($value)
 	{
+		if($value instanceof DateTime)
+		{
+			return $value;
+		}
+
+		if(!is_string($value))
+		{
+			throw new \Exception('Wrong date value given! ' . print_r($value, TRUE));
+		}
+
 		return new DateTime($value);
 	}
 

@@ -17,7 +17,7 @@ foreach($flash->getErrors() AS $title => $msg)
 
 		?><i class="glyphicon glyphicon-remove"></i> <?php
 		?><strong><?php echo $title; ?></strong><?php
-		echo $msg;
+		echo ' ', $msg;
 	?></div><?php
 }
 
@@ -29,7 +29,7 @@ foreach($flash->getWarnings() AS $title => $msg)
 
 		?><i class="fa fa-exclamation-triangle "></i> <?php
 		?><strong><?php echo $title; ?></strong><?php
-		echo $msg;
+		echo ' ', $msg;
 	?></div><?php
 }
 
@@ -41,7 +41,7 @@ foreach($flash->getInfos() AS $title => $msg)
 
 		?><i class="fa fa-info-circle"></i> <?php
 		?><strong><?php echo $title; ?></strong><?php
-		echo $msg;
+		echo ' ', $msg;
 	?></div><?php
 }
 
@@ -53,7 +53,7 @@ foreach($flash->getSuccess() AS $title => $msg)
 
 		?><i class="glyphicon glyphicon-ok"></i> <?php
 		?><strong><?php echo $title; ?></strong><?php
-		echo $msg;
+		echo ' ', $msg;
 	?></div><?php
 }
 

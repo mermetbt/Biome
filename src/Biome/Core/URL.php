@@ -24,6 +24,18 @@ class URL
 		return self::getRequest()->getUri();
 	}
 
+	public static function getRoute()
+	{
+		$request = self::getRequest();
+		$pathInfo = $request->getPathInfo();
+		return $pathInfo;
+	}
+
+	public static function matchRequest($url)
+	{
+		return $url == self::getBaseURL() . self::getRoute();
+	}
+
 	public static function fromRoute($controller = NULL, $action = NULL, $item = NULL, $module = NULL, $page = NULL)
 	{
 		$url = self::getBaseURL();

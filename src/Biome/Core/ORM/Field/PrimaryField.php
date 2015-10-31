@@ -7,6 +7,8 @@ use Biome\Core\ORM\AbstractField;
 class PrimaryField extends AbstractField
 {
 	protected $required = FALSE;
+	protected $editable = FALSE;
+
 	protected $auto_id = TRUE;
 
 	public function getAutoId()
