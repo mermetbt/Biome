@@ -79,6 +79,8 @@ class Biome
 
 			$rights = Rights::loadFromArray(array());
 
+			$rights->setAttribute('User', 'firstname', TRUE, TRUE);
+			$rights->setAttribute('User', 'lastname', TRUE, TRUE);
 			$rights->setAttribute('User', 'mail', TRUE, TRUE);
 			$rights->setAttribute('User', 'password', TRUE, TRUE);
 

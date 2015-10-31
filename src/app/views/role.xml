@@ -73,11 +73,22 @@
 			<div class="col-lg-12">
 				<biome:panel title="Authorizations">
 
-					<biome:form>
-						<biome:rolemanagement value="#{roles.role.role_rights}"/>
+					<!--
+					<biome:tab>
+						<biome:page title="Object rights">
+					-->
+							<biome:form>
+								<biome:rolemanagement value="#{roles.role.role_rights}"/>
 
-						<biome:button class="btn-success" value="Update" action="#{role.authorizations}"/>
-					</biome:form>
+								<biome:button class="btn-success" value="Update" action="#{role.authorizations}"/>
+							</biome:form>
+							<!--
+						</biome:page>
+						<biome:page title="Route rights">
+							<span>Another model??</span>
+						</biome:page>
+					</biome:tab>
+							-->
 				</biome:panel>
 			</div>
 		</div>
