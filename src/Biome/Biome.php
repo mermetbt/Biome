@@ -50,9 +50,12 @@ class Biome
 	protected static function declareServices()
 	{
 		/* Registering default services. */
-		Biome::registerService('request', function() {
-			return Request::createFromGlobals();
-		});
+		if(!Biome::hasService('request'))
+		{
+			Biome::registerService('request', function() {
+				return Request::createFromGlobals();
+			});
+		}
 
 		/**
 		 * Biome default view service.
@@ -64,28 +67,34 @@ class Biome
 			});
 		}
 
-		Biome::registerService('rights', function() {
-			$auth = \Biome\Core\Collection::get('auth');
+		/**
+		 * Biome default rights service.
+		 */
+		if(!Biome::hasService('rights'))
+		{
+			Biome::registerService('rights', function() {
+				$auth = \Biome\Core\Collection::get('auth');
 
-			if($auth->isAuthenticated())
-			{
-				$roles = $auth->user->roles;
-				foreach($roles AS $role)
+				if($auth->isAuthenticated())
 				{
-					$rights = Rights::loadFromJSON($role->role_rights);
+					$roles = $auth->user->roles;
+					foreach($roles AS $role)
+					{
+						$rights = Rights::loadFromJSON($role->role_rights);
+					}
+					return $rights;
 				}
+
+				$rights = Rights::loadFromArray(array());
+
+				$rights->setAttribute('User', 'firstname', TRUE, TRUE);
+				$rights->setAttribute('User', 'lastname', TRUE, TRUE);
+				$rights->setAttribute('User', 'mail', TRUE, TRUE);
+				$rights->setAttribute('User', 'password', TRUE, TRUE);
+
 				return $rights;
-			}
-
-			$rights = Rights::loadFromArray(array());
-
-			$rights->setAttribute('User', 'firstname', TRUE, TRUE);
-			$rights->setAttribute('User', 'lastname', TRUE, TRUE);
-			$rights->setAttribute('User', 'mail', TRUE, TRUE);
-			$rights->setAttribute('User', 'password', TRUE, TRUE);
-
-			return $rights;
-		});
+			});
+		}
 
 		/**
 		 * Biome default route service.
