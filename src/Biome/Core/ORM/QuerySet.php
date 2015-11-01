@@ -280,7 +280,22 @@ class QuerySet implements Iterator, Countable
 	public function get($id)
 	{
 		$new_qs = clone $this;
-		$new_qs->filter(array(array($this->object()->parameters()['primary_key'], '=', $id)));
+
+		$primary_keys = $this->object()->parameters()['primary_key'];
+		$filters = array();
+		if(is_array($primary_keys))
+		{
+			foreach($primary_keys AS $index => $pk)
+			{
+				$filters[] = array($pk, '=', $id[$index]);
+			}
+		}
+		else
+		{
+			$filters[] = array($primary_keys, '=', $id);
+		}
+
+		$new_qs->filter($filters);
 		return $new_qs->current();
 	}
 

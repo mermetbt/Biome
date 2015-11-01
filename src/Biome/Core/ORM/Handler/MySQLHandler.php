@@ -228,6 +228,17 @@ class MySQLHandler
 		$this->db()->query($query);
 
 		$id = $this->db()->getInsertedId();
+
+		// Case of multiple primary key without autoincrement.
+		if(is_array($parameters['primary_key']))
+		{
+			$id = array();
+			foreach($parameters['primary_key'] AS $pk)
+			{
+				$id[] = $data[$pk];
+			}
+		}
+
 		return $id;
 	}
 
@@ -237,7 +248,18 @@ class MySQLHandler
 		$table		= $parameters['table'];
 
 		$filters	= array();
-		$filters[]	= array($parameters['primary_key'], '=', $id);
+
+		if(is_array($parameters['primary_key']))
+		{
+			foreach($parameters['primary_key'] AS $index => $pk)
+			{
+				$filters[]	= array($pk, '=', $id[$index]);
+			}
+		}
+		else
+		{
+			$filters[]	= array($parameters['primary_key'], '=', $id);
+		}
 
 		$query = $this->generateUpdate($database, $table, $data);
 		$query .= $this->generateWhere($table, $filters);

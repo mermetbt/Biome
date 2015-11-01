@@ -4,6 +4,8 @@ namespace Biome\Core\ORM;
 
 use Biome\Core\ORM\Field\PrimaryField;
 use Biome\Core\ORM\Field\Many2OneField;
+use Biome\Core\ORM\Field\Many2ManyField;
+use Biome\Core\ORM\Field\One2ManyField;
 use Biome\Core\ORM\Inspector\ModelInspectorInterface;
 
 abstract class Models implements ObjectInterface
@@ -100,12 +102,25 @@ abstract class Models implements ObjectInterface
 	{
 		$f = $this->getField($attribute);
 
+		if($f instanceof Many2OneField && !($value instanceof Models) && substr($attribute, -3) != '_id')
+		{
+			throw new \Exception('Unable to store a Models in a non Many2OneField: ' . $value);
+		}
+
 		$new = $f->applySet($value);
 		if(!isset($this->_values['old'][$attribute]) ||
 			$new !== $this->_values['old'][$attribute] ||
 			(isset($this->_values['new'][$attribute]) && $new !== $this->_values['new'][$attribute]))
 		{
 			$this->_values['new'][$attribute] = $new;
+
+			if($f instanceof Many2OneField && $new instanceof Models)
+			{
+				if(substr($attribute, -3) != '_id')
+				{
+					$this->_values['new'][$attribute . '_id'] = $new->getId();
+				}
+			}
 		}
 
 		return TRUE;
@@ -130,8 +145,21 @@ abstract class Models implements ObjectInterface
 		}
 
 		// Fetch attribute if object has an ID.
-		$pk = $this->parameters()['primary_key'];
-		if(isset($this->$pk))
+		$pks = $this->parameters()['primary_key'];
+		if(is_array($pks))
+		{
+			$all_pk_set = TRUE;
+			foreach($pks AS $pk)
+			{
+				$all_pk_set = $all_pk_set && isset($this->$pk);
+			}
+		}
+		else
+		{
+			$all_pk_set = isset($this->$pks);
+		}
+
+		if($all_pk_set)
 		{
 			$this->_query_set->fields($attribute)->fetch();
 
@@ -165,8 +193,21 @@ abstract class Models implements ObjectInterface
 		}
 
 		// Fetch attribute if object has an ID.
-		$pk = $this->parameters()['primary_key'];
-		if(isset($this->$pk))
+		$pks = $this->parameters()['primary_key'];
+		if(is_array($pks))
+		{
+			$all_pk_set = TRUE;
+			foreach($pks AS $pk)
+			{
+				$all_pk_set = $all_pk_set && isset($this->$pk);
+			}
+		}
+		else
+		{
+			$all_pk_set = isset($this->$pks);
+		}
+
+		if($all_pk_set)
 		{
 			$this->_query_set->fields($attribute)->fetch();
 
@@ -194,11 +235,12 @@ abstract class Models implements ObjectInterface
 					return NULL;
 				}
 
-				$id = $this->$field;
-				if(empty($id))
+				if(empty($this->_values['old'][$field]))
 				{
 					return NULL;
 				}
+
+				$id = $this->_values['old'][$field];
 
 				return $id;
 			}
@@ -206,21 +248,25 @@ abstract class Models implements ObjectInterface
 			$id = array();
 			foreach($pks AS $pk)
 			{
-				$value = $this->$pk;
-				if(!empty($value))
+				if(!empty($this->_values['old'][$pk]))
 				{
-					$id[] = $value;
+					$id[] = $this->_values['old'][$pk];
 				}
+			}
+
+			if(empty($id))
+			{
+				return NULL;
 			}
 		}
 		else
 		{
-			$id = $this->$pks;
-		}
+			if(empty($this->_values['old'][$pks]))
+			{
+				return NULL;
+			}
 
-		if(empty($id))
-		{
-			return NULL;
+			$id = $this->_values['old'][$pks];
 		}
 
 		return $id;
@@ -265,7 +311,7 @@ abstract class Models implements ObjectInterface
 
 		if($obj === FALSE)
 		{
-			throw new \Exception('Object ' . get_called_class() . ' not found! id=' . $id);
+			throw new \Exception('Object ' . get_called_class() . ' not found! id=' . print_r($id, true));
 		}
 
 		if(!$obj instanceof Models)
@@ -395,19 +441,66 @@ abstract class Models implements ObjectInterface
 			return FALSE;
 		}
 
+		$data = $this->_values['new'];
+
+		// Create and clean Many2One elements.
+		foreach($this->_structure AS $field_name => $field)
+		{
+			if(!$field instanceof Many2OneField)
+			{
+				continue;
+			}
+
+			if(substr($field_name, -3) === '_id')
+			{
+				continue;
+			}
+
+			if(!isset($data[$field_name]))
+			{
+				continue;
+			}
+
+			$value = $data[$field_name];
+
+			if(!empty($value))
+			{
+				if(!$value instanceof Models)
+				{
+					throw new \Exception('Value in a Many2OneField is not an object of type Models!');
+				}
+
+				if($value->getId() === NULL)
+				{
+					if(!$value->save())
+					{
+						throw new \Exception('Unable to save the object for the field ' . $field_name . '!');
+					}
+				}
+
+				$data[$field_name . '_id'] = $value->getId();
+			}
+
+			unset($data[$field_name]);
+		}
+
 		// Creation
 		if($id === NULL)
 		{
-			$this->_query_set->create($this->_values['new'], $id);
+			$this->_query_set->create($data, $id);
 			$this->setId($id);
-			$this->sync();
 		}
 		else
 		if($this->hasChanges())
 		{
-			$this->_query_set->update($id, $this->_values['new']);
-			$this->sync();
+			$this->_query_set->update($id, $data);
 		}
+
+		// Associate Many2Many and One2Many elements.
+
+
+		// Final sync to retrieve the values saved.
+		$this->sync();
 
 		return TRUE;
 	}

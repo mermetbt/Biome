@@ -128,14 +128,11 @@ class Biome
 	public static function shell()
 	{
 		self::declareServices();
-
-		$app = new Application();
+		$app = new Application('Biome Shell');
+		$app->setAutoExit(FALSE);
 
 		/* Initializing the Framework. */
 		//Error::init();
-
-// 		echo 'Biome Shell', PHP_EOL;
-// 		echo '-----------', PHP_EOL;
 
 		$dirs = self::getDirs('commands');
 		foreach($dirs AS $dir)

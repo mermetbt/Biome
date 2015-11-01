@@ -30,6 +30,16 @@ abstract class AbstractCommand
 				continue;
 			}
 
+			if($method->isConstructor())
+			{
+				continue;
+			}
+
+			if(!$method->isPublic())
+			{
+				continue;
+			}
+
 			$group_name = strtolower(substr($class, 0, -strlen('Command')));
 			$command_name = $method->getName();
 
@@ -103,6 +113,7 @@ abstract class AbstractCommand
 
 						$object = new $class($output);
 						$result = call_user_func_array(array($object, $command_name), $parameters);
+						return $result;
 					});
 		}
 	}

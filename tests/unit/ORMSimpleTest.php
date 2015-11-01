@@ -3,6 +3,8 @@
 namespace Biome\Test;
 
 use \User;
+use \Role;
+use \UserRole;
 
 class ORMSimpleTestTest extends \PHPUnit_Framework_TestCase
 {
@@ -69,5 +71,55 @@ class ORMSimpleTestTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($user->delete());
 		$user = User::all()->filter(array(array('user_id', '=', $user_id)))->fetch();
 		$this->assertEmpty($user);
+	}
+
+	public function testRoleAssociation()
+	{
+		/* Create role. */
+		$role = new Role();
+		$role->role_name = 'TEST ROLE';
+		$this->assertEquals('TEST ROLE', $role->role_name);
+		$this->assertTrue($role->save());
+		$this->assertEquals('TEST ROLE', $role->role_name);
+
+		/* Create user. */
+		$user = new User();
+
+		$user->firstname = 'Jean';
+		$this->assertEquals('Jean', $user->firstname);
+
+		$user->lastname = 'Dupont';
+		$this->assertEquals('Dupont', $user->lastname);
+
+		$user->mail = 'jean.dupont@test.com';
+		$this->assertEquals('jean.dupont@test.com', $user->mail);
+
+		$user->password = 'My Password';
+		$this->assertEquals('', $user->password);
+
+		$this->assertTrue($user->save());
+		$this->assertEquals('Jean', $user->firstname);
+		$this->assertEquals('Dupont', $user->lastname);
+		$this->assertEquals('jean.dupont@test.com', $user->mail);
+		$this->assertEquals('', $user->password);
+
+		/* Create association. */
+		$ur = new UserRole();
+
+		$ur->role = $role; // One way
+		$this->assertEquals($role->getId(), $ur->role_id);
+
+		$ur->user_id = $user->getId(); // Another way
+		$this->assertEquals($user->getId(), $ur->user_id);
+
+		$this->assertTrue($ur->save());
+
+		$this->assertEquals($role->getId(), $ur->role_id);
+		$this->assertEquals($user->getId(), $ur->user_id);
+
+		/* Delete */
+		$ur->delete();
+		$user->delete();
+		$role->delete();
 	}
 }
