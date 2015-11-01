@@ -280,7 +280,17 @@ class MySQLHandler
 		$table		= $parameters['table'];
 
 		$filters	= array();
-		$filters[]	= array($parameters['primary_key'], '=', $id);
+		if(is_array($parameters['primary_key']))
+		{
+			foreach($parameters['primary_key'] AS $index => $pk)
+			{
+				$filters[]	= array($pk, '=', $id[$index]);
+			}
+		}
+		else
+		{
+			$filters[]	= array($parameters['primary_key'], '=', $id);
+		}
 
 		$query = $this->generateDelete($database, $table);
 		$query .= $this->generateWhere($table, $filters);
