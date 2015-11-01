@@ -33,13 +33,18 @@ class Rights
 		return new Rights($rights);
 	}
 
+	public function exportToJSON()
+	{
+		return json_encode($this->rights);
+	}
+
 	public function setRoute($method, $controller, $action, $allowed = TRUE)
 	{
 		$this->rights['routes'][$method][$controller][$action]	= ($allowed) ? '1' : '';
 		return $this;
 	}
 
-	public function setObject($object_name, $view, $create, $edit, $delete)
+	public function setObject($object_name, $view = TRUE, $create = TRUE, $edit = TRUE, $delete = TRUE)
 	{
 		$this->rights['objects'][$object_name]['object']['view']	= ($view) ? '1' : '';
 		$this->rights['objects'][$object_name]['object']['create']	= ($create) ? '1' : '';
@@ -48,7 +53,7 @@ class Rights
 		return $this;
 	}
 
-	public function setAttribute($object_name, $attribute_name, $view, $edit)
+	public function setAttribute($object_name, $attribute_name, $view = TRUE, $edit = TRUE)
 	{
 		$this->rights['objects'][$object_name]['attributes'][$attribute_name]['view'] = ($view) ? '1' : '';
 		$this->rights['objects'][$object_name]['attributes'][$attribute_name]['edit'] = ($edit) ? '1' : '';

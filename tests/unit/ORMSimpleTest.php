@@ -122,4 +122,43 @@ class ORMSimpleTestTest extends \PHPUnit_Framework_TestCase
 		$user->delete();
 		$role->delete();
 	}
+
+	public function testMultipleSave()
+	{
+		$r = new Role();
+
+		$r->role_name = 'TEST';
+
+		$this->assertTrue($r->save());
+		$this->assertTrue($r->save());
+
+		$r->role_name = 'TEST2';
+		$this->assertTrue($r->save());
+		$this->assertTrue($r->save());
+
+		$r2 = Role::get($r->getId());
+		$this->assertTrue($r2->save());
+		$this->assertTrue($r2->save());
+	}
+
+	public function testForcePrimaryKey()
+	{
+		$r = new Role();
+
+		$r->role_id = 66677;
+		$this->assertEquals(66677, $r->role_id);
+
+		$r->role_name = 'TESTPK';
+		$this->assertEquals('TESTPK', $r->role_name);
+
+		$this->assertTrue($r->save());
+
+		$this->assertEquals(66677, $r->role_id);
+
+		$r2 = Role::get(66677);
+		$this->assertNotNull($r2);
+		$this->assertEquals('TESTPK', $r->role_name);
+
+		$r2->delete();
+	}
 }

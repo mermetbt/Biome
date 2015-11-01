@@ -441,7 +441,7 @@ abstract class Models implements ObjectInterface
 			return FALSE;
 		}
 
-		$data = $this->_values['new'];
+		$data = isset($this->_values['new']) ? $this->_values['new'] : array();
 
 		// Create and clean Many2One elements.
 		foreach($this->_structure AS $field_name => $field)

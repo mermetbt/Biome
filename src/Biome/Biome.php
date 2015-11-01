@@ -19,6 +19,7 @@ class Biome
 
 	public static function start()
 	{
+		session_name(md5($_SERVER['PHP_SELF']));
 		session_start();
 
 		/* Initializing the Framework. */
