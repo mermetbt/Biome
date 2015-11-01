@@ -2,6 +2,8 @@
 
 namespace Biome\Core\ORM\Connector;
 
+use Biome\Core\Logger\Logger;
+
 class MySQLConnector
 {
 	protected static $_instances = array();
@@ -121,6 +123,7 @@ class MySQLConnector
 			$this->_queries_log[] = $query;
 		}
 
+		Logger::debug('Executing query: ' . $query);
 		$result = $this->_instance->query($query);
 
 		$this->checkDbError();

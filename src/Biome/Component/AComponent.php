@@ -41,4 +41,29 @@ class AComponent extends Component
 
 		return \URL::fromRoute($controller, $action, $item, $module, $page);
 	}
+
+	public function isAllowed()
+	{
+		$rights = \Biome\Biome::getService('rights');
+
+		if(isset($this->attributes['controller']))
+		{
+			$controller = $this->attributes['controller'];
+		}
+		else
+		{
+			$controller = 'index';
+		}
+
+		if(isset($this->attributes['action']))
+		{
+			$action = $this->attributes['action'];
+		}
+		else
+		{
+			$action = 'index';
+		}
+
+		return $rights->isRouteAllowed('GET', $controller, $action);
+	}
 }

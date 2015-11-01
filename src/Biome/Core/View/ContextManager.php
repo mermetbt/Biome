@@ -188,6 +188,7 @@ trait ContextManager
 	{
 		$variables = $this->fetchVariables($value);
 
+		$field_object = NULL;
 		foreach($variables AS $key => $var)
 		{
 			$raw = explode('.', $var);
@@ -199,7 +200,11 @@ trait ContextManager
 			{
 				return NULL;
 			}
-			$field_object = $object->getField($field);
+
+			if($object->hasField($field))
+			{
+				$field_object = $object->getField($field);
+			}
 		}
 
 		return $field_object;

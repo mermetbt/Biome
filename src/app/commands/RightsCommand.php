@@ -9,12 +9,11 @@ class RightsCommand extends AbstractCommand
 	 */
 	public function createAdminRole()
 	{
-		$admin = Role::get(1);
-		if(!empty($admin))
+		try
 		{
+			$admin = Role::get(1);
 			$this->output->writeln('The administrator role already exists!');
-		}
-		else
+		} catch(\Exception $e)
 		{
 			$admin = new Role();
 			$admin->role_id = 1;

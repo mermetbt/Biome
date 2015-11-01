@@ -9,6 +9,8 @@ use Biome\Core\Rights;
 use Biome\Core\HTTP\Request;
 use Biome\Core\HTTP\Response;
 
+use Biome\Core\Logger\Logger;
+
 use Symfony\Component\Console\Application;
 
 class Biome
@@ -53,6 +55,20 @@ class Biome
 	protected static function declareServices()
 	{
 		/* Registering default services. */
+
+		/**
+		 * Biome default logger service.
+		 */
+		if(!Biome::hasService('logger'))
+		{
+			Biome::registerService('logger', function() {
+				return new \Psr\Log\NullLogger();
+			});
+		}
+
+		/**
+		 * Biome default request.
+		 */
 		if(!Biome::hasService('request'))
 		{
 			Biome::registerService('request', function() {
@@ -124,12 +140,14 @@ class Biome
 				return Biome::getService('router')->getDispatcher();
 			});
 		}
+
+		Logger::info('Services registered!');
 	}
 
 	public static function shell()
 	{
 		self::declareServices();
-		$app = new Application('Biome Shell');
+		$app = new Application('Biome Shell', 'development');
 		$app->setAutoExit(FALSE);
 
 		/* Initializing the Framework. */

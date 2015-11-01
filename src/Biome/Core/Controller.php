@@ -7,6 +7,8 @@ use Biome\Core\HTTP\Response;
 
 use Biome\Core\View\Flash;
 
+use Biome\Core\Logger\Logger;
+
 use League\Route\Http\Exception\ForbiddenException as ForbiddenException;
 
 class Controller
@@ -18,6 +20,7 @@ class Controller
 
 	public function __construct(Request $request, Response $response)
 	{
+		Logger::info('Instanciation of router ' . get_called_class());
 		$this->request	= $request;
 		$this->response = $response;
 	}
@@ -58,6 +61,8 @@ class Controller
 
 	public function process($type, $controller_name, $action_name, $method_name, $method_params)
 	{
+		Logger::info('Processing method ' . $method_name);
+
 		$this->_call_params['http_method_type']	= $type;
 		$this->_call_params['controller_name']	= $controller_name;
 		$this->_call_params['action_name']		= $action_name;
