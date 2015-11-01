@@ -6,6 +6,9 @@ use Biome\Core\ORM\Inspector\SQLModelInspector;
 
 class DatabaseCommand extends AbstractCommand
 {
+	/**
+	 * @description Print SQL code needed to create all the tables corresponding to the models.
+	 */
 	public function showCreateTable()
 	{
 		$objects = ObjectLoader::getObjects();

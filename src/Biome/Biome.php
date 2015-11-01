@@ -149,7 +149,13 @@ class Biome
 				}
 
 				$command = substr($file, 0, -4);
-				$command::registerCommands($app);
+
+				// FIXME: ?? bug when not present..
+				include_once($dir . '/' . $file);
+				if(class_exists($command))
+				{
+					$command::registerCommands($app);
+				}
 			}
 		}
 

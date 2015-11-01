@@ -9,8 +9,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class AbstractCommand extends Command
+abstract class AbstractCommand
 {
+	protected $output;
+
+	protected function __construct(OutputInterface $output)
+	{
+		$this->output = $output;
+	}
+
 	public static function registerCommands(Application $console)
 	{
 		$class = get_called_class();
@@ -27,9 +34,34 @@ abstract class AbstractCommand extends Command
 			$command_name = $method->getName();
 
 			/**
+			 * Read comments.
+			 */
+			$comment = $method->getDocComment();
+
+			$method_description = '';
+			$param_description_list = array();
+			if(!empty($comment))
+			{
+				/* Method description. */
+				preg_match_all('#@description (.*?)\n#s', $comment, $description);
+				$method_description = empty($description[1][0]) ? '' : $description[1][0];
+
+				/* Params. */
+				preg_match_all('#@param (([a-zA-Z0-9]+?) (.*?))\n#s', $comment, $params_annotations);
+				foreach($params_annotations[0] AS $key => $p)
+				{
+					$param_txt = $params_annotations[1][$key];
+					$param_name = $params_annotations[2][$key];
+					$param_description = $params_annotations[3][$key];
+					$param_description_list[$param_name] = $param_description;
+				}
+			}
+
+			/**
 			 * Parameters handling.
 			 */
 			$parameters = array();
+			$params_list = array();
 			foreach($method->getParameters() AS $param)
 			{
 				$name = $param->getName();
@@ -44,7 +76,7 @@ abstract class AbstractCommand extends Command
 				else
 				{
 					$matches = array();
-					preg_match('/\[(.*)\]/', $param_str, $matches);
+					preg_match('/\[(.*)\]/', (string)$param, $matches);
 
 					$raw = explode(' ', trim($matches[1]));
 
@@ -52,19 +84,26 @@ abstract class AbstractCommand extends Command
 					$type = ($raw[1][0] == '$') ? '' : $raw[1];
 				}
 
-				$required_constant = $required ? InputArgument::REQUIRED : '';
-				$parameters[] = new InputArgument($name, $required_constant, 'Directory name');
+				$required_constant = $required ? InputArgument::REQUIRED : NULL;
+				$param_description = !empty($param_description_list[$name]) ? $param_description_list[$name] : '';
+				$parameters[] = new InputArgument($name, $required_constant, $param_description);
+				$params_list[] = $name;
 			}
 
 			$console->register($group_name . ':' . $command_name)
 					->setDefinition($parameters)
-					->setDescription('Displays the files in the given directory')
-					->setCode(function (InputInterface $input, OutputInterface $output) {
-						$dir = $input->getArgument('dir');
+					->setDescription($method_description)
+					->setCode(function (InputInterface $input, OutputInterface $output) use($class, $command_name, $params_list) {
 
-						$output->writeln(sprintf('Dir listing for <info>%s</info>', $dir));
+						$parameters = array();
+						foreach($params_list AS $param_name)
+						{
+							$parameters[] = $input->getArgument($param_name);
+						}
+
+						$object = new $class($output);
+						$result = call_user_func_array(array($object, $command_name), $parameters);
 					});
-
 		}
 	}
 }
