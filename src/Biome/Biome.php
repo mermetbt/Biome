@@ -9,6 +9,8 @@ use Biome\Core\Rights;
 use Biome\Core\HTTP\Request;
 use Biome\Core\HTTP\Response;
 
+use Symfony\Component\Console\Application;
+
 class Biome
 {
 	protected static $directories	= NULL;
@@ -87,10 +89,14 @@ class Biome
 
 				$rights = Rights::loadFromArray(array());
 
-				$rights->setAttribute('User', 'firstname', TRUE, TRUE);
-				$rights->setAttribute('User', 'lastname', TRUE, TRUE);
-				$rights->setAttribute('User', 'mail', TRUE, TRUE);
-				$rights->setAttribute('User', 'password', TRUE, TRUE);
+				$rights	->setAttribute('User', 'firstname', TRUE, TRUE)
+						->setAttribute('User', 'lastname', TRUE, TRUE)
+						->setAttribute('User', 'mail', TRUE, TRUE)
+						->setAttribute('User', 'password', TRUE, TRUE)
+						->setRoute('GET', 'index', 'index')
+						->setRoute('GET', 'auth', 'login')
+						->setRoute('POST', 'auth', 'signin')
+						->setRoute('POST', 'auth', 'signup');
 
 				return $rights;
 			});
@@ -121,11 +127,15 @@ class Biome
 
 	public static function shell()
 	{
+		self::declareServices();
+
+		$app = new Application();
+
 		/* Initializing the Framework. */
 		//Error::init();
 
-		echo 'Biome Shell', PHP_EOL;
-		echo '-----------', PHP_EOL;
+// 		echo 'Biome Shell', PHP_EOL;
+// 		echo '-----------', PHP_EOL;
 
 		$dirs = self::getDirs('commands');
 		foreach($dirs AS $dir)
@@ -138,17 +148,12 @@ class Biome
 					continue;
 				}
 
-				include_once($dir . '/' . $file);
-
 				$command = substr($file, 0, -4);
-				echo substr($command, 0, -strlen('Command')), PHP_EOL;
-
-				$command::listCommands();
+				$command::registerCommands($app);
 			}
 		}
 
-		$cmd = new $command();
-		$cmd->showCreateTable();
+		$app->run();
 
 		/* Commit. */
 		foreach(self::$_end_actions AS $action)

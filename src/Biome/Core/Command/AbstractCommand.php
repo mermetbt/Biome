@@ -2,9 +2,12 @@
 
 namespace Biome\Core\Command;
 
-abstract class AbstractCommand
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Application;
+
+abstract class AbstractCommand extends Command
 {
-	public static function listCommands()
+	public static function registerCommands(Application $console)
 	{
 		$class = get_called_class();
 		$reflection = new \ReflectionClass($class);
@@ -15,7 +18,21 @@ abstract class AbstractCommand
 			{
 				continue;
 			}
-			echo '- ', strtolower(substr($class, 0, -strlen('Command')) . ':' . $method->getName()), PHP_EOL;
+
+			$group_name = strtolower(substr($class, 0, -strlen('Command')));
+			$command_name = $method->getName();
+
+			$console->register($group_name . ':' . $command_name)
+					->setDefinition(array(
+						new InputArgument('dir', InputArgument::REQUIRED, 'Directory name'),
+					))
+					->setDescription('Displays the files in the given directory')
+					->setCode(function (InputInterface $input, OutputInterface $output) {
+						$dir = $input->getArgument('dir');
+
+						$output->writeln(sprintf('Dir listing for <info>%s</info>', $dir));
+					});
+
 		}
 	}
 }

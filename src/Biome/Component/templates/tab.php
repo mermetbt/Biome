@@ -12,13 +12,13 @@ foreach($pages_list AS $page)
 	$title = $page->getTitle();
 	$page_id = $page->getId();
 
+	?><li role="presentation" class="<?php echo $first ? 'active' : ''; ?>"><a href="#<?php echo $page_id; ?>" aria-controls="<?php echo $page_id; ?>" role="tab" data-toggle="tab"><?php echo $title; ?></a></li><?php
+
 	if($first)
 	{
 		$first = false;
 		$page->addClasses('in active');
 	}
-
-	?><li role="presentation" class="active"><a href="#<?php echo $page_id; ?>" aria-controls="<?php echo $page_id; ?>" role="tab" data-toggle="tab"><?php echo $title; ?></a></li><?php
 }
 
 ?></ul><?php

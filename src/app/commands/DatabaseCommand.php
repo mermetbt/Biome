@@ -1,6 +1,5 @@
 <?php
 
-use Biome\Biome;
 use Biome\Core\Command\AbstractCommand;
 use Biome\Core\ORM\ObjectLoader;
 use Biome\Core\ORM\Inspector\SQLModelInspector;

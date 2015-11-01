@@ -38,8 +38,7 @@ class URL
 
 	public static function fromRoute($controller = NULL, $action = NULL, $item = NULL, $module = NULL, $page = NULL)
 	{
-		$url = self::getBaseURL();
-
+		$url = '';
 		if($module)
 		{
 			$url .= '/' . $module;
@@ -65,6 +64,6 @@ class URL
 			$url .= '/' . $page;
 		}
 
-		return $url;
+		return self::getBaseURL() . $url;
 	}
 }

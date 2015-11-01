@@ -5,8 +5,13 @@ use Biome\Core\Collection;
 
 class BaseController extends Controller
 {
-	public function preRoute()
+	public function beforeRoute()
 	{
+		/**
+		 * Check route rights.
+		 */
+		$this->checkAuthorizations();
+
 		/**
 		 * Check authentication.
 		 */

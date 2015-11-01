@@ -8,7 +8,8 @@
 		"koala-framework/composer-extra-assets": "^1.1@dev",
 		"league/route": "^1.0@dev",
 		"filp/whoops": "1.1.7",
-		"sabre/xml": "1.2.0"
+		"sabre/xml": "1.2.0",
+		"symfony/console": "^3.0@dev"
 	},
 	"license": "GPL-2.0",
 	"authors": [

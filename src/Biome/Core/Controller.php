@@ -7,10 +7,14 @@ use Biome\Core\HTTP\Response;
 
 use Biome\Core\View\Flash;
 
+use League\Route\Http\Exception\ForbiddenException as ForbiddenException;
+
 class Controller
 {
 	protected $request;
 	protected $response;
+
+	private $_call_params	= array();
 
 	public function __construct(Request $request, Response $response)
 	{
@@ -33,16 +37,37 @@ class Controller
 		return $this->response;
 	}
 
-	protected function preRoute() { return TRUE; }
+	protected function beforeRoute() { return TRUE; }
 
-	protected function postRoute(Response $response) { return $response; }
+	protected function afterRoute(Response $response) { return $response; }
+
+	protected function checkAuthorizations()
+	{
+		$type				= $this->_call_params['http_method_type'];
+		$controller_name	= $this->_call_params['controller_name'];
+		$action_name		= $this->_call_params['action_name'];
+
+		$rights = \Biome\Biome::getService('rights');
+
+		if(!$rights->isRouteAllowed($type, $controller_name, $action_name))
+		{
+			throw new ForbiddenException('Route ' . $type . ' /' . $controller_name . '/' . $action_name . ' unallowed!');
+		}
+		return TRUE;
+	}
 
 	public function process($type, $controller_name, $action_name, $method_name, $method_params)
 	{
+		$this->_call_params['http_method_type']	= $type;
+		$this->_call_params['controller_name']	= $controller_name;
+		$this->_call_params['action_name']		= $action_name;
+		$this->_call_params['method_name']		= $method_name;
+		$this->_call_params['method_params']	= $method_params;
+
 		/**
 		 * preRoute
 		 */
-		if(!$this->preRoute())
+		if(!$this->beforeRoute())
 		{
 			return $this->response();
 		}
@@ -87,7 +112,7 @@ class Controller
 			}
 		}
 
-		$this->response = $this->postRoute($this->response);
+		$this->response = $this->afterRoute($this->response);
 
 		return $this->response;
 	}

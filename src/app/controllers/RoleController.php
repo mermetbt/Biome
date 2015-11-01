@@ -33,9 +33,9 @@ class RoleController extends BaseController
 	public function postAuthorizations(RolesCollection $c)
 	{
 		$r = \Biome\Biome::getService('request');
-		$objects = $r->get('objects');
+		$rights = $r->get('rights');
 
-		$c->role->role_rights = json_encode($objects);
+		$c->role->role_rights = json_encode($rights);
 
 		if($c->role->save())
 		{

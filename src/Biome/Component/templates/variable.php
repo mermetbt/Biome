@@ -4,7 +4,7 @@ $field = $this->getField();
 
 $rights = \Biome\Biome::getService('rights');
 
-$viewable = $rights->isAttributeView($field);
+$viewable = $field === NULL || $rights->isAttributeView($field);
 
 if($viewable)
 {

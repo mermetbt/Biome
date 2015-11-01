@@ -12,6 +12,8 @@ use Biome\Core\HTTP\Response;
 
 class Route extends RouteCollection
 {
+	protected $classname_routes = array();
+
 	public function __construct()
 	{
 		$request = \Biome\Biome::getService('request');
@@ -33,7 +35,6 @@ class Route extends RouteCollection
 		 */
 		$controllers_dirs = \Biome\Biome::getDirs('controllers');
 		$controllers_dirs = array_reverse($controllers_dirs);
-		$routes = array();
 		foreach($controllers_dirs AS $dir)
 		{
 			$files = scandir($dir);
@@ -51,17 +52,17 @@ class Route extends RouteCollection
 
 				$controller_name = substr($file, 0, -14);
 				// Skip if already defined!
-				if(isset($routes[$controller_name]))
+				if(isset($this->classname_routes[$controller_name]))
 				{
 					continue;
 				}
 				include_once($dir . '/' . $file);
 				$class_name = $controller_name . 'Controller';
-				$routes[$controller_name] = $this->getRoutesFromClassName($class_name);
+				$this->classname_routes[$controller_name] = $this->getRoutesFromClassName($class_name);
 			}
 		}
 
-		foreach($routes AS $controller => $actions)
+		foreach($this->classname_routes AS $controller => $actions)
 		{
 			$controller_name = strtolower($controller);
 			foreach($actions AS $type => $action)
@@ -307,5 +308,24 @@ class Route extends RouteCollection
 		}
 
 		return $value;
+	}
+
+	public function getRoutes()
+	{
+		$data = $this->classname_routes;
+
+		$routes_list = array();
+		foreach($data AS $controller_name => $routes)
+		{
+			foreach($routes AS $method_type => $actions)
+			{
+				foreach($actions AS $method_name => $action)
+				{
+					$routes_list[] = array('function' => $action['action'], 'action' => $method_name, 'controller' => strtolower($controller_name), 'method' => $method_type);
+				}
+			}
+		}
+
+		return $routes_list;
 	}
 }
