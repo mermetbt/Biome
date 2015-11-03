@@ -59,7 +59,7 @@ trait ObjectControllerTrait
 		{
 			$this->flash()->error('Unable to create the ' . $object_name . '!', join(', ', $object->getErrors()));
 		}
-		return $this->response()->redirect($object_name);
+		return $this->response()->redirect(strtolower($object_name));
 	}
 
 	public function postEdit(Collection $collection)
