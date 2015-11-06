@@ -8,21 +8,14 @@ class ViewComponent extends Component
 {
 	public function getAction()
 	{
-		if(!isset($this->attributes['action']))
-		{
-			return NULL;
-		}
-		return $this->attributes['action'];
+		return $this->getAttribute('action');
 	}
 
 	public function getCss()
 	{
-		if(!isset($this->attributes['css']))
-		{
-			return array();
-		}
+		$css = $this->getAttribute('css', '');
 
-		$css_list = explode(',', $this->attributes['css']);
+		$css_list = explode(',', $css);
 		foreach($css_list AS $i => $c)
 		{
 			$css_list[$i] = trim($c);

@@ -14,16 +14,12 @@ class ButtonComponent extends Component
 
 	public function getValue()
 	{
-		if(isset($this->attributes['value']))
-		{
-			return $this->attributes['value'];
-		}
-		return 'Submit';
+		return $this->getAttribute('value', 'Submit');
 	}
 
 	public function getAction()
 	{
-		$action = $this->attributes['action'];
+		$action = $this->getAttribute('action');
 
 		$actions = $this->fetchVariables($action);
 

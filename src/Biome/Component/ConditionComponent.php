@@ -8,7 +8,7 @@ class ConditionComponent extends Component
 {
 	public function isValid()
 	{
-		$str_condition = $this->attributes['if'];
+		$str_condition = $this->getAttribute('if');
 		$condition = $this->fetchValue($str_condition);
 		return eval('return (' . (empty($condition) ? 'FALSE' : $condition) . ') == TRUE;');
 	}

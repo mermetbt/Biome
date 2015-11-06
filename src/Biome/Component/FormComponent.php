@@ -8,9 +8,11 @@ class FormComponent extends Component
 {
 	public function getAction()
 	{
-		if(!empty($this->attributes['controller']) && !empty($this->attributes['action']))
+		$controller	= $this->getAttribute('controller', NULL);
+		$action		= $this->getAttribute('action', NULL);
+		if(!empty($controller) && !empty($action))
 		{
-			return \URL::fromRoute($this->attributes['controller'], $this->attributes['action']);
+			return \URL::fromRoute($controller, $action);
 		}
 		return NULL;
 	}

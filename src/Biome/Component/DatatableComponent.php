@@ -16,16 +16,17 @@ class DatatableComponent extends Component
 
 	public function getVar()
 	{
-		return $this->attributes['var'];
+		return $this->getAttribute('var');
 	}
 
 	public function getValue()
 	{
-		$value = $this->fetchValue($this->attributes['value']);
+		$value_name = $this->getAttribute('value');
+		$value = $this->fetchValue($value_name);
 		if(!$value instanceof QuerySet && !is_array($value))
 		{
 			throw new \Exception(	'Unable to loop on a value which is not a QuerySet or an array! '.
-									'Value: ' . $this->attributes['value'] . ' '.
+									'Value: ' . $value_name . ' '.
 									'Result: ' . var_export($value)
 			);
 		}
@@ -34,29 +35,17 @@ class DatatableComponent extends Component
 
 	public function isOrderable()
 	{
-		if(!isset($this->attributes['orderable']))
-		{
-			return FALSE;
-		}
-		return $this->attributes['orderable'] == 1;
+		return $this->getAttribute('orderable', FALSE) == 1;
 	}
 
 	public function isSearchable()
 	{
-		if(!isset($this->attributes['searchable']))
-		{
-			return FALSE;
-		}
-		return $this->attributes['searchable'] == 1;
+		return $this->getAttribute('searchable', FALSE) == 1;
 	}
 
 	public function hasPaging()
 	{
-		if(!isset($this->attributes['pagination']))
-		{
-			return TRUE;
-		}
-		return $this->attributes['pagination'] == 1;
+		return $this->getAttribute('pagination', TRUE) == 1;
 	}
 
 	public function handleAjaxRequest(Request $request)

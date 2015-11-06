@@ -16,34 +16,32 @@ class FieldComponent extends VariableComponent
 
 	public function getName()
 	{
-		if(!isset($this->attributes['name']))
-		{
-			$variables = $this->fetchVariables($this->attributes['value']);
+		$name = $this->getAttribute('name', function() {
+			$variables = $this->fetchVariables($this->getAttribute('value'));
 			$name = '';
 			foreach($variables AS $var)
 			{
 				$name .= str_replace('.', '/', $var);
 			}
 			return $name;
-		}
-		$this->name = $this->attributes['name'];
+		});
+
+		return $this->name = $name;
 	}
 
 	public function getType()
 	{
-		if(isset($this->attributes['type']))
+		return $this->getAttribute('type', function()
 		{
-			return $this->attributes['type'];
-		}
+			$field = $this->getField();
 
-		$field = $this->getField();
+			if(!$field instanceof AbstractField)
+			{
+				throw new \Exception('Attribute "type" must be defined on field component!');
+			}
 
-		if(!$field instanceof AbstractField)
-		{
-			throw new \Exception('Attribute "type" must be defined on field component!');
-		}
-
-		return $field->getType();
+			return $field->getType();
+		});
 	}
 
 	public function getErrors()
@@ -60,19 +58,11 @@ class FieldComponent extends VariableComponent
 
 	public function getPlaceholder()
 	{
-		if(isset($this->attributes['placeholder']))
-		{
-			return $this->attributes['placeholder'];
-		}
-		return '';
+		return $this->getAttribute('placeholder', '');
 	}
 
 	public function showErrors()
 	{
-		if(isset($this->attributes['error']))
-		{
-			return $this->attributes['error'] == '1';
-		}
-		return TRUE;
+		return $this->getAttribute('error', '1') == '1';
 	}
 }

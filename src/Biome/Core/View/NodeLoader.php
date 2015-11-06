@@ -20,7 +20,7 @@ class NodeLoader implements Element
 		$component = new $class_name();
 
 		/* First settings. */
-		$component->name = 'views';
+		$component->_nodename = 'views';
 
 		/* Iterate through children. */
 		$children = $reader->parseInnerTree();
@@ -32,20 +32,21 @@ class NodeLoader implements Element
 
 		foreach($children as $child)
 		{
-			$component->value[] = self::rec_xmlDeserialize($child);
+			$component->_value[] = self::rec_xmlDeserialize($child, $component);
 		}
 
 		return $component;
 	}
 
-	private static function rec_xmlDeserialize($child)
+	private static function rec_xmlDeserialize($child, $parent_node)
 	{
 		/* Load component from the framework. */
 		if($child['value'] instanceof Component)
 		{
-			$child['value']->fullname	= $child['name'];
-			$child['value']->name		= strtolower(substr(get_class($child['value']), strlen('Biome\\Component\\'), -strlen('Component')));
-			$child['value']->attributes = $child['attributes'];
+			$child['value']->_parent	= $parent_node;
+			$child['value']->_fullname	= $child['name'];
+			$child['value']->_nodename		= strtolower(substr(get_class($child['value']), strlen('Biome\\Component\\'), -strlen('Component')));
+			$child['value']->_attributes = $child['attributes'];
 			$child['value']->getId(); // Generate ID.
 			$child['value']->building();
 			return $child['value'];
@@ -57,7 +58,7 @@ class NodeLoader implements Element
 			$list = array();
 			foreach($child['value'] AS $c)
 			{
-				$list[] = self::rec_xmlDeserialize($c);
+				$list[] = self::rec_xmlDeserialize($c, $parent_node);
 			}
 			$child['value'] = $list;
 			return $child;

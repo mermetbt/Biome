@@ -29,10 +29,6 @@ class ColumnComponent extends Component
 	 */
 	public function getTitle()
 	{
-		if(!isset($this->attributes['headerTitle']))
-		{
-			return '';
-		}
-		return $this->attributes['headerTitle'];
+		return $this->getAttribute('headerTitle', '');
 	}
 }

@@ -29,15 +29,23 @@ $viewable = $field === NULL || $rights->isAttributeView($field);
 
 if($viewable)
 {
+	$parent_form = $this->getParent('form');
 	$editable = $field === NULL || ($field->isEditable() && $rights->isAttributeEdit($field));
 
-	if(!$editable)
+	if(!$editable || $parent_form === NULL)
 	{
 		?><p class="form-control-static"><?php echo $value; ?></p><?php
 	}
 	else
 	{
-		?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php
+		switch($type)
+		{
+			case 'textarea':
+				?><textarea id="<?php echo $id; ?>" class="<?php echo $classes; ?>" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"><?php echo $value; ?></textarea><?php
+				break;
+			default:
+						?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php
+		}
 	}
 }
 else

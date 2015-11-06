@@ -9,7 +9,7 @@ class IncludeComponent extends Component
 {
 	public function building()
 	{
-		$filename = $this->attributes['src'];
+		$filename = $this->getAttribute('src');
 
 		$dirs = \Biome\Biome::getDirs('views');
 		$template_file = '';
@@ -36,7 +36,7 @@ class IncludeComponent extends Component
 // 		print_r($this->value);
 // 		die();
 
-		$this->value = $nodes['value']->value;
+		$this->_value = $nodes['value']->_value;
 
 		return TRUE;
 	}

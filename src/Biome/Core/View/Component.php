@@ -6,16 +6,19 @@ use Biome\Core\HTTP\Request;
 
 class Component extends NodeLoader
 {
-	protected	$id			= '';
-	public		$fullname	= '';
-	public		$name		= '';
-	public		$attributes	= array();
-	public		$classes	= array();
-	protected	$value		= array();
+	protected	$id				= '';
+	public		$_fullname		= '';
+	public		$_nodename		= '';
+	public		$_attributes	= array();
+	protected	$_value			= array();
+	protected	$_parent		= NULL;
+	public		$classes		= array();
 
 	public static $view	= NULL;
 
 	use ContextManager;
+
+	const DEFAULT_VALUE = '6f66b0b7c0933911e75dcd061cc72f2db2a8fecc3f582a305f66b90c7b674f8754a695761b48004189ee7c608c1408de';
 
 	protected static $_counter = 1;
 
@@ -43,7 +46,7 @@ class Component extends NodeLoader
 
 	public function renderComponent()
 	{
-		$component_template_file = __DIR__ . '/../../Component/templates/' . $this->name . '.php';
+		$component_template_file = __DIR__ . '/../../Component/templates/' . $this->_nodename . '.php';
 		if(file_exists($component_template_file))
 		{
 			ob_start();
@@ -54,7 +57,7 @@ class Component extends NodeLoader
 		}
 		else
 		{
-			throw new \Exception('Template file not found: ' . $component_template_file . ' for component ' . get_called_class() . ' - ' . $this->fullname);
+			throw new \Exception('Template file not found: ' . $component_template_file . ' for component ' . get_called_class() . ' - ' . $this->_fullname);
 		}
 		return $content;
 	}
@@ -62,7 +65,7 @@ class Component extends NodeLoader
 	public function getContent($child_name = NULL, array $attribute = NULL)
 	{
 		ob_start();
-		$this->rec_renderChildren($this->value);
+		$this->rec_renderChildren($this->_value);
 		$content = ob_get_contents();
 		ob_end_clean();
 		return $content;
@@ -130,7 +133,7 @@ class Component extends NodeLoader
 	 */
 	public function ajaxHandle($node_id)
 	{
-		return $this->rec_ajaxHandle($this->value, $node_id);
+		return $this->rec_ajaxHandle($this->_value, $node_id);
 	}
 
 	protected function rec_ajaxHandle($nodes, $node_id)
@@ -176,7 +179,7 @@ class Component extends NodeLoader
 	 */
 	public function getChilds()
 	{
-		return $this->value;
+		return $this->_value;
 	}
 
 	public function getChildren($component_name = NULL, $level = 0, &$children = array())
@@ -193,7 +196,7 @@ class Component extends NodeLoader
 				continue;
 			}
 
-			if($component_name === NULL || $c->name == $component_name)
+			if($component_name === NULL || $c->getNodeName() == $component_name)
 			{
 				$children[] = $c;
 			}
@@ -205,6 +208,26 @@ class Component extends NodeLoader
 		}
 
 		return $children;
+	}
+
+	public function getParent($component_name = NULL)
+	{
+		if($this->_parent === NULL)
+		{
+			return NULL;
+		}
+
+		if($component_name === NULL)
+		{
+			return $this->_parent;
+		}
+
+		if($this->_parent->getNodeName() == $component_name)
+		{
+			return $this->_parent;
+		}
+
+		return $this->_parent->getParent($component_name);
 	}
 
 	/**
@@ -220,21 +243,26 @@ class Component extends NodeLoader
 			return $this->id;
 		}
 
-		if(!isset($this->attributes['id']))
+		if(!isset($this->_attributes['id']))
 		{
 			$this->id = 'biome_' . (self::$_counter++);
 			return $this->id;
 		}
 
-		$this->id = $this->attributes['id'];
+		$this->id = $this->_attributes['id'];
 		return $this->id;
+	}
+
+	public function getNodeName()
+	{
+		return $this->_nodename;
 	}
 
 	public function getClasses()
 	{
-		if(isset($this->attributes['class']))
+		if(isset($this->_attributes['class']))
 		{
-			$this->addClasses($this->attributes['class']);
+			$this->addClasses($this->_attributes['class']);
 		}
 		return join(' ', $this->classes);
 	}
@@ -259,5 +287,25 @@ class Component extends NodeLoader
 			unset($this->classes[$c]);
 		}
 		return TRUE;
+	}
+
+	public function getAttribute($attribute_name, $default_value = Component::DEFAULT_VALUE)
+	{
+		if(isset($this->_attributes[$attribute_name]))
+		{
+			return $this->_attributes[$attribute_name];
+		}
+
+		if($default_value === Component::DEFAULT_VALUE)
+		{
+			throw new \Exception('The component ' . $this->getNodeName() . ' needs the attribute: ' . $attribute_name. '!');
+		}
+
+		if(is_callable($default_value))
+		{
+			return $default_value();
+		}
+
+		return $default_value;
 	}
 }

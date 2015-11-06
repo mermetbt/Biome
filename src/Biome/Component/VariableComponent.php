@@ -9,30 +9,22 @@ class VariableComponent extends Component
 {
 	public function getValue()
 	{
-		if(!isset($this->attributes['value']))
-		{
-			return NULL;
-		}
-
-		return $this->fetchValue($this->attributes['value']);
+		$value = $this->getAttribute('value', NULL);
+		return $this->fetchValue($value);
 	}
 
 	public function getField()
 	{
-		if(empty($this->attributes['value']))
-		{
-			return NULL;
-		}
+		$value = $this->getAttribute('value', NULL);
 
-		$field = $this->fetchField($this->attributes['value']);
+		$field = $this->fetchField($value);
 
 		return $field;
 	}
 
 	public function getLabel()
 	{
-		if(!isset($this->attributes['label']))
-		{
+		return $this->name = $this->getAttribute('label', function() {
 			$field = $this->getField();
 			if(!$field instanceof AbstractField)
 			{
@@ -40,10 +32,6 @@ class VariableComponent extends Component
 			}
 
 			return $field->getLabel();
-		}
-
-		$this->name = $this->attributes['label'];
-
-		return $this->name;
+		});
 	}
 }

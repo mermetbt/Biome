@@ -9,16 +9,17 @@ class LoopComponent extends Component
 {
 	public function getVar()
 	{
-		return $this->attributes['var'];
+		return $this->getAttribute('var');
 	}
 
 	public function getValue()
 	{
-		$value = $this->fetchValue($this->attributes['value']);
+		$value_var = $this->getAttribute('value', NULL);
+		$value = $this->fetchValue($value_var);
 		if(!$value instanceof QuerySet && !is_array($value))
 		{
 			throw new \Exception(	'Unable to loop on a value which is not a QuerySet or an array! '.
-									'Value: ' . $this->attributes['value'] . ' '.
+									'Value: ' . $value_var . ' '.
 									'Result: ' . var_export($value)
 			);
 		}

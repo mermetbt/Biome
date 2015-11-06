@@ -11,13 +11,13 @@ class ViewsComponent extends Component
 	public function load($action)
 	{
 		$css_list = array();
-		foreach($this->value AS $index => $v)
+		foreach($this->_value AS $index => $v)
 		{
 			if($v instanceof ViewComponent)
 			{
 				if($v->getAction() != $action)
 				{
-					unset($this->value[$index]);
+					unset($this->_value[$index]);
 				}
 				else
 				{

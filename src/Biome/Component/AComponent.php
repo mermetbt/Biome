@@ -8,35 +8,20 @@ class AComponent extends Component
 {
 	public function getURL()
 	{
-		$controller = NULL;
-		$action = NULL;
-		$item = NULL;
-		$module = NULL;
-		$page = NULL;
+		$controller	= $this->getAttribute('controller', NULL);
+		$action		= $this->getAttribute('action', NULL);
+		$item		= $this->getAttribute('item', NULL);
+		$module		= $this->getAttribute('module', NULL);
+		$page		= $this->getAttribute('page', NULL);
 
-		if(isset($this->attributes['controller']))
+		if($item)
 		{
-			$controller = $this->attributes['controller'];
+			$item = $this->fetchValue($item);
 		}
 
-		if(isset($this->attributes['action']))
+		if($page)
 		{
-			$action = $this->attributes['action'];
-		}
-
-		if(isset($this->attributes['item']))
-		{
-			$item = $this->fetchValue($this->attributes['item']);
-		}
-
-		if(isset($this->attributes['module']))
-		{
-			$module = $this->attributes['module'];
-		}
-
-		if(isset($this->attributes['page']))
-		{
-			$page = $this->fetchValue($this->attributes['page']);
+			$page = $this->fetchValue($page);
 		}
 
 		return \URL::fromRoute($controller, $action, $item, $module, $page);
@@ -46,23 +31,8 @@ class AComponent extends Component
 	{
 		$rights = \Biome\Biome::getService('rights');
 
-		if(isset($this->attributes['controller']))
-		{
-			$controller = $this->attributes['controller'];
-		}
-		else
-		{
-			$controller = 'index';
-		}
-
-		if(isset($this->attributes['action']))
-		{
-			$action = $this->attributes['action'];
-		}
-		else
-		{
-			$action = 'index';
-		}
+		$controller	= $this->getAttribute('controller', 'index');
+		$action		= $this->getAttribute('action', 'index');
 
 		return $rights->isRouteAllowed('GET', $controller, $action);
 	}
