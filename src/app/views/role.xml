@@ -21,9 +21,17 @@
 						</biome:column>
 
 						<biome:column>
-							<biome:a class="btn btn-sm btn-default" controller="role" action="edit" item="#{r.role_id}"><i class="fa fa-pencil"></i><span> Edit</span></biome:a>
-							<span style="padding: 5px;"></span>
-							<biome:a class="btn btn-sm btn-danger" controller="role" action="delete" item="#{r.role_id}"><i class="fa fa-trash"></i><span> Delete</span></biome:a>
+							<div class="btn-group">
+								<biome:a class="btn btn-sm btn-default" controller="role" action="edit" item="#{r.role_id}"><i class="fa fa-pencil"></i><span> Edit</span></biome:a>
+
+								<button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span class="caret"></span>
+									<span class="sr-only">Toggle Dropdown</span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><biome:a controller="role" action="delete" item="#{r.role_id}"><i class="fa fa-trash"></i><span> Delete</span></biome:a></li>
+								</ul>
+							</div>
 						</biome:column>
 					</biome:datatable>
 				</biome:panel>

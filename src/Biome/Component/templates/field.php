@@ -34,6 +34,11 @@ if($viewable)
 
 	if(!$editable || $parent_form === NULL)
 	{
+		if($type == 'textarea')
+		{
+			$value = nl2br($value);
+		}
+
 		?><p class="form-control-static"><?php echo $value; ?></p><?php
 	}
 	else

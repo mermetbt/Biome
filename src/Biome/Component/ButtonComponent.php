@@ -12,9 +12,9 @@ class ButtonComponent extends Component
 		return parent::render();
 	}
 
-	public function getValue()
+	public function getValue($default)
 	{
-		return $this->getAttribute('value', 'Submit');
+		return $this->getAttribute('value', $default);
 	}
 
 	public function getAction()
