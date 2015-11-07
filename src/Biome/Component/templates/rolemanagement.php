@@ -5,7 +5,7 @@ $objects = \Biome\Core\ORM\ObjectLoader::getObjects();
 $router = \Biome\Biome::getService('router');
 $routes = $router->getRoutes();
 
-$rights = \Biome\Core\Rights::loadFromJSON($this->getValue());
+$rights = \Biome\Core\Rights\AccessRights::loadFromJSON($this->getValue());
 
 ?>
 <div id="<?php echo $this->getId(); ?>">

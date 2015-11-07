@@ -26,7 +26,7 @@ $editable = $field === NULL || ($field->isEditable() && $this->rights->isAttribu
 
 if($viewable && $editable)
 {
-	?><p class="form-control-static"><a href="#" class="ajaxfield"><span class="content"><?php echo $value; ?></span> <i class="fa fa-pencil"></i></a></p><?php
+	?><p class="form-control-static"><a class="ajaxfield"><span class="content"><?php echo $value; ?></span> <i class="fa fa-pencil"></i></a></p><?php
 }
 else
 if($viewable)

@@ -1,8 +1,8 @@
 <?php
 
-namespace Biome\Core;
+namespace Biome\Core\Rights;
 
-class Rights
+class AccessRights implements RightsInterface
 {
 	protected $rights = array();
 
@@ -15,22 +15,22 @@ class Rights
 	{
 		if(empty($rights))
 		{
-			return new Rights();
+			return new AccessRights();
 		}
 
 		$rights_array = (array)json_decode($rights, TRUE);
 
-		return new Rights($rights_array);
+		return new AccessRights($rights_array);
 	}
 
 	public static function loadFromArray(array $rights)
 	{
 		if(empty($rights))
 		{
-			return new Rights();
+			return new AccessRights();
 		}
 
-		return new Rights($rights);
+		return new AccessRights($rights);
 	}
 
 	public function exportToJSON()

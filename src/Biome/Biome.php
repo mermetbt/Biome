@@ -5,7 +5,7 @@ namespace Biome;
 use Biome\Core\URL;
 use Biome\Core\Route;
 use Biome\Core\Error;
-use Biome\Core\Rights;
+use Biome\Core\Rights\AccessRights;
 use Biome\Core\HTTP\Request;
 use Biome\Core\HTTP\Response;
 
@@ -99,12 +99,12 @@ class Biome
 					$roles = $auth->user->roles;
 					foreach($roles AS $role)
 					{
-						$rights = Rights::loadFromJSON($role->role_rights);
+						$rights = AccessRights::loadFromJSON($role->role_rights);
 					}
 					return $rights;
 				}
 
-				$rights = Rights::loadFromArray(array());
+				$rights = AccessRights::loadFromArray(array());
 
 				$rights	->setAttribute('User', 'firstname', TRUE, TRUE)
 						->setAttribute('User', 'lastname', TRUE, TRUE)

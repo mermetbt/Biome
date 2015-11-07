@@ -6,18 +6,20 @@
 	<biome:view action="index">
 
 		<div class="row">
-			<div class="col-lg-4 pull-right">
-				<div class="well">
-					<h2>Sign up!</h2>
-					<biome:form>
-						<biome:field value="#{user.firstname}"/>
-						<biome:field value="#{user.lastname}"/>
-						<biome:field value="#{user.mail}"/>
-						<biome:field value="#{user.password}"/>
-						<biome:button class="btn-success" value="Sign up" action="#{auth.signup}"/>
-					</biome:form>
+			<biome:condition if="!#{auth.isAuthenticated}">
+				<div class="col-lg-4 pull-right">
+					<div class="well">
+						<h2>Sign up!</h2>
+						<biome:form>
+							<biome:field value="#{user.firstname}"/>
+							<biome:field value="#{user.lastname}"/>
+							<biome:field value="#{user.mail}"/>
+							<biome:field value="#{user.password}"/>
+							<biome:button class="btn-success" value="Sign up" action="#{auth.signup}"/>
+						</biome:form>
+					</div>
 				</div>
-			</div>
+			</biome:condition>
 
 			<div class="col-lg-8">
 				<div class="well">
