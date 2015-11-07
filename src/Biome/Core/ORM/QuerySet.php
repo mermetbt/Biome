@@ -2,9 +2,9 @@
 
 namespace Biome\Core\ORM;
 
-use Iterator, Countable;
+use Iterator, Countable, ArrayAccess;
 
-class QuerySet implements Iterator, Countable
+class QuerySet implements Iterator, Countable, ArrayAccess
 {
 	/**
 	 * Object related property.
@@ -26,6 +26,7 @@ class QuerySet implements Iterator, Countable
 	 */
 	protected $_db_handler		= NULL;
 	protected $_data_set		= array();
+	protected $_operations		= array();
 
 	protected $total_count		= 0;
 
@@ -42,6 +43,19 @@ class QuerySet implements Iterator, Countable
 			$this->object		= ObjectLoader::get($this->object_name, array(), $this);
 		}
 		return $this->object;
+	}
+
+	/**
+	 * QuerySet edition.
+	 */
+	public function hasChanges()
+	{
+		return count($this->_operations) > 0;
+	}
+
+	public function modifiers()
+	{
+		return $this->_operations;
 	}
 
 	/**
@@ -151,8 +165,13 @@ class QuerySet implements Iterator, Countable
 	 */
 	public function associate($local_attribute_name, QuerySet $query_set, $field_name)
 	{
+		/* For reading. */
 		$l = new LazyFetcher($query_set, $field_name);
 		$this->filter(array(array($local_attribute_name, 'in', $l)));
+
+		/* For writing. */
+
+
 		return $this;
 	}
 
@@ -221,6 +240,60 @@ class QuerySet implements Iterator, Countable
 		return current($this->_data_set) != NULL;
 	}
 
+	/**
+	 * ArrayAccess interface
+	 */
+	public function offsetExists($offset)
+	{
+		return array_key_exists($offset, $this->_data_set);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->_data_set[$offset];
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		/* Check value type (must be the same as the object of this QuerySet. */
+		if(!$value instanceof Models)
+		{
+			throw new \Exception('The value added to the QuerySet must be an instance of Models!');
+		}
+
+		if(get_class($value) != $this->object_name)
+		{
+			throw new \Exception('The value added to the QuerySet must be an instance of ' . $this->object_name . '!');
+		}
+
+		/* Get the ID and organize the QuerySet. */
+		if(!$value->getId())
+		{
+			$value->save();
+		}
+		$offset = $value->getId();
+
+		$this->_data_set[$offset] = $value;
+
+		$this->_operations[$offset] = 'add';
+	}
+
+	public function offsetUnset($offset)
+	{
+		unset($this->_data_set[$offset]);
+		if(empty($this->_operations[$offset]))
+		{
+			$this->_operations[$offset] = 'remove';
+		}
+		else
+		{
+			unset($this->_operations[$offset]);
+		}
+	}
+
+	/**
+	 * QuerySet Function
+	 */
 	public function getTotalCount()
 	{
 		return $this->total_count;

@@ -6,7 +6,7 @@ use \User;
 use \Role;
 use \UserRole;
 
-class ORMSimpleTestTest extends \PHPUnit_Framework_TestCase
+class ORMSimpleTest extends \PHPUnit_Framework_TestCase
 {
 	public function testRetrieveAllUsers()
 	{
@@ -73,15 +73,8 @@ class ORMSimpleTestTest extends \PHPUnit_Framework_TestCase
 		$this->assertEmpty($user);
 	}
 
-	public function testRoleAssociation()
+	public function testRoleAssociationWithLinkObject()
 	{
-		/* Create role. */
-		$role = new Role();
-		$role->role_name = 'TEST ROLE';
-		$this->assertEquals('TEST ROLE', $role->role_name);
-		$this->assertTrue($role->save());
-		$this->assertEquals('TEST ROLE', $role->role_name);
-
 		/* Create user. */
 		$user = new User();
 
@@ -103,6 +96,13 @@ class ORMSimpleTestTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('jean.dupont@test.com', $user->mail);
 		$this->assertEquals('', $user->password);
 
+		/* Create role. */
+		$role = new Role();
+		$role->role_name = 'TEST ROLE';
+		$this->assertEquals('TEST ROLE', $role->role_name);
+		$this->assertTrue($role->save());
+		$this->assertEquals('TEST ROLE', $role->role_name);
+
 		/* Create association. */
 		$ur = new UserRole();
 
@@ -121,6 +121,124 @@ class ORMSimpleTestTest extends \PHPUnit_Framework_TestCase
 		$ur->delete();
 		$user->delete();
 		$role->delete();
+	}
+
+	public function testRoleAssociationWithAutoSave()
+	{
+		/* Create user. */
+		$user = new User();
+
+		$user->firstname = 'Jean';
+		$this->assertEquals('Jean', $user->firstname);
+
+		$user->lastname = 'Dupont';
+		$this->assertEquals('Dupont', $user->lastname);
+
+		$user->mail = 'jean.dupont@test.com';
+		$this->assertEquals('jean.dupont@test.com', $user->mail);
+
+		$user->password = 'My Password';
+		$this->assertEquals('', $user->password);
+
+		/* Create role. */
+		$role = new Role();
+		$role->role_name = 'TEST ROLE';
+		$this->assertEquals('TEST ROLE', $role->role_name);
+
+		/* Create association. */
+		$ur = new UserRole();
+
+		$ur->role = $role;
+		$ur->user = $user;
+
+		$this->assertTrue($ur->save());
+
+		$this->assertEquals($role->getId(), $ur->role_id);
+		$this->assertEquals($user->getId(), $ur->user_id);
+
+		/* Delete */
+		$ur->delete();
+		$user->delete();
+		$role->delete();
+	}
+
+	public function testRoleAssociationWithQuerySet()
+	{
+		/* Create role. */
+		$role = new Role();
+		$role->role_name = 'TEST ROLE';
+		$this->assertEquals('TEST ROLE', $role->role_name);
+
+		/* Create user. */
+		$user = new User();
+
+		$user->firstname = 'Jean';
+		$this->assertEquals('Jean', $user->firstname);
+
+		$user->lastname = 'Dupont';
+		$this->assertEquals('Dupont', $user->lastname);
+
+		$user->mail = 'jean.dupont@test.com';
+		$this->assertEquals('jean.dupont@test.com', $user->mail);
+
+		$user->password = 'My Password';
+		$this->assertEquals('', $user->password);
+
+		$this->assertInstanceOf('\Biome\Core\ORM\QuerySet', $user->roles);
+
+		$this->assertEmpty($user->roles);
+
+		$user->roles[] = $role;
+
+		$this->assertNotEmpty($user->roles);
+
+		$this->assertTrue($user->save());
+		$this->assertEquals('Jean', $user->firstname);
+		$this->assertEquals('Dupont', $user->lastname);
+		$this->assertEquals('jean.dupont@test.com', $user->mail);
+		$this->assertEquals('', $user->password);
+
+		/**
+		 * From the current object.
+		 */
+		$this->assertNotEmpty($user->roles);
+
+		$role_found = false;
+		$role_count = 0;
+		foreach($user->roles AS $r)
+		{
+			if($r->getId() == $role->getId())
+			{
+				$role_found = true;
+			}
+			$role_count++;
+		}
+
+		$this->assertTrue($role_found);
+		$this->assertEquals(1, $role_count);
+
+		/**
+		 * From a new object.
+		 */
+		$user_id = $user->getId();
+
+		$stored_user = User::get($user_id);
+
+		$this->assertNotEmpty($stored_user->roles);
+
+		$role_found = false;
+		$role_count = 0;
+		foreach($stored_user->roles AS $r)
+		{
+			if($r->getId() == $role->getId())
+			{
+				$role_found = true;
+			}
+			$role_count++;
+		}
+
+		$this->assertTrue($role_found);
+		$this->assertEquals(1, $role_count);
 	}
 
 	public function testMultipleSave()

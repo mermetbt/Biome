@@ -1,4 +1,6 @@
 /vendor/
 composer.lock
 *.kdev4
-
+build/
+.bowerrc
+bower.json

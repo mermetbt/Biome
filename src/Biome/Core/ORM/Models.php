@@ -165,17 +165,27 @@ abstract class Models implements ObjectInterface
 
 			return $this->getValue($attribute);
 		}
-		else
-		{
-			// Otherwise return the default value.
-			$default = $f->getDefaultValue();
-			if($default instanceof RawSQL)
-			{
-				return NULL;
-			}
 
-			return $default;
+		if($f instanceof QuerySetFieldInterface)
+		{
+			if($this->_query_set === NULL)
+			{
+				$this->_query_set = self::all()->filter(array(array($pks, '=', $this->getId())));
+			}
+			$qs = $f->generateQuerySet($this->_query_set, $attribute);
+			$this->_values['old'][$attribute] = $qs;
+			return $qs;
 		}
+
+		// Otherwise return the default value.
+		$default = $f->getDefaultValue();
+		if($default instanceof RawSQL)
+		{
+			return NULL;
+		}
+
+		return $default;
+
 	}
 
 	public function getRawValue($attribute)
@@ -496,8 +506,20 @@ abstract class Models implements ObjectInterface
 			$this->_query_set->update($id, $data);
 		}
 
-		// Associate Many2Many and One2Many elements.
+		// (Dis)Associate Many2Many and One2Many elements.
+		foreach($this->_structure AS $field_name => $field)
+		{
+			if(!$field instanceof Many2ManyField)
+			{
+				continue;
+			}
 
+			$v = $this->getValue($field_name);
+			if($v->hasChanges())
+			{
+				$field->operateChanges($this, $v);
+			}
+		}
 
 		// Final sync to retrieve the values saved.
 		$this->sync();
@@ -534,20 +556,51 @@ abstract class Models implements ObjectInterface
 				continue;
 			}
 
-			if($field instanceof Many2OneField && substr($field_name, -3) != '_id')
+			if(!$field->isRequired())
 			{
 				continue;
 			}
 
-			if($field->isRequired())
+			if($field instanceof Many2OneField)
 			{
 				$value = $this->getRawValue($field_name);
-
-				if(empty($value) && empty($field->getDefaultValue()))
+				if(!empty($value))
 				{
-					$field->setError('required', 'Field "' . $field->getLabel() . '" is required!');
-					$errors = TRUE;
+					continue;
 				}
+
+				/**
+				 * If this field contains the object, check the value.
+				 */
+				if(substr($field_name, -3) != '_id')
+				{
+					/* Check the value. */
+					$value = $this->getRawValue($field_name . '_id');
+					if(!empty($value))
+					{
+						continue;
+					}
+				}
+				else
+				/**
+				 * If this field contains the value, check the object.
+				 */
+				if(substr($field_name, -3) == '_id')
+				{
+					$value = $this->getRawValue(substr($field_name, 0, -3));
+					if(!empty($value))
+					{
+						continue;
+					}
+				}
+			}
+
+			$value = $this->getRawValue($field_name);
+
+			if(empty($value) && empty($field->getDefaultValue()))
+			{
+				$field->setError('required', 'Field "' . $field->getLabel() . '" is required!');
+				$errors = TRUE;
 			}
 		}
 

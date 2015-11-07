@@ -39,8 +39,8 @@ class Many2ManyField extends AbstractField implements QuerySetFieldInterface
 		$m2m_object_name	= $this->object_name;
 
 		// Load objects
-		$lnk_object			= ObjectLoader::get($lnk_object_name);
-		$m2m_object			= ObjectLoader::get($m2m_object_name);
+		$lnk_object			= ObjectLoader::load($lnk_object_name);
+		$m2m_object			= ObjectLoader::load($m2m_object_name);
 
 		// Handle One2Many
 		$lnk_attribute_name	= $this->link_foreign_key;
@@ -52,8 +52,56 @@ class Many2ManyField extends AbstractField implements QuerySetFieldInterface
 		return $m2m_object_name::all()->associate($m2m_attribute_name, $lnk_qs, $m2m_attribute_name);
 	}
 
+	public function operateChanges($object, QuerySet $query_set)
+	{
+		$object_id = $object->getId();
+
+		$lnk_object_name = $this->link_object_name;
+		$lnk_field = $this->link_foreign_key;
+		$m2m_field = $this->foreign_key;
+
+		$to_delete = array();
+		foreach($query_set->modifiers() AS $id => $m)
+		{
+			if($m == 'add')
+			{
+				$l = new $lnk_object_name();
+				$l->$lnk_field = $object_id;
+				$l->$m2m_field = $id;
+				$l->save();
+			}
+			else
+			if($m == 'remove')
+			{
+				$to_delete[] = $id;
+			}
+			else
+			{
+				throw new \Exception('Unrecognized modifier!');
+			}
+		}
+
+		if(empty($to_delete))
+		{
+			return TRUE;
+		}
+
+		$delete = $lnk_object_name::all()->filter(array(
+			array($lnk_field, '=', $object_id),
+			array($m2m_field, 'in', $to_delete)
+		));
+
+		foreach($delete AS $d)
+		{
+			$d->delete();
+		}
+
+		return TRUE;
+	}
+
 	public function getDefaultValue()
 	{
-		return array();
+		$m2m_object_name = $this->object_name;
+		return $m2m_object_name::all();
 	}
 }
