@@ -26,26 +26,6 @@ echo '</tr></thead>';
  */
 echo '<tbody>';
 
-// foreach($object_list AS $v)
-// {
-// 	$this->setContext($var, $v);
-//
-// 	echo '<tr>';
-//
-// 	/**
-// 	 * Render columns.
-// 	 */
-//
-// 	foreach($column_list AS $column)
-// 	{
-// 		echo '<td>', $column->render(), '</td>';
-// 	}
-//
-// 	echo '</tr>';
-//
-// 	$this->unsetContext($var);
-// }
-
 echo '</tbody>';
 
 ?></table></div><?php

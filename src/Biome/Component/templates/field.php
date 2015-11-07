@@ -23,14 +23,12 @@ if(!empty($label))
 	?><label for="<?php echo $id; ?>" class="control-label"><?php echo $label; ?></label> <?php
 }
 
-$rights = \Biome\Biome::getService('rights');
-
-$viewable = $field === NULL || $rights->isAttributeView($field);
+$viewable = $field === NULL || $this->rights->isAttributeView($field);
 
 if($viewable)
 {
 	$parent_form = $this->getParent('form');
-	$editable = $field === NULL || ($field->isEditable() && $rights->isAttributeEdit($field));
+	$editable = $field === NULL || ($field->isEditable() && $this->rights->isAttributeEdit($field));
 
 	if(!$editable || $parent_form === NULL)
 	{
@@ -49,13 +47,13 @@ if($viewable)
 				?><textarea id="<?php echo $id; ?>" class="<?php echo $classes; ?>" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"><?php echo $value; ?></textarea><?php
 				break;
 			default:
-						?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php
+				?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php
 		}
 	}
 }
 else
 {
-	?><i class="fa fa-ban"></i><?php
+	?><p class="form-control-static"><i class="fa fa-ban"></i></p><?php
 }
 
 if($show_error_messages)

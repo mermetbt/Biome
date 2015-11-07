@@ -103,6 +103,7 @@ class Controller
 			$partial_rendering = $this->request->get('partial');
 			if($partial_rendering)
 			{
+				$this->response->setContentType('application/json');
 				$this->view->ajaxHandle($partial_rendering);
 			}
 		}

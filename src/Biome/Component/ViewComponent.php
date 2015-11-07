@@ -18,7 +18,12 @@ class ViewComponent extends Component
 		$css_list = explode(',', $css);
 		foreach($css_list AS $i => $c)
 		{
-			$css_list[$i] = trim($c);
+			$css = trim($c);
+			$css_list[$i] = $css;
+			if(empty($css))
+			{
+				unset($css_list[$i]);
+			}
 		}
 
 		return $css_list;
