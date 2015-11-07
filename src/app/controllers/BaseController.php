@@ -18,6 +18,7 @@ class BaseController extends Controller
 		$auth = Collection::get('auth');
 		if(!$auth->isAuthenticated())
 		{
+			$this->flash()->error('Forbidden!');
 			$this->response()->redirect('');
 			return FALSE;
 		}
