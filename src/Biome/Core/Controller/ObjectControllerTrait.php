@@ -42,7 +42,7 @@ trait ObjectControllerTrait
 			$this->flash()->error('Unable to delete the ' . $object_name . '!');
 		}
 
-		return $this->response()->redirect();
+		return $this->response()->redirect(substr(strtolower(get_called_class()), 0, -strlen('Controller')));
 	}
 
 	/**
