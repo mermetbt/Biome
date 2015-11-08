@@ -13,36 +13,6 @@ class FieldComponent extends VariableComponent
 		return parent::render();
 	}
 
-	public function getName()
-	{
-		$name = $this->getAttribute('name', function() {
-			$variables = $this->fetchVariables($this->getAttribute('value'));
-			$name = '';
-			foreach($variables AS $var)
-			{
-				$name .= str_replace('.', '/', $var);
-			}
-			return $name;
-		});
-
-		return $this->name = $name;
-	}
-
-	public function getType()
-	{
-		return $this->getAttribute('type', function()
-		{
-			$field = $this->getField();
-
-			if(!$field instanceof AbstractField)
-			{
-				throw new \Exception('Attribute "type" must be defined on field component!');
-			}
-
-			return $field->getType();
-		});
-	}
-
 	public function getErrors()
 	{
 		$field = $this->getField();

@@ -75,6 +75,22 @@
 							</tr>
 						</biome:loop>
 					</table>
+
+					<biome:form>
+						<div class="row">
+							<div class="col-lg-8">
+								<biome:field type="selector" object="user" var="u" value="user_id">
+									<biome:variable value="#{u.firstname}"/>
+									<span> </span>
+									<biome:variable value="#{u.lastname}"/>
+								</biome:field>
+							</div>
+							<div class="col-lg-4">
+								<biome:button class="btn-sm btn-success" controller="role" action="adduser" item="#{roles.role.role_id}"><i class="fa fa-plus"></i><span> Add</span></biome:button>
+							</div>
+						</div>
+					</biome:form>
+
 				</biome:panel>
 			</div>
 		</div>

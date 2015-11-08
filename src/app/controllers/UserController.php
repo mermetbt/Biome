@@ -99,6 +99,24 @@ class UserController extends BaseController
 		return $this->response()->redirect();
 	}
 
+	public function postAddRole($user_id)
+	{
+		$user = User::get($user_id);
+
+		$role_id = $this->request()->get('role_id');
+
+		$role = Role::get($role_id);
+
+		$user->roles[] = $role;
+
+		if($user->save())
+		{
+			$this->flash()->success('Role added!');
+		}
+
+		return $this->response()->redirect();
+	}
+
 	public function getDelete($user_id)
 	{
 		$user = User::get($user_id);

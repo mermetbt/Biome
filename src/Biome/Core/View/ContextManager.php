@@ -184,6 +184,23 @@ trait ContextManager
 		return $value;
 	}
 
+	public function fetchParentValue($value)
+	{
+		if(!is_string($value))
+		{
+			throw new \Exception('Value is not a string!');
+		}
+
+		$variables = $this->fetchVariables($value);
+
+		$variable = reset($variables);
+		$raw = explode('.', $variable);
+		$last = array_pop($raw);
+		$variable = join('.', $raw);
+
+		return $this->rec_fetchValue($variable);
+	}
+
 	public function fetchField($value)
 	{
 		$variables = $this->fetchVariables($value);

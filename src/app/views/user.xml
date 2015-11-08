@@ -106,10 +106,12 @@
 					<biome:form>
 						<div class="row">
 							<div class="col-lg-8">
-								<biome:field label="" value="#{userrole.role_id}"/>
+								<biome:field type="selector" object="role" var="r" value="role_id">
+									<biome:variable value="#{r.role_name}"/>
+								</biome:field>
 							</div>
 							<div class="col-lg-4">
-								<biome:button class="btn-sm btn-success" action="#{user.addrole}"><i class="fa fa-plus"></i><span> Add</span></biome:button>
+								<biome:button class="btn-sm btn-success" controller="user" action="addrole" item="#{user.user_id}"><i class="fa fa-plus"></i><span> Add</span></biome:button>
 							</div>
 						</div>
 					</biome:form>

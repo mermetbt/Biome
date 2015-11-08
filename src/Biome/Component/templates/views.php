@@ -11,6 +11,7 @@
 	<link href="<?php echo URL::getAsset('packages/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet">
 	<link href="<?php echo URL::getAsset('packages/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css') ?>" rel="stylesheet">
 	<link href="<?php echo URL::getAsset('packages/datatables-responsive-helper/files/1.10/css/datatables.responsive.css') ?>" rel="stylesheet">
+	<link href="<?php echo URL::getAsset('packages/select2-ng/dist/css/select2.min.css') ?>" rel="stylesheet">
 
 	<link href="<?php echo URL::getAsset('css/style.css') ?>" rel="stylesheet">
 	<?php
@@ -36,6 +37,7 @@
 	<script src="<?php echo URL::getAsset('packages/datatables/media/js/jquery.dataTables.min.js') ?>"></script>
 	<script src="<?php echo URL::getAsset('packages/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js') ?>"></script>
 	<script src="<?php echo URL::getAsset('packages/datatables-responsive-helper/files/1.10/js/datatables.responsive.js') ?>"></script>
+	<script src="<?php echo URL::getAsset('packages/select2-ng/dist/js/select2.full.min.js') ?>"></script>
 
     <script type="text/javascript">
 		<?php echo $this->view->printJavascript(); ?>

@@ -29,7 +29,6 @@ if($viewable)
 {
 	$parent_form = $this->getParent('form');
 	$editable = $field === NULL || ($field->isEditable() && $this->rights->isAttributeEdit($field));
-
 	if(!$editable || $parent_form === NULL)
 	{
 		if($type == 'textarea')
@@ -45,6 +44,41 @@ if($viewable)
 		{
 			case 'textarea':
 				?><textarea id="<?php echo $id; ?>" class="<?php echo $classes; ?>" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"><?php echo $value; ?></textarea><?php
+				break;
+			case 'selector':
+			case 'many2one':
+				?><select id="<?php echo $id; ?>" class="<?php echo $classes; ?>" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"><?php
+
+					if($type == 'many2one')
+					{
+						$object = $this->getParentValue();
+					}
+					else
+					{
+						$object = $this->getAttribute('object');
+					}
+
+					$var = $this->getAttribute('var');
+
+					$query_set = $object::all();
+					foreach($query_set AS $o)
+					{
+						?><option value="<?php echo $o->getId(); ?>"><?php
+
+						$this->setContext($var, $o);
+						echo $this->getContent();
+						$this->unsetContext($var);
+
+						?></option><?php
+					}
+
+				?></select><?php
+				$this->view->javascript(function() use($id) {
+					?>
+					$('#<?php echo $id; ?>').select2();
+					<?php
+				});
+
 				break;
 			default:
 				?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php

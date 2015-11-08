@@ -16,18 +16,21 @@ class RoleController extends BaseController
 		return 'Roles';
 	}
 
-	public function getAdd($role_id)
+	public function postAddUser($role_id)
 	{
-		//$c = Collection::get($collection_name);
-		//$c->$object_name->sync($object_id);
+		$user_id = $this->request()->get('user_id');
 
+		$user = User::get($user_id);
 		$role = Role::get($role_id);
-		$this->view->role = $role;
-	}
 
-	public function postAdd($role_id)
-	{
+		$user->roles[] = $role;
 
+		if($user->save())
+		{
+			$this->flash()->success('User added!');
+		}
+
+		return $this->response()->redirect();
 	}
 
 	public function postAuthorizations(RolesCollection $c)
