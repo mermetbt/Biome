@@ -20,11 +20,22 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 		$this->foreign_key	= !empty($foreign_key) ? $foreign_key : $this->object->parameters()['primary_key'];
 	}
 
+	public function object()
+	{
+		return $this->object;
+	}
+
+	public function getForeignKey()
+	{
+		return $this->foreign_key;
+	}
+
 	public function generateQuerySet(QuerySet $query_set, $field_name)
 	{
 		// Handle Many2One
 		$m2o_object_name	= $this->object_name;
 		ObjectLoader::load($m2o_object_name);
+
 		return $m2o_object_name::all()->associate($this->foreign_key, $query_set, $field_name);
 	}
 

@@ -170,7 +170,7 @@ abstract class Models implements ObjectInterface
 		{
 			if($this->_query_set === NULL)
 			{
-				$this->_query_set = self::all()->filter(array(array($pks, '=', $this->getId())));
+				$this->_query_set = self::all()->filter($pks, '=', $this->getId());
 			}
 			$qs = $f->generateQuerySet($this->_query_set, $attribute);
 			$this->_values['old'][$attribute] = $qs;
@@ -356,12 +356,12 @@ abstract class Models implements ObjectInterface
 			return $this;
 		}
 
-		$filters = array();
+		$result = self::all();
 		if(!empty($fields))
 		{
 			foreach($fields AS $f)
 			{
-				$filters[] = array($f, '=', $this->getRawValue($f));
+				$result->filter($f, '=', $this->getRawValue($f));
 			}
 		}
 		else
@@ -384,11 +384,10 @@ abstract class Models implements ObjectInterface
 					continue;
 				}
 
-				$filters[] = array($f, '=', $this->getRawValue($f));
+				$result->filter($f, '=', $this->getRawValue($f));
 			}
 		}
 
-		$result = self::all()->filter($filters);
 		$count = count($result);
 		if($count > 1)
 		{
@@ -655,7 +654,7 @@ abstract class Models implements ObjectInterface
 	 */
 	public static function filter($where)
 	{
-		return self::all()->filter($where);
+		return self::all()->filter(func_get_args());
 	}
 
 	/**

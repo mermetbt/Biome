@@ -6,7 +6,7 @@ $hasMessages = $flash->hasMessages();
 
 if($hasMessages)
 {
-	?><div class="container"><?php
+	?><div class="container-fluid"><?php
 }
 
 foreach($flash->getErrors() AS $title => $msg)

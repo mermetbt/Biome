@@ -24,6 +24,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 	/**
 	 * QuerySet runtime attribute.
 	 */
+	protected $_query_builder	= NULL;
 	protected $_db_handler		= NULL;
 	protected $_data_set		= array();
 	protected $_operations		= array();
@@ -34,6 +35,16 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 	{
 		$this->object_name	= $object_name;
 		$this->_db_handler = new Handler\MySQLHandler($this);
+	}
+
+	protected function db()
+	{
+		if($this->_query_builder === NULL)
+		{
+			$param = $this->object()->parameters();
+			$this->_query_builder = new QueryBuilder(isset($param['database']) ? $param['database'] : NULL, $param['table']);
+		}
+		return $this->_query_builder;
 	}
 
 	protected function object()
@@ -69,8 +80,10 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 	/**
 	 * Restrict fields to fetch.
 	 */
-	public function fields(...$fields)
+	public function fields($fields = ['*'])
 	{
+		$fields = is_array($fields) ? $fields : func_get_args();
+
 		$this->fields = array();
 		foreach($fields AS $field_name)
 		{
@@ -83,6 +96,9 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 				throw new \Exception('Fetching an unexisting field ('.$field_name.') for object ' . $this->object_name . '!');
 			}
 		}
+
+		$this->db()->select($this->fields);
+
 		return $this;
 	}
 
@@ -121,30 +137,94 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 
 	/**
 	 * Selection methods.
+	 *
+	 * filter(array(field, operator, value), array(field2, operator2, value2), ...)
+	 * filter(field, operator, value)
 	 */
-	public function filter(array...$filters_parameters)
+	public function filter($filters = array())
 	{
-		/* Function parameters */
-		foreach($filters_parameters AS $filters_group)
+		$filters = is_array($filters) ? func_get_args() : array(func_get_args());
+
+		/* Array of filters. */
+		foreach($filters AS $filter)
 		{
-			/* Array of filters. */
-			foreach($filters_group AS $filter)
+			if(!is_array($filter))
 			{
-				$field_name = $filter[0];
-				if(!$this->object()->hasField($field_name))
+				throw new \Exception('Filter must be an array! ' . print_r($filter, true));
+			}
+
+			$subset = explode('.', $filter[0]);
+
+			/**
+			 * Field is a part of another object.
+			 */
+			if(count($subset) > 1)
+			{
+				$field_name = $subset[0];
+			}
+
+			$field_name = $subset[0];
+			if(!$this->object()->hasField($field_name))
+			{
+				throw new \Exception('Filtering on an unexisting field ('.$field_name.') for object ' . $this->object_name . '!');
+			}
+
+			$field = $this->object()->getField($field_name);
+
+			/**
+			 * Field is a part of the object.
+			 */
+			if(count($subset) == 1)
+			{
+				if($field instanceof \Biome\Core\ORM\Field\Many2ManyField)
 				{
-					throw new \Exception('Filtering on an unexisting field ('.$field_name.') for object ' . $this->object_name . '!');
+					/* Link table. */
+					$table = $field->getLinkObject()->parameters()['table'];
+					$foreign_key = $field->getLinkForeignKey();
+					$this->db()->join($table, $foreign_key, '=', $this->object()->parameters()['primary_key']);
+
+					/* Destination table. */
+					$table_dst = $field->getDestinationObject()->parameters()['table'];
+					$pk_dst = $field->getDestinationObject()->parameters()['primary_key'];
+					$foreign_key_dst = $field->getDestinationForeignKey();
+					$this->db()->join($table_dst, $pk_dst, '=', [$table, $foreign_key_dst]);
+
+					/* Filtering. */
+					$this->db()->where([$table_dst, $foreign_key_dst], $filter[1], $filter[2]);
+					continue;
+				}
+				$this->db()->where($field_name, $filter[1], $filter[2]);
+				continue;
+			}
+
+			/**
+			 * Field is a part of another object.
+			 */
+			if($field instanceof \Biome\Core\ORM\Field\Many2OneField)
+			{
+				if(substr($field_name, -3) !== '_id')
+				{
+					$field_name .= '_id';
 				}
 
-				$this->filters[] = $filter;
+				$table = $field->object()->parameters()['table'];
+				$foreign_key = $field->getForeignKey();
+				$this->db()->join($table, $foreign_key, '=', $field_name);
+				$this->db()->where([$table, $subset[1]], $filter[1], $filter[2]);
+			}
+			else
+			{
+				throw new \Exception('Unsupported filtering!');
 			}
 		}
+
 		return $this;
 	}
 
 	public function order_by($field)
 	{
 		$this->orders[] = $field;
+		$this->db()->orderby($field);
 		return $this;
 	}
 
@@ -155,6 +235,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 
 	public function limit($offset = 0, $limit = 20)
 	{
+		$this->db()->offset($offset)->limit($limit);
 		$this->offset	= $offset;
 		$this->limit	= $limit;
 		return $this;
@@ -167,12 +248,27 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 	{
 		/* For reading. */
 		$l = new LazyFetcher($query_set, $field_name);
-		$this->filter(array(array($local_attribute_name, 'in', $l)));
+		$this->filter($local_attribute_name, 'in', $l);
 
 		/* For writing. */
 
+		return $this;
+	}
+
+	public function joinFilter($table, $one, $two, QuerySet $query_set)
+	{
+		$this->db()->join($table, $one, '=', $two);
+
+		$filters = $query_set->getFilters();
+
+		$this->db()->where($filters);
 
 		return $this;
+	}
+
+	public function getFilters()
+	{
+		return $this->filters;
 	}
 
 	/**
@@ -307,13 +403,10 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		$object = $this->object_name;
 		$query_set = $this;
 
-		$this->_data_set = $this->_db_handler->query(
-			$this->object()->parameters(),
-			$this->fields,
-			$this->filters,
-			$this->orders,
-			$this->offset,
-			$this->limit,
+		$sql = $this->db()->toSql();
+
+		$this->_data_set = $this->_db_handler->processSelect(
+			$sql,
 			function($row) use($query_set) {
 				$object_name	= $query_set->object_name;
 				$object			= $query_set->object();
@@ -341,7 +434,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 				/* Instanciate object. */
 				$o = ObjectLoader::get($object_name, $row, $query_set);
 				return $o;
-		},
+			},
 			$this->total_count);
 
 		return $this;
@@ -355,20 +448,17 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		$new_qs = clone $this;
 
 		$primary_keys = $this->object()->parameters()['primary_key'];
-		$filters = array();
 		if(is_array($primary_keys))
 		{
 			foreach($primary_keys AS $index => $pk)
 			{
-				$filters[] = array($pk, '=', $id[$index]);
+				$new_qs->filter($pk, '=', $id[$index]);
 			}
 		}
 		else
 		{
-			$filters[] = array($primary_keys, '=', $id);
+			$new_qs->filter($primary_keys, '=', $id);
 		}
-
-		$new_qs->filter($filters);
 		return $new_qs->current();
 	}
 

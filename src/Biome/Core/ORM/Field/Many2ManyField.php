@@ -33,6 +33,26 @@ class Many2ManyField extends AbstractField implements QuerySetFieldInterface
 		}
 	}
 
+	public function getLinkObject()
+	{
+		return $this->object = ObjectLoader::get($this->link_object_name);
+	}
+
+	public function getLinkForeignKey()
+	{
+		return $this->link_foreign_key;
+	}
+
+	public function getDestinationObject()
+	{
+		return $this->object = ObjectLoader::get($this->object_name);
+	}
+
+	public function getDestinationForeignKey()
+	{
+		return $this->foreign_key;
+	}
+
 	public function generateQuerySet(QuerySet $query_set, $field_name)
 	{
 		$lnk_object_name	= $this->link_object_name;

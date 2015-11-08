@@ -6,7 +6,7 @@ use \User;
 use \Role;
 use \UserRole;
 
-class ORMSimpleTest extends \PHPUnit_Framework_TestCase
+class ORMCreateReadTest extends \PHPUnit_Framework_TestCase
 {
 	public function testRetrieveAllUsers()
 	{
@@ -69,7 +69,7 @@ class ORMSimpleTest extends \PHPUnit_Framework_TestCase
 
 		/* Delete */
 		$this->assertTrue($user->delete());
-		$user = User::all()->filter(array(array('user_id', '=', $user_id)))->fetch();
+		$user = User::all()->filter('user_id', '=', $user_id)->fetch();
 		$this->assertEmpty($user);
 	}
 

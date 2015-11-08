@@ -17,11 +17,9 @@ class MySQLHandler
 		return Biome::getService('mysql');
 	}
 
-	public function query($parameters, $fields, $filters, $orders, $offset, $limit, $objectMapper, &$total_count)
+	public function processSelect($select, $objectMapper, &$total_count)
 	{
-		$query = $this->generateQuery($parameters, $fields, $filters, $orders, $offset, $limit);
-
-		$result = $this->db()->query($query);
+		$result = $this->db()->query($select);
 		$found_rows = $this->db()->query('SELECT FOUND_ROWS() AS total;');
 
 		while($row = $found_rows->fetch_assoc())
@@ -46,32 +44,6 @@ class MySQLHandler
 		}
 
 		return $data;
-	}
-
-	protected function generateSelect($database, $table, $fields)
-	{
-		$query = 'SELECT SQL_CALC_FOUND_ROWS ';
-
-		/**
-		 * Fields selection
-		 */
-		if(empty($fields))
-		{
-			$fields = '*';
-		}
-		else
-		{
-			$fields = join(', ', $fields);
-		}
-
-		$query .= $fields;
-
-		/**
-		 * Database and table
-		 */
-		$query .= ' FROM `' . $database . '`.`' . $table . '`';
-
-		return $query;
 	}
 
 	protected function generateInsert($database, $table, $fields)
@@ -200,22 +172,6 @@ class MySQLHandler
 		}
 
 		return ' LIMIT ' . $offset . ',' . $limit;
-	}
-
-	public function generateQuery($parameters, $fields, $filters, $orders, $offset, $limit)
-	{
-		$database	= !empty($parameters['database']) ? $parameters['database'] : $this->db()->getDatabase();
-		$table		= $parameters['table'];
-
-		$query = $this->generateSelect($database, $table, $fields);
-		$query .= $this->generateWhere($table, $filters);
-		if(!empty($orders))
-		{
-			$query .= $this->generateOrders($orders);
-		}
-		$query .= $this->generateLimit($offset, $limit);
-
-		return $query;
 	}
 
 	public function create($parameters, $data)
