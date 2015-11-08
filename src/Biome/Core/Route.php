@@ -14,6 +14,8 @@ class Route extends RouteCollection
 {
 	protected $classname_routes = array();
 
+	public $routes_list = array();
+
 	public function __construct()
 	{
 		$request = \Biome\Biome::getService('request');
@@ -31,40 +33,59 @@ class Route extends RouteCollection
 	{
 		/**
 		 * Generating all routes.
-		 * TODO: Caching
 		 */
-		$controllers_dirs = \Biome\Biome::getDirs('controllers');
-		$controllers_dirs = array_reverse($controllers_dirs);
-		foreach($controllers_dirs AS $dir)
+		$cache = NULL;
+		$classname_routes = NULL;
+		if(\Biome\Biome::hasService('staticcache'))
 		{
-			$files = scandir($dir);
-			foreach($files AS $file)
-			{
-				if($file[0] == '.')
-				{
-					continue;
-				}
-
-				if(substr($file, -14) != 'Controller.php')
-				{
-					continue;
-				}
-
-				$controller_name = substr($file, 0, -14);
-				// Skip if already defined!
-				if(isset($this->classname_routes[$controller_name]))
-				{
-					continue;
-				}
-				include_once($dir . '/' . $file);
-				$class_name = $controller_name . 'Controller';
-				$this->classname_routes[$controller_name] = $this->getRoutesFromClassName($class_name);
-			}
+			$cache = \Biome\Biome::getService('staticcache');
+			$classname_routes = $cache->get('classname_routes');
 		}
 
-		foreach($this->classname_routes AS $controller => $actions)
+		if(empty($classname_routes))
 		{
-			$controller_name = strtolower($controller);
+			$controllers_dirs = \Biome\Biome::getDirs('controllers');
+			$controllers_dirs = array_reverse($controllers_dirs);
+			foreach($controllers_dirs AS $dir)
+			{
+				$files = scandir($dir);
+				foreach($files AS $file)
+				{
+					if($file[0] == '.')
+					{
+						continue;
+					}
+
+					if(substr($file, -14) != 'Controller.php')
+					{
+						continue;
+					}
+
+					$controller_name = substr($file, 0, -14);
+					$controller_name = strtolower($controller_name);
+					// Skip if already defined!
+					if(isset($this->classname_routes[$controller_name]))
+					{
+						continue;
+					}
+					include_once($dir . '/' . $file);
+					$class_name = $controller_name . 'Controller';
+					$this->classname_routes[$controller_name] = $this->getRoutesFromClassName($class_name);
+				}
+			}
+
+			if(!empty($cache))
+			{
+				$cache->store('classname_routes', $this->classname_routes);
+			}
+		}
+		else
+		{
+			$this->classname_routes = $classname_routes;
+		}
+
+		foreach($this->classname_routes AS $controller_name => $actions)
+		{
 			foreach($actions AS $type => $action)
 			{
 				foreach($action AS $name => $meta)
@@ -72,13 +93,24 @@ class Route extends RouteCollection
 					$route_path = '/';
 					if(!($controller_name == 'index' && $name == 'index'))
 					{
+						// Controller part
 						$route_path .= $controller_name . '/';
+
+						// Object id part
 						if(!empty($meta['url_parameters']))
 						{
-							$raw = $meta['url_parameters'];
-							$route_path .= '{' . $raw[0] . '}/';
+							$p = array_shift($meta['url_parameters']);
+							$route_path .= '{' . $p . '}/';
 						}
+
+						// Action part
 						$route_path .= strtolower($name);
+
+						// Page and others part
+						foreach($meta['url_parameters'] AS $p)
+						{
+							$route_path .= '/{' . $p . '}';
+						}
 					}
 
 					$method = function(Request $request, Response $response, array $args) use($type, $controller_name, $name, $meta) {
@@ -88,13 +120,16 @@ class Route extends RouteCollection
 						$method_params = array();
 						foreach($meta['parameters'] AS $param)
 						{
-							if(is_callable($param['type']))
+							switch(strtolower($param['type']))
 							{
-								$type_param = $param['type']($ctrl);
-							}
-							else
-							{
-								$type_param = $param['type'];
+								case 'biome\core\orm\models':
+									$type_param = $ctrl->objectName();
+									break;
+								case 'biome\core\collection':
+									$type_param = $ctrl->collectionName() . 'Collection';
+									break;
+								default:
+									$type_param = $param['type'];
 							}
 
 							$method_params[] = $this->parameterInjection($type_param, $param['name'], $param['required'], $args);
@@ -105,16 +140,19 @@ class Route extends RouteCollection
 					};
 
 					$this->addRoute($type, $route_path, $method);
+					$this->routes_list[] = $type . ' ' . $route_path;
 					if($name == 'index')
 					{
 						$route_path = '/' . $controller_name;
 						$this->addRoute($type, $route_path, $method);
+						$this->routes_list[] = $type . ' ' . $route_path;
 					}
 
 					if($controller_name == 'index' && $name == 'index')
 					{
 						$route_path = '/' . $controller_name . '/' . $name;
 						$this->addRoute($type, $route_path, $method);
+						$this->routes_list[] = $type . ' ' . $route_path;
 					}
 				}
 			}
@@ -184,16 +222,6 @@ class Route extends RouteCollection
 				else
 				{
 					$type = $this->extractParamTypeFromString((string)$param);
-				}
-
-				if(strtolower($type) == 'biome\core\orm\models')
-				{
-					$type = function($controller) { return $controller->objectName(); };
-				}
-				else
-				if(strtolower($type) == 'biome\core\collection')
-				{
-					$type = function($controller) { return $controller->collectionName() . 'Collection'; };
 				}
 
 				$name = $param->getName();

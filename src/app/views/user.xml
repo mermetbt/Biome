@@ -28,67 +28,32 @@
 	</biome:view>
 
 	<biome:view action="index">
-		<biome:title title="Users"/>
+		<biome:title title="Users">
+			<biome:a class="btn btn-success" controller="user" action="create"><i class="fa fa-plus"></i><span> New</span></biome:a>
+		</biome:title>
 
 		<div class="row">
 			<div class="col-lg-12">
-				<biome:panel>
-					<biome:a class="btn btn-success" controller="user" action="create"><i class="fa fa-plus"></i><span> New</span></biome:a>
-
-					<br/><br/>
+				<biome:panel title="Users list">
 					<biome:datatable value="#{users.users}" var="u">
 						<biome:column headerTitle="#">
 							<biome:variable value="#{u.user_id}"/>
 						</biome:column>
 
 						<biome:column headerTitle="Firstname">
-							<biome:variable value="#{u.firstname}"/>
+							<biome:a controller="user" action="show" item="#{u.user_id}">
+								<biome:variable value="#{u.firstname}"/>
+							</biome:a>
 						</biome:column>
 
 						<biome:column headerTitle="Lastname">
-							<biome:variable value="#{u.lastname}"/>
+							<biome:a controller="user" action="show" item="#{u.user_id}">
+								<biome:variable value="#{u.lastname}"/>
+							</biome:a>
 						</biome:column>
 
 						<biome:column headerTitle="E-Mail">
 							<biome:variable value="#{u.mail}"/>
-						</biome:column>
-
-						<biome:column>
-							<biome:a class="btn btn-sm btn-default" controller="user" action="edit" item="#{u.user_id}"><i class="fa fa-pencil"></i><span> Edit</span></biome:a>
-							<span style="padding: 5px;"></span>
-							<biome:a class="btn btn-sm btn-danger" controller="user" action="delete" item="#{u.user_id}"><i class="fa fa-trash"></i><span> Delete</span></biome:a>
-						</biome:column>
-					</biome:datatable>
-
-				</biome:panel>
-			</div>
-		</div>
-	</biome:view>
-
-	<biome:view action="edit">
-		<biome:title title="Users"/>
-
-		<div class="row">
-			<div class="col-lg-8">
-				<biome:panel title="User informations">
-					<biome:form>
-						<biome:field value="#{users.user.firstname}"/>
-						<biome:field value="#{users.user.lastname}"/>
-						<biome:field value="#{users.user.mail}"/>
-
-						<biome:field type="password" value="#{users.password}" label="Password" required="true"/>
-						<biome:field type="password" value="#{users.password_confirm}" label="Password Confirm" required="true"/>
-
-						<biome:button class="btn-success" value="Update" action="#{user.edit}"/>
-					</biome:form>
-				</biome:panel>
-			</div>
-			<div class="col-lg-4">
-				<biome:panel title="Informations">
-
-					<biome:datatable value="#{users.user.roles}" var="r" pagination="false" searchable="false">
-						<biome:column headerTitle="Role">
-							<biome:variable value="#{r.role_name}"/>
 						</biome:column>
 					</biome:datatable>
 
@@ -109,6 +74,49 @@
 				<biome:button class="btn-success" value="Create" action="#{user.create}"/>
 			</biome:form>
 		</biome:panel>
+	</biome:view>
+
+	<biome:view action="show">
+		<biome:title title="#{user.firstname} #{user.lastname}">
+			<biome:a class="btn btn-danger" controller="user" action="delete" item="#{user.user_id}"><i class="fa fa-trash"></i><span> Delete</span></biome:a>
+		</biome:title>
+
+		<div class="row">
+			<div class="col-lg-8">
+				<biome:panel title="User informations">
+					<biome:ajaxfield value="#{user.firstname}"/>
+					<biome:ajaxfield value="#{user.lastname}"/>
+					<biome:ajaxfield value="#{user.mail}"/>
+					<biome:ajaxfield value="#{user.user_active}"/>
+					<biome:ajaxfield value="#{user.creation_date}"/>
+				</biome:panel>
+			</div>
+			<div class="col-lg-4">
+				<biome:panel title="Informations">
+
+					<biome:datatable value="#{user.roles}" var="r" pagination="false" searchable="false">
+						<biome:column headerTitle="Role">
+							<biome:variable value="#{r.role_name}"/>
+						</biome:column>
+						<biome:column>
+							<biome:a class="btn btn-xs btn-danger" controller="user" item="#{user.user_id}" action="removeRole" page="#{r.role_id}"><i class="fa fa-minus"></i></biome:a>
+						</biome:column>
+					</biome:datatable>
+
+					<biome:form>
+						<div class="row">
+							<div class="col-lg-8">
+								<biome:field label="" value="#{userrole.role_id}"/>
+							</div>
+							<div class="col-lg-4">
+								<biome:button class="btn-sm btn-success" action="#{user.addrole}"><i class="fa fa-plus"></i><span> Add</span></biome:button>
+							</div>
+						</div>
+					</biome:form>
+
+				</biome:panel>
+			</div>
+		</div>
 	</biome:view>
 
 </biome:views>

@@ -46,7 +46,7 @@ class URL
 
 		if($controller)
 		{
-			$url .= '/' . $controller;
+			$url .= '/' . strtolower($controller);
 		}
 
 		if($item)
@@ -56,7 +56,7 @@ class URL
 
 		if($action)
 		{
-			$url .= '/' . $action;
+			$url .= '/' . strtolower($action);
 		}
 
 		if($page)

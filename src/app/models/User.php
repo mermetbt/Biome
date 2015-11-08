@@ -7,7 +7,10 @@ use Biome\Core\ORM\Field\TextField;
 use Biome\Core\ORM\Field\BooleanField;
 use Biome\Core\ORM\Field\EmailField;
 use Biome\Core\ORM\Field\PasswordField;
+use Biome\Core\ORM\Field\DateTimeField;
 use Biome\Core\ORM\Field\Many2ManyField;
+
+use Biome\Core\ORM\RawSQL;
 
 use Biome\Core\ORM\Converter\PasswordConverter;
 
@@ -43,10 +46,16 @@ class User extends Models
 								->setRequired(TRUE)
 								->setConverter(new PasswordConverter());
 
-		$this->user_visible	= BooleanField::create()
-								->setLabel('Visible')
+		$this->user_active	= BooleanField::create()
+								->setLabel('Active')
 								->setRequired(TRUE)
 								->setDefaultValue(TRUE);
+
+		$this->creation_date	= DateTimeField::create()
+									->setLabel('Creation date')
+									->setRequired(TRUE)
+									->setEditable(FALSE)
+									->setDefaultValue(RawSQL::select('CURRENT_TIMESTAMP'));
 
 		$this->roles		= Many2ManyField::create('Role', 'role_id', 'UserRole', 'user_id')
 								->setLabel('Roles');

@@ -2,6 +2,8 @@
 
 namespace Biome\Core\Rights;
 
+use \Biome\Core\URL;
+
 class AccessRights implements RightsInterface
 {
 	protected $rights = array();

@@ -166,11 +166,22 @@ abstract class Models implements ObjectInterface
 			return $this->getValue($attribute);
 		}
 
-		if($f instanceof QuerySetFieldInterface)
+		if($f instanceof Many2ManyField)
 		{
 			if($this->_query_set === NULL)
 			{
-				$this->_query_set = self::all()->filter($pks, '=', $this->getId());
+				$this->_query_set = self::all();
+				if(is_array($pks))
+				{
+					foreach($pks AS $pk)
+					{
+						$this->_query_set->filter($pk, '=', $this->getId($pk));
+					}
+				}
+				else
+				{
+					$this->_query_set->filter($pks, '=', $this->getId());
+				}
 			}
 			$qs = $f->generateQuerySet($this->_query_set, $attribute);
 			$this->_values['old'][$attribute] = $qs;
@@ -652,9 +663,9 @@ abstract class Models implements ObjectInterface
 	/**
 	 * Get a collection of object from a condition
 	 */
-	public static function filter($where)
+	public static function find($where)
 	{
-		return self::all()->filter(func_get_args());
+		return call_user_func_array([self::all(), 'filter'], func_get_args());
 	}
 
 	/**

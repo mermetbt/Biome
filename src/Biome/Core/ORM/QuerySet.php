@@ -154,6 +154,8 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 			}
 
 			$subset = explode('.', $filter[0]);
+			$operator = isset($filter[1]) ? $filter[1] : '=';
+			$value = isset($filter[2]) ? $filter[2] : '';
 
 			/**
 			 * Field is a part of another object.
@@ -190,10 +192,10 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 					$this->db()->join($table_dst, $pk_dst, '=', [$table, $foreign_key_dst]);
 
 					/* Filtering. */
-					$this->db()->where([$table_dst, $foreign_key_dst], $filter[1], $filter[2]);
+					$this->db()->where([$table_dst, $foreign_key_dst], $operator, $value);
 					continue;
 				}
-				$this->db()->where($field_name, $filter[1], $filter[2]);
+				$this->db()->where($field_name, $operator, $value);
 				continue;
 			}
 
@@ -210,7 +212,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 				$table = $field->object()->parameters()['table'];
 				$foreign_key = $field->getForeignKey();
 				$this->db()->join($table, $foreign_key, '=', $field_name);
-				$this->db()->where([$table, $subset[1]], $filter[1], $filter[2]);
+				$this->db()->where([$table, $subset[1]], $operator, $value);
 			}
 			else
 			{

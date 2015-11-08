@@ -2,8 +2,6 @@
 
 class UserController extends BaseController
 {
-	public function getProfile() { }
-
 	public function postSave(AuthCollection $c)
 	{
 		if(!$c->user->save())
@@ -77,10 +75,28 @@ class UserController extends BaseController
 
 	public function getCreate() { }
 
-	public function getEdit($user_id)
+	public function getProfile() { }
+
+	public function getShow($user_id)
 	{
-		$c = UsersCollection::get();
-		$c->user->sync($user_id);
+		$this->view->user = User::get($user_id);
+	}
+
+	public function getRemoveRole($user_id, $role_id)
+	{
+		$userroles = UserRole::find(
+					array('user_id', '=', $user_id),
+					array('role_id', '=', $role_id)
+				);
+
+		foreach($userroles AS $ur)
+		{
+			if($ur->delete())
+			{
+				$this->flash()->success('Role removed!');
+			}
+		}
+		return $this->response()->redirect();
 	}
 
 	public function getDelete($user_id)

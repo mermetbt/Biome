@@ -32,7 +32,8 @@
 			"font-awesome": "*",
 			"datatables": "*",
 			"datatables-plugins": "*",
-			"datatables-responsive-helper": "*"
+			"datatables-responsive-helper": "*",
+			"select2-ng": "*"
 		}
 	}
 }
