@@ -7,13 +7,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 	<title><?php echo $view->getTitle() ?></title>
-	<link href="<?php echo URL::getAsset('packages/bootstrap/dist/css/bootstrap.min.css') ?>" rel="stylesheet">
-	<link href="<?php echo URL::getAsset('packages/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet">
-	<link href="<?php echo URL::getAsset('packages/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css') ?>" rel="stylesheet">
-	<link href="<?php echo URL::getAsset('packages/datatables-responsive-helper/files/1.10/css/datatables.responsive.css') ?>" rel="stylesheet">
-	<link href="<?php echo URL::getAsset('packages/select2-ng/dist/css/select2.min.css') ?>" rel="stylesheet">
-
-	<link href="<?php echo URL::getAsset('css/style.css') ?>" rel="stylesheet">
+	<link href="<?php echo URL::getAsset('css/vendor.min.css') ?>" rel="stylesheet">
+	<link href="<?php echo URL::getAsset('css/app.min.css') ?>" rel="stylesheet">
 	<?php
 		$css_list = $this->getCss();
 		foreach($css_list AS $css_file)
@@ -32,13 +27,8 @@
 	<div id="wrapper">
 		<?php echo $this->getContent(); ?>
 	</div>
-	<script src="<?php echo URL::getAsset('packages/jquery/dist/jquery.min.js') ?>"></script>
-	<script src="<?php echo URL::getAsset('packages/bootstrap/dist/js/bootstrap.min.js') ?>"></script>
-	<script src="<?php echo URL::getAsset('packages/datatables/media/js/jquery.dataTables.min.js') ?>"></script>
-	<script src="<?php echo URL::getAsset('packages/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js') ?>"></script>
-	<script src="<?php echo URL::getAsset('packages/datatables-responsive-helper/files/1.10/js/datatables.responsive.js') ?>"></script>
-	<script src="<?php echo URL::getAsset('packages/select2-ng/dist/js/select2.full.min.js') ?>"></script>
-
+	<script src="<?php echo URL::getAsset('js/vendor.min.js') ?>"></script>
+	<script src="<?php echo URL::getAsset('js/app.min.js') ?>"></script>
     <script type="text/javascript">
 		<?php echo $this->view->printJavascript(); ?>
     </script>
