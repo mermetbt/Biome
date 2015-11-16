@@ -91,11 +91,11 @@ gulp.task('check', function () {
  */
 gulp.task('biome', function () {
 	gulp.src(sources.css)
-		.pipe(concatCss('biome.css'))
+		.pipe(concatCss('app.css'))
 		.pipe(gulp.dest('build/css/'));
 
 	gulp.src(sources.js)
-		.pipe(concat('biome.js'))
+		.pipe(concat('app.js'))
 		.pipe(gulp.dest('build/js/'));
 });
 
