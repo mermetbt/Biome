@@ -36,13 +36,11 @@ trait ObjectControllerTrait
 		if($object->delete())
 		{
 			$this->flash()->success($object_name . ' deleted!');
-		}
-		else
-		{
-			$this->flash()->error('Unable to delete the ' . $object_name . '!');
+			return $this->response()->redirect(substr(strtolower(get_called_class()), 0, -strlen('Controller')));
 		}
 
-		return $this->response()->redirect(substr(strtolower(get_called_class()), 0, -strlen('Controller')));
+		$this->flash()->error('Unable to delete the ' . $object_name . '!');
+		return $this->response()->redirect();
 	}
 
 	/**
@@ -54,12 +52,12 @@ trait ObjectControllerTrait
 		if($object->save())
 		{
 			$this->flash()->success($object_name . ' created!');
+			return $this->response()->redirect(strtolower($object_name));
 		}
-		else
-		{
-			$this->flash()->error('Unable to create the ' . $object_name . '!', join(', ', $object->getErrors()));
-		}
-		return $this->response()->redirect(strtolower($object_name));
+
+		$this->flash()->error('Unable to create the ' . $object_name . '!', join(', ', $object->getErrors()));
+
+		return $this->response()->redirect();
 	}
 
 	public function postEdit(Collection $collection)
