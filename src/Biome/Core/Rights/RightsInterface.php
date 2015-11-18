@@ -4,6 +4,8 @@ namespace Biome\Core\Rights;
 
 interface RightsInterface
 {
+	public function exportToJSON();
+
 	public function setRoute($method, $controller, $action, $allowed = TRUE);
 
 	public function setObject($object_name, $view = TRUE, $create = TRUE, $edit = TRUE, $delete = TRUE);

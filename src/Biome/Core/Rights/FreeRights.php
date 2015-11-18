@@ -4,6 +4,11 @@ namespace Biome\Core\Rights;
 
 class FreeRights implements RightsInterface
 {
+	public function exportToJSON()
+	{
+		return NULL;
+	}
+
 	public function setRoute($method, $controller, $action, $allowed = TRUE)
 	{
 	}
