@@ -1,5 +1,7 @@
 var fs = require('fs'),
 	gulp = require('gulp'),
+	less = require('gulp-less'),
+	clean = require('gulp-clean'),
 	//postcss = require('gulp-postcss'),
 	rename = require('gulp-rename'),
     concatCss = require('gulp-concat-css'),
@@ -18,7 +20,8 @@ var sources = {
 	],
 	vendor_css: [
 		'vendor/bower_components/font-awesome/css/font-awesome.css',
-		'vendor/bower_components/bootstrap/dist/css/bootstrap.css',
+		'build/css/bootstrap.css',
+		//'vendor/bower_components/bootstrap/dist/css/bootstrap.css',
 		//'vendor/bower_components/bootstrap/dist/css/bootstrap-theme.css',
 		'vendor/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css',
 		'vendor/bower_components/datatables-responsive-helper/files/1.10/css/datatables.responsive.css',
@@ -88,58 +91,65 @@ gulp.task('check', function () {
 });
 
 /**
- * Handle biome
+ * Clean the directories
  */
-gulp.task('biome', function () {
-	gulp.src(sources.css)
-		.pipe(concatCss('app.css'))
-		.pipe(gulp.dest('build/css/'));
-
-	gulp.src(sources.js)
-		.pipe(concat('app.js'))
-		.pipe(gulp.dest('build/js/'));
+gulp.task('clean', function () {
+	return gulp.src(['build/css/*.css', 'build/js/*.js', 'public/css/*.min.css', 'public/js/*.min.js'], {read: false})
+		.pipe(clean());
 });
 
 /**
- * Handle app resources
+ * Compile bootstrap with less
  */
-gulp.task('resources', function () {
-	gulp.src('resources/css/*.css')
+gulp.task('build-bootstrap-less', function(){
+    return gulp.src('resources/less/bootstrap.less')
+        .pipe(less())
+        .pipe(gulp.dest('build/css/'));
+});
+
+/**
+ * Handle biome
+ */
+gulp.task('biome_css', function () {
+	return gulp.src(sources.css)
 		.pipe(concatCss('app.css'))
 		.pipe(gulp.dest('build/css/'));
+});
 
-	gulp.src('resources/js/*.js')
+gulp.task('biome_js', function() {
+	return gulp.src(sources.js)
 		.pipe(concat('app.js'))
 		.pipe(gulp.dest('build/js/'));
-
-	gulp.src('resources/fonts/**/*')
-		.pipe(gulp.dest('public/fonts/'));
-
-	gulp.src('resources/images/*')
-		.pipe(gulp.dest('public/images/'));
 });
 
 /**
  * Vendor
  */
-gulp.task('vendor', function () {
-	gulp.src(sources.vendor_css)
+
+gulp.task('vendor_css', ['build-bootstrap-less'], function () {
+	return gulp.src(sources.vendor_css)
 		.pipe(concatCss('vendor.css', {rebaseUrls: false}))
 		.pipe(gulp.dest('build/css/'));
+});
 
-	gulp.src(sources.vendor_js)
+gulp.task('vendor_js', function () {
+	return gulp.src(sources.vendor_js)
 		.pipe(concat('vendor.js'))
 		.pipe(gulp.dest('build/js/'));
+});
 
-	gulp.src(sources.vendor_fonts)
+gulp.task('vendor_fonts', function () {
+	return gulp.src(sources.vendor_fonts)
 		.pipe(gulp.dest('public/fonts/'));
 });
+
+gulp.task('vendor', ['vendor_css', 'vendor_js', 'vendor_fonts']);
 
 /**
  * Compile coffee script
  */
-gulp.task('coffee', function () {
-    gulp.src(sources.coffee)
+gulp.task('coffee', ['biome_js'], function () {
+    return gulp.src(sources.coffee)
         .pipe(coffee({bare: true}))
         .pipe(concat('app.js'))
         .pipe(gulp.dest('build/js/'))
@@ -147,11 +157,35 @@ gulp.task('coffee', function () {
 });
 
 /**
+ * Handle app resources
+ */
+gulp.task('resources_css', ['biome_css', 'build-bootstrap-less'], function() {
+	return gulp.src('resources/css/*.css')
+		.pipe(concatCss('app.css'))
+		.pipe(gulp.dest('build/css/'));
+});
+gulp.task('resources_js', ['coffee', 'biome_js'], function() {
+	return gulp.src('resources/js/*.js')
+		.pipe(concat('app.js'))
+		.pipe(gulp.dest('build/js/'));
+});
+gulp.task('resources_fonts', function() {
+	return gulp.src('resources/fonts/**/*')
+		.pipe(gulp.dest('public/fonts/'));
+});
+gulp.task('resources_images', function() {
+	return gulp.src('resources/images/*')
+		.pipe(gulp.dest('public/images/'));
+});
+
+gulp.task('resources', ['resources_css', 'resources_js', 'resources_fonts', 'resources_images']);
+
+/**
  * Minify CSS
  */
 gulp.task('cssmin', function () {
-    gulp.src('build/css/*.css')
-        .pipe(require('gulp-cssmin')())
+    return gulp.src(['build/css/app.css', 'build/css/vendor.css'])
+        //.pipe(require('gulp-cssmin')())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('public/css'));
 });
@@ -160,8 +194,8 @@ gulp.task('cssmin', function () {
  * Uglify
  */
 gulp.task('uglify', function () {
-    gulp.src('build/js/*.js')
-        .pipe(require('gulp-uglify')())
+    return gulp.src(['build/js/app.js', 'build/js/vendor.js'])
+        //.pipe(require('gulp-uglify')())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('public/js'));
 });
@@ -169,7 +203,12 @@ gulp.task('uglify', function () {
 /**
  * Build
  */
-gulp.task('build', ['check', 'vendor', 'biome', 'resources', 'coffee']);
 gulp.task('minify', ['cssmin', 'uglify']);
 
-gulp.task('default', ['build', 'minify']);
+gulp.task('build', ['vendor', 'resources'], function() {
+	return gulp.start('minify');
+});
+
+gulp.task('default', ['clean'], function() {
+	return gulp.start('build');
+});
