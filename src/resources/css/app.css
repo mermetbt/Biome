@@ -172,18 +172,23 @@ body {
 	margin-bottom: 5px;
 }
 
-.ajaxfield {
+.input-group-btn {
+	vertical-align: top;
+}
+
+.ajaxfield-input {
+	padding-right: 20px;
 	color: #000;
 }
 
-.ajaxfield:hover {
+.ajaxfield-input:hover {
 	text-decoration: none;
 }
 
-.ajaxfield i {
+.ajaxfield-input i {
 	display: none;
 }
 
-.ajaxfield:hover i {
+.ajaxfield-input:hover i {
 	display: inline;
 }

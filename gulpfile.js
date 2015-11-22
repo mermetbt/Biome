@@ -33,6 +33,7 @@ var sources = {
 		'vendor/bower_components/datatables/media/js/dataTables.bootstrap.js',
 		//'vendor/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js',
 		'vendor/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js',
+		'vendor/bower_components/autosize/dist/autosize.min.js',
 		'vendor/bower_components/select2-ng/dist/js/select2.full.min.js'
 	],
 	vendor_fonts: [
