@@ -13,10 +13,13 @@ var sources = {
 		'vendor/mermetbt/biome/src/resources/js/app.coffee'
 	],
 	css: [
-		'vendor/mermetbt/biome/src/resources/css/app.css'
+		'vendor/mermetbt/biome/src/resources/css/app.css',
+		'resources/css/*.css'
 	],
 	js: [
 		//'vendor/mermetbt/biome/src/resources/js/app.js'
+		'build/js/app.coffee.js',
+		'resources/js/*.js'
 	],
 	vendor_css: [
 		'vendor/bower_components/font-awesome/css/font-awesome.css',
@@ -108,21 +111,6 @@ gulp.task('build-bootstrap-less', function(){
 });
 
 /**
- * Handle biome
- */
-gulp.task('biome_css', function () {
-	return gulp.src(sources.css)
-		.pipe(concatCss('app.css'))
-		.pipe(gulp.dest('build/css/'));
-});
-
-gulp.task('biome_js', function() {
-	return gulp.src(sources.js)
-		.pipe(concat('app.js'))
-		.pipe(gulp.dest('build/js/'));
-});
-
-/**
  * Vendor
  */
 
@@ -148,10 +136,10 @@ gulp.task('vendor', ['vendor_css', 'vendor_js', 'vendor_fonts']);
 /**
  * Compile coffee script
  */
-gulp.task('coffee', ['biome_js'], function () {
+gulp.task('coffee', function () {
     return gulp.src(sources.coffee)
         .pipe(coffee({bare: true}))
-        .pipe(concat('app.js'))
+        .pipe(concat('app.coffee.js'))
         .pipe(gulp.dest('build/js/'))
         .on('error', console.log);
 });
@@ -159,13 +147,13 @@ gulp.task('coffee', ['biome_js'], function () {
 /**
  * Handle app resources
  */
-gulp.task('resources_css', ['biome_css', 'build-bootstrap-less'], function() {
-	return gulp.src('resources/css/*.css')
-		.pipe(concatCss('app.css'))
+gulp.task('resources_css', ['build-bootstrap-less'], function() {
+	return gulp.src(sources.css)
+		.pipe(concatCss('app.css', {rebaseUrls: false}))
 		.pipe(gulp.dest('build/css/'));
 });
-gulp.task('resources_js', ['coffee', 'biome_js'], function() {
-	return gulp.src('resources/js/*.js')
+gulp.task('resources_js', ['coffee'], function() {
+	return gulp.src(sources.js)
 		.pipe(concat('app.js'))
 		.pipe(gulp.dest('build/js/'));
 });
