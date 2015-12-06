@@ -17,4 +17,10 @@ class NavbarComponent extends Component
 
 		return parent::render();
 	}
+
+	public function getLogo()
+	{
+		$logo = $this->getAttribute('logo', '');
+		return $logo;
+	}
 }

@@ -173,7 +173,7 @@ gulp.task('resources', ['resources_css', 'resources_js', 'resources_fonts', 'res
  */
 gulp.task('cssmin', function () {
     return gulp.src(['build/css/app.css', 'build/css/vendor.css'])
-        //.pipe(require('gulp-cssmin')())
+        .pipe(require('gulp-cssmin')())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('public/css'));
 });
@@ -183,7 +183,7 @@ gulp.task('cssmin', function () {
  */
 gulp.task('uglify', function () {
     return gulp.src(['build/js/app.js', 'build/js/vendor.js'])
-        //.pipe(require('gulp-uglify')())
+        .pipe(require('gulp-uglify')())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('public/js'));
 });

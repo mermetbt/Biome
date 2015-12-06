@@ -2,6 +2,7 @@
 
 namespace Biome;
 
+use Biome\Core\Autoload;
 use Biome\Core\URL;
 use Biome\Core\Route;
 use Biome\Core\Error;
@@ -57,6 +58,11 @@ class Biome
 		/* Registering default services. */
 
 		/**
+		 * Autoload
+		 */
+		Autoload::register();
+
+		/**
 		 * Biome default logger service.
 		 */
 		if(!Biome::hasService('logger'))
@@ -99,6 +105,11 @@ class Biome
 					$roles = $auth->user->roles;
 					foreach($roles AS $role)
 					{
+						/* If Admin. */
+						if($role->role_id == 1)
+						{
+							return new \Biome\Core\Rights\FreeRights();
+						}
 						$rights = AccessRights::loadFromJSON($role->role_rights);
 					}
 					return $rights;
@@ -166,8 +177,6 @@ class Biome
 
 				$command = substr($file, 0, -4);
 
-				// FIXME: ?? bug when not present..
-				include_once($dir . '/' . $file);
 				if(class_exists($command))
 				{
 					$command::registerCommands($app);

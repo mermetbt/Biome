@@ -7,7 +7,19 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="<?php echo URL::fromRoute(); ?>"><?php echo $view->getTitle() ?></a>
+			<a class="navbar-brand" href="<?php echo URL::fromRoute(); ?>"><?php
+
+			$logo = $this->getLogo();
+			if(!empty($logo))
+			{
+				echo '<img src="', URL::getAsset($logo), '" width="100%" height="100%"/>';
+			}
+			else
+			{
+				echo $view->getTitle();
+			}
+
+			?></a>
 		</div>
 
 		<?php echo $this->getContent(); ?>

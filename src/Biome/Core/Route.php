@@ -68,7 +68,6 @@ class Route extends RouteCollection
 					{
 						continue;
 					}
-					include_once($dir . '/' . $file);
 					$class_name = $controller_name . 'Controller';
 					$this->classname_routes[$controller_name] = $this->getRoutesFromClassName($class_name);
 				}

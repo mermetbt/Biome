@@ -31,28 +31,6 @@ class Collection implements Serializable
 			return self::$_collections_set[$class_name];
 		}
 
-		/**
-		 * TODO: Replace this dirty code by an autoload.
-		 */
-		$dirs = \Biome\Biome::getDirs('collections');
-		foreach($dirs AS $d)
-		{
-			if(!file_exists($d))
-			{
-				continue;
-			}
-
-			$files = scandir($d);
-			foreach($files AS $f)
-			{
-				if($f[0] == '.')
-				{
-					continue;
-				}
-				include_once($d . '/' . $f);
-			}
-		}
-
 		if(!class_exists($class_name))
 		{
 			return NULL;

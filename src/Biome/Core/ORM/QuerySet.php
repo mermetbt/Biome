@@ -243,6 +243,45 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		return $this;
 	}
 
+	public function first()
+	{
+		$this->limit(1, 1);
+
+		$primary_keys = $this->object()->parameters()['primary_key'];
+		if(is_array($primary_keys))
+		{
+			foreach($primary_keys AS $pk)
+			{
+				$this->order_by($k . ' ASC');
+			}
+		}
+		else
+		{
+			$this->order_by($primary_keys . ' ASC');
+		}
+		return $this->current();
+	}
+
+	public function last()
+	{
+		$this->limit(1, 1);
+
+		$primary_keys = $this->object()->parameters()['primary_key'];
+		if(is_array($primary_keys))
+		{
+			foreach($primary_keys AS $pk)
+			{
+				$this->order_by($k . ' DESC');
+			}
+		}
+		else
+		{
+			$this->order_by($primary_keys . ' DESC');
+		}
+
+		return $this->current();
+	}
+
 	/**
 	 * QuerySet Operations
 	 */
