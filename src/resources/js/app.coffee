@@ -30,6 +30,12 @@
 			content = content.replace(regex, '');
 			inputText = $('<textarea class="form-control ajaxfield-input">' + content + '</textarea>');
 		else
+		if type == 'many2one'
+			inputText = $('<select class="form-control ajaxfield-input"></select>');
+			identifier = $this.data 'id'
+			if identifier
+				inputText.append('<option value="'+identifier+'" selected="selected">'+content+'</option>');
+		else
 			inputText = $('<input type="'+type+'" class="form-control ajaxfield-input" value="' + content + '">');
 			inputText.keypress((event) ->
 				if event.which != 13
@@ -60,6 +66,54 @@
 
 		if type == 'textarea'
 			autosize(inputText);
+		else
+		if type == 'many2one'
+
+			formatM2OSelector = (content) ->
+				if content.loading
+					return content.name
+
+				markup = "<div class='select2-result-field clearfix'>" +
+						"<div class='select2-result-field_content'>"+content.name+"</div>" +
+						"</div>";
+
+				return markup
+
+			formatM2OSelection = (content) ->
+				return content.name || content.text;
+
+			inputText.select2({
+				placeholder: "",
+				allowClear: true,
+				ajax: {
+					    url: $this.data 'url',
+						dataType: 'json',
+						delay: 250,
+						data: (params) ->
+							return {
+								action: 'search',
+								q: params.term,
+								page: params.page
+							};
+						,
+						processResults: (data, params) ->
+							params.page = params.page || 1
+
+							return {
+									results: data.items,
+									pagination: {
+										more: (params.page * 30) < data.total_count
+									}
+							}
+						,
+						cache: true
+				},
+				escapeMarkup: (markup) -> return markup,
+				minimumInputLength: 1,
+				templateResult: formatM2OSelector,
+				templateSelection: formatM2OSelection
+			});
+			return;
 
 		inputText.focus();
 		inputText.setCursorPosition(inputText.val().length*2);
@@ -79,7 +133,9 @@
 		formgroup.removeClass('has-error');
 		$this.find('.help-block').html('');
 
-		data = {}
+		data = {
+			action: 'save'
+		}
 		data[$this.data('name')] = text;
 
 		$.ajax
@@ -101,7 +157,13 @@
 				$this.html(c);
 				content = $this.find('.content');
 				regex = new RegExp('\n', 'g');
-				txt = data.value
+				type = $this.data 'type'
+				if data.content
+					txt = data.content
+					$this.data('id', data.value)
+				else
+					txt = data.value
+
 				txt = txt.replace(regex, '\n<br>');
 				content.html(txt);
 				$this.find('.ajaxfield-input').click( () ->

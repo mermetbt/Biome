@@ -20,6 +20,12 @@ class Autoload
 	private static function classloader($class_name, $type)
 	{
 		$dirs = \Biome\Biome::getDirs($type);
+
+		if(empty($dirs))
+		{
+			return FALSE;
+		}
+
 		$filename = '';
 		foreach($dirs AS $d)
 		{

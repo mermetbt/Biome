@@ -197,4 +197,61 @@ class ORMFilterTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($r->getId(), $ur_filtered->getId('role_id'));
 
 	}
+
+	public function testFilterContains()
+	{
+		/* Role creation. */
+		$r1 = new Role();
+		$r1->role_name = 'AABBCC';
+		$this->assertTrue($r1->save());
+
+		$r2 = new Role();
+		$r2->role_name = 'BBCCDD';
+		$this->assertTrue($r2->save());
+
+		$r3 = new Role();
+		$r3->role_name = 'CCDDAA';
+		$this->assertTrue($r3->save());
+
+		$r4 = new Role();
+		$r4->role_name = 'DDAABB';
+		$this->assertTrue($r4->save());
+
+		/**
+		 * Search for a specific one.
+		 */
+		$role = Role::all()->filter('role_name', 'like', 'AABBCC')->fetch();
+		$this->assertEquals(1, $role->getTotalCount());
+
+		$r = $role->current();
+		$this->assertEquals($r1->getId(), $r->getId());
+
+		/**
+		 * Beginning with A
+		 */
+		$role = Role::all()->filter('role_name', 'like', 'AA%')->fetch();
+		$this->assertEquals(1, $role->getTotalCount());
+
+		$r = $role->current();
+		$this->assertEquals($r1->getId(), $r->getId());
+
+		/**
+		 * Ending with A
+		 */
+		$role = Role::all()->filter('role_name', 'like', '%AA')->fetch();
+		$this->assertEquals(1, $role->getTotalCount());
+
+		$r = $role->current();
+		$this->assertEquals($r3->getId(), $r->getId());
+
+		/**
+		 * Containing A
+		 */
+		$role = Role::all()->filter('role_name', 'like', '%AA%')->fetch();
+		$this->assertEquals(3, $role->getTotalCount());
+
+		// TODO: Finish the test and try to avoid the conflict with existings roles.
+		//$r = $role->current();
+		//$this->assertEquals($r1->getId(), $r->getId());
+	}
 }

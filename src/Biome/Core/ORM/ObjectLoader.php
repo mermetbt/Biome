@@ -11,10 +11,12 @@ class ObjectLoader
 			return TRUE;
 		}
 
-		/**
-		 * TODO: Replace this dirty code by an autoload.
-		 */
 		$dirs = \Biome\Biome::getDirs('models');
+		if(empty($dirs))
+		{
+			return FALSE;
+		}
+
 		$filename = '';
 		foreach($dirs AS $d)
 		{

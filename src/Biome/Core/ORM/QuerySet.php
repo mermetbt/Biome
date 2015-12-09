@@ -459,7 +459,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 
 					if($field instanceof QuerySetFieldInterface)
 					{
-						if(isset($row[$field_name]))
+						if(array_key_exists($field_name, $row))
 						{
 							$field_name_local = substr($field_name, 0, -3);
 							$row[$field_name_local] = $field->getObject($row[$field_name]);

@@ -55,6 +55,7 @@ class MySQLHandler
 		{
 			if($value === NULL)
 			{
+				$groups[] = '`' . $field_name . '`=NULL';
 				continue;
 			}
 			$groups[] = '`' . $field_name . '`="' . $this->db()->real_escape_string($value) . '"';
@@ -74,6 +75,7 @@ class MySQLHandler
 		{
 			if($value === NULL)
 			{
+				$groups[] = '`' . $field_name . '`=NULL';
 				continue;
 			}
 			$groups[] = '`' . $field_name . '`="' . $this->db()->real_escape_string($value) . '"';

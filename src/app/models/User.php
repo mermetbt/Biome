@@ -60,4 +60,9 @@ class User extends Models
 		$this->roles		= Many2ManyField::create('Role', 'role_id', 'UserRole', 'user_id')
 								->setLabel('Roles');
 	}
+
+	public function __toString()
+	{
+		return $this->firstname . ' ' . $this->lastname;
+	}
 }

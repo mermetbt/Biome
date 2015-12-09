@@ -20,7 +20,32 @@ if(!empty($label))
 	?><label for="<?php echo $id; ?>" class="control-label col-sm-2"><?php echo $label; ?></label> <?php
 }
 
-?><div id="<?php echo $id; ?>" data-type="<?php echo $type; ?>" data-url="<?php echo $url; ?>" data-name="<?php echo $name; ?>" class="ajaxfield col-sm-10 form-group"><?php
+?><div id="<?php echo $id; ?>"<?php
+?> data-type="<?php echo $type; ?>" data-url="<?php echo $url; ?>" data-name="<?php echo $name; ?>"<?php
+
+if($type == 'many2one')
+{
+	if($value instanceof \Biome\Core\ORM\Models)
+	{
+		$data_id = $value->getId();
+		$value = (string) $value;
+	}
+	else
+	{
+		$data_id = $value;
+		$last = NULL;
+		$object = $this->getObject($last);
+
+		if(substr($last, -3) == '_id')
+		{
+			$last = substr($last, 0, -3);
+			$value = (string)$object->$last;
+		}
+	}
+	?> data-id="<?php echo $data_id; ?>"<?php
+}
+
+?> class="ajaxfield col-sm-10 form-group"><?php
 
 $viewable = $field === NULL || $this->rights->isAttributeView($field);
 

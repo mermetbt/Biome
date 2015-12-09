@@ -12,6 +12,7 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 	protected $object		= NULL;
 	protected $object_name	= NULL;
 	protected $foreign_key	= NULL;
+	protected $search_field = NULL;
 
 	public function __construct($object_name, $foreign_key = NULL)
 	{
@@ -23,6 +24,11 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 	public function object()
 	{
 		return $this->object;
+	}
+
+	public function getObjectName()
+	{
+		return $this->object_name;
 	}
 
 	public function getForeignKey()
@@ -45,5 +51,19 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 		$object = ObjectLoader::get($m2o_object_name);
 		$object->sync($primary_key_value);
 		return $object;
+	}
+
+	/**
+	 * Search Many2One
+	 */
+	public function getSearchField()
+	{
+		return $this->search_field;
+	}
+
+	public function setSearchField($field_name)
+	{
+		$this->search_field = $field_name;
+		return $this;
 	}
 }
