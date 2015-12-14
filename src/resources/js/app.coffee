@@ -32,7 +32,7 @@
 		else
 		if type == 'many2one'
 			# class="form-control ajaxfield-input"
-			inputText = $('<select class="form-control"></select>');
+			inputText = $('<select class="form-control ajaxfield-input"></select>');
 			identifier = $this.data 'id'
 			if identifier
 				inputText.append('<option value="'+identifier+'" selected="selected">'+content+'</option>');

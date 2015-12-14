@@ -119,6 +119,11 @@ class AjaxfieldComponent extends VariableComponent
 			$model = substr($last, 0, -3);
 		}
 
+		if($request->get($name, NULL) === NULL)
+		{
+			throw new \Exception('Parameter ' . $name . ' not sent!');
+		}
+
 		$new_value = $request->get($name);
 		if(!empty($new_value))
 		{

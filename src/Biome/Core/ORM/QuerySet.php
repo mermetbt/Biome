@@ -332,38 +332,40 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 
 	public function first()
 	{
-		$this->limit(1, 1);
+		$this->limit(0, 1);
 
-		$primary_keys = $this->object()->parameters()['primary_key'];
+		$parameters = $this->object()->parameters();
+		$primary_keys = $parameters['primary_key'];
 		if(is_array($primary_keys))
 		{
 			foreach($primary_keys AS $pk)
 			{
-				$this->order_by($k . ' ASC');
+				$this->order_by($parameters['table'] . '.' . $k . ' ASC');
 			}
 		}
 		else
 		{
-			$this->order_by($primary_keys . ' ASC');
+			$this->order_by($parameters['table'] . '.' . $primary_keys . ' ASC');
 		}
 		return $this->current();
 	}
 
 	public function last()
 	{
-		$this->limit(1, 1);
+		$this->limit(0, 1);
 
-		$primary_keys = $this->object()->parameters()['primary_key'];
+		$parameters = $this->object()->parameters();
+		$primary_keys = $parameters['primary_key'];
 		if(is_array($primary_keys))
 		{
 			foreach($primary_keys AS $pk)
 			{
-				$this->order_by($k . ' DESC');
+				$this->order_by($parameters['table'] . '.' . $k . ' DESC');
 			}
 		}
 		else
 		{
-			$this->order_by($primary_keys . ' DESC');
+			$this->order_by($parameters['table'] . '.' . $primary_keys . ' DESC');
 		}
 
 		return $this->current();

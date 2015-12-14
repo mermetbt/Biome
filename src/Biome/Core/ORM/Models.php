@@ -711,7 +711,7 @@ abstract class Models implements ObjectInterface
 			$str = $this->$reference;
 			if(empty($str))
 			{
-				return '[NO REF.]';
+				return '';
 			}
 			return $this->$reference;
 		}

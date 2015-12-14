@@ -33,6 +33,8 @@ class Biome
 		/* Starting. */
 		$request = Biome::getService('request');
 
+		Logger::info('Request URI: ' . $request->getUri());
+
 		$dispatcher = Biome::getService('dispatcher');
 		$response = $dispatcher->dispatch($request->getMethod(), $request->getPathInfo());
 
