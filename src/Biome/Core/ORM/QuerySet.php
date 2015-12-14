@@ -4,6 +4,8 @@ namespace Biome\Core\ORM;
 
 use Iterator, Countable, ArrayAccess;
 
+use Biome\Core\ORM\Filter\FilterNode;
+
 class QuerySet implements Iterator, Countable, ArrayAccess
 {
 	/**
@@ -135,6 +137,87 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		return $this;
 	}
 
+	protected function many2OneFilter($field, array $path, $operator, $value, $preceding_table = NULL)
+	{
+		if(!$field instanceof \Biome\Core\ORM\Field\Many2OneField)
+		{
+			return FALSE;
+		}
+
+		$field_name = $field->getName();
+
+		if($field->isObject())
+		{
+			$field_name .= '_id';
+		}
+
+		if($preceding_table == NULL)
+		{
+			$join_field = $field_name;
+		}
+		else
+		{
+			$join_field = [$preceding_table, $field_name];
+		}
+
+		/* Join */
+		$table			= $field->object()->parameters()['table'];
+		$foreign_key	= $field->getForeignKey();
+		$this->db()->join($table, $foreign_key, '=', $join_field);
+
+		$name = array_shift($path);
+
+		if(count($path) > 0)
+		{
+			$field_name = $path[0];
+			$object = $field->object();
+			if(!$object->hasField($field_name))
+			{
+				throw new \Exception('Filtering on an unexisting field ('.$field_name.') for object ' . get_class($object) . '!');
+			}
+
+			$field = $object->getField($field_name);
+
+			if(!$this->many2OneFilter($field, $path, $operator, $value, $table))
+			{
+				$this->db()->where([$table, $field_name], $operator, $value);
+			}
+			return TRUE;
+		}
+
+		if($field->isId())
+		{
+			$this->db()->where([$table, $name], $operator, $value);
+			return TRUE;
+		}
+
+		$parameters = $field->object()->parameters();
+		$search_fields = array();
+		if(array_key_exists('search', $parameters))
+		{
+			$search_fields = is_array($parameters['search']) ? $parameters['search'] : array($parameters['search']);
+		}
+		else
+		if(array_key_exists('reference', $parameters))
+		{
+			$search_fields = array($parameters['reference']);
+		}
+
+		if(empty($search_fields))
+		{
+			throw new \Exception('Search attribute is not defined in the parameter of this object! ' . print_r($parameters, true));
+		}
+
+		$filterNode = NULL;
+		foreach($search_fields AS $f)
+		{
+			$filterNode = new FilterNode('OR', array($filterNode, array($operator, [$table, $f], $value)));
+		}
+
+		$this->db()->where($filterNode);
+		return TRUE;
+	}
+
 	/**
 	 * Selection methods.
 	 *
@@ -160,11 +243,6 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 			/**
 			 * Field is a part of another object.
 			 */
-			if(count($subset) > 1)
-			{
-				$field_name = $subset[0];
-			}
-
 			$field_name = $subset[0];
 			if(!$this->object()->hasField($field_name))
 			{
@@ -173,52 +251,17 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 
 			$field = $this->object()->getField($field_name);
 
+			/* Filtering on Many2One field. */
+			if($this->many2OneFilter($field, $subset, $operator, $value))
+			{
+				continue;
+			}
+
 			/**
 			 * Field is a part of the object.
 			 */
 			if(count($subset) == 1)
 			{
-				/* Filtering on Many2One field. */
-				if($field instanceof \Biome\Core\ORM\Field\Many2OneField)
-				{
-					/* Filtering on search. */
-					if(substr($field_name, -3) !== '_id')
-					{
-						$field_name .= '_id';
-
-						$table = $field->object()->parameters()['table'];
-						$foreign_key = $field->getForeignKey();
-						$this->db()->join($table, $foreign_key, '=', $field_name);
-
-						$parameters = $field->object()->parameters();
-
-						$search_fields = array();
-
-						if(array_key_exists('search', $parameters))
-						{
-							$search_fields = is_array($parameters['search']) ? $parameters['search'] : array($parameters['search']);
-						}
-						else
-						if(array_key_exists('reference', $parameters))
-						{
-							$search_fields = array($parameters['reference']);
-						}
-
-						if(empty($search_fields))
-						{
-							throw new \Exception('Search attribute is not defined in the parameter of this object! ' . print_r($parameters, true));
-						}
-
-						foreach($search_fields AS $field)
-						{
-							$this->db()->orWhere([$table, $field], $operator, $value);
-						}
-						continue;
-					}
-
-					/* Filtering on id, using the default filtering. */
-				}
-
 				/* Filtering on Many2Many field. */
 				if($field instanceof \Biome\Core\ORM\Field\Many2ManyField)
 				{
@@ -243,25 +286,25 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 				continue;
 			}
 
-			/**
-			 * Field is a part of another object.
-			 */
-			if($field instanceof \Biome\Core\ORM\Field\Many2OneField)
-			{
-				if(substr($field_name, -3) !== '_id')
-				{
-					$field_name .= '_id';
-				}
-
-				$table = $field->object()->parameters()['table'];
-				$foreign_key = $field->getForeignKey();
-				$this->db()->join($table, $foreign_key, '=', $field_name);
-				$this->db()->where([$table, $subset[1]], $operator, $value);
-			}
-			else
-			{
-				throw new \Exception('Unsupported filtering!');
-			}
+// 			/**
+// 			 * Field is a part of another object.
+// 			 */
+// 			if($field instanceof \Biome\Core\ORM\Field\Many2OneField)
+// 			{
+// 				if($field->isObject())
+// 				{
+// 					$field_name .= '_id';
+// 				}
+//
+// 				$table = $field->object()->parameters()['table'];
+// 				$foreign_key = $field->getForeignKey();
+// 				$this->db()->join($table, $foreign_key, '=', $field_name);
+// 				$this->db()->where([$table, $subset[1]], $operator, $value);
+// 			}
+// 			else
+// 			{
+				throw new \Exception('Unsupported filtering for "'.$field_name.'"!');
+// 			}
 		}
 
 		return $this;

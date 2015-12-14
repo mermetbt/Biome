@@ -65,7 +65,9 @@ abstract class Models implements ObjectInterface
 		if($field instanceof Many2OneField)
 		{
 			$field_name_local = substr($field_name, 0, -3);
-			$this->_structure[$field_name_local] = $field;
+			$f = clone $field;
+			$f->setName($field_name_local);
+			$this->_structure[$field_name_local] = $f;
 		}
 
 		$this->_structure[$field_name] = $field;
@@ -706,9 +708,10 @@ abstract class Models implements ObjectInterface
 		if(array_key_exists('reference', $parameters))
 		{
 			$reference = $parameters['reference'];
-			if(empty($this->$reference))
+			$str = $this->$reference;
+			if(empty($str))
 			{
-				return '';
+				return '[NO REF.]';
 			}
 			return $this->$reference;
 		}

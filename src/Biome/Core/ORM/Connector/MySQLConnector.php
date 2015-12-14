@@ -200,7 +200,7 @@ class MySQLConnector
 				}
 				$result->close();
 			}
-			throw new \Exception('SQL Warning: ' . $message);
+			throw new \Exception('SQL Warning: ' . $message . ' Last Query:(' . $this->_last_query . ')');
 		}
 		return TRUE;
 	}

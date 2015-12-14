@@ -52,13 +52,27 @@ class QueryBuilder implements OperandHandlerInterface
 
 	public function where($column, $operator = null, $value = null)
 	{
-		$this->wheres = new FilterNode('AND', array($this->wheres, array($operator, $column, $value)));
+		if($column instanceof FilterNode)
+		{
+			$this->wheres = new FilterNode('AND', array($this->wheres, $column));
+		}
+		else
+		{
+			$this->wheres = new FilterNode('AND', array($this->wheres, array($operator, $column, $value)));
+		}
 		return $this;
 	}
 
 	public function orWhere($column, $operator = null, $value = null)
 	{
-		$this->wheres = new FilterNode('OR', array($this->wheres, array($operator, $column, $value)));
+		if($column instanceof FilterNode)
+		{
+			$this->wheres = new FilterNode('OR', array($this->wheres, $column));
+		}
+		else
+		{
+			$this->wheres = new FilterNode('OR', array($this->wheres, array($operator, $column, $value)));
+		}
 		return $this;
 	}
 

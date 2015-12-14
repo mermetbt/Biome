@@ -36,6 +36,22 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 		return $this->foreign_key;
 	}
 
+	/**
+	 * Return true if this is the corresponding field for the Many2One object.
+	 */
+	public function isObject()
+	{
+		return substr($this->getName(), -3) !== '_id';
+	}
+
+	/**
+	 * Return true if this is the corresponding field for the Many2One Id.
+	 */
+	public function isId()
+	{
+		return substr($this->getName(), -3) === '_id';
+	}
+
 	public function generateQuerySet(QuerySet $query_set, $field_name)
 	{
 		// Handle Many2One

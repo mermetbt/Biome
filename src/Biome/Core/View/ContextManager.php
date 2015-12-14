@@ -99,8 +99,7 @@ trait ContextManager
 
 		if(count($raw) > 1)
 		{
-			$end = end($raw);
-			unset($raw[count($raw)-1]);
+			$end = array_pop($raw);
 			$result = $this->rec_fetchValue(join('.', $raw), $ctx);
 
 			/* We find the preceding item, fetch the next. */
@@ -209,8 +208,7 @@ trait ContextManager
 		foreach($variables AS $key => $var)
 		{
 			$raw = explode('.', $var);
-			$field = end($raw);
-			unset($raw[count($raw)-1]);
+			$field = array_pop($raw);
 
 			$object = $this->rec_fetchValue(join('.', $raw));
 			if(!$object instanceof Models)
