@@ -11,17 +11,28 @@ class ColumnComponent extends Component
 	 */
 	public function getName()
 	{
-		return $this->getTitle();
+		$search = $this->getAttribute('search', FALSE);
+
+		if(empty($search))
+		{
+			return $this->getTitle();
+		}
+		$variables = $this->fetchVariables($search);
+		return reset($variables);
 	}
 
 	public function isSearchable()
 	{
+		if($this->getAttribute('search', FALSE))
+		{
+			return TRUE;
+		}
 		return FALSE;
 	}
 
 	public function isOrderable()
 	{
-		return FALSE;
+		return $this->getAttribute('order', FALSE);
 	}
 
 	/**

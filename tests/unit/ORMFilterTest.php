@@ -196,6 +196,35 @@ class ORMFilterTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($u->getId(), $ur_filtered->getId('user_id'));
 		$this->assertEquals($r->getId(), $ur_filtered->getId('role_id'));
 
+		/* Filter by field on many2one. */
+		$userrole = UserRole::all()->filter('user.firstname', '=', $u->firstname)->fetch();
+
+		$this->assertEquals(1, $userrole->getTotalCount());
+
+		$ur_filtered = $userrole->current();
+
+		$this->assertEquals($u->getId(), $ur_filtered->getId('user_id'));
+		$this->assertEquals($r->getId(), $ur_filtered->getId('role_id'));
+
+		/* Filter by search field. */
+		$userrole = UserRole::all()->filter('user.firstname', 'like', $u->firstname . '%')->fetch();
+
+		$this->assertEquals(1, $userrole->getTotalCount());
+
+		$ur_filtered = $userrole->current();
+
+		$this->assertEquals($u->getId(), $ur_filtered->getId('user_id'));
+		$this->assertEquals($r->getId(), $ur_filtered->getId('role_id'));
+
+		/* Filter by implicit search field. */
+		$userrole = UserRole::all()->filter('user', 'like', $u->firstname . '%')->fetch();
+
+		$this->assertEquals(1, $userrole->getTotalCount());
+
+		$ur_filtered = $userrole->current();
+
+		$this->assertEquals($u->getId(), $ur_filtered->getId('user_id'));
+		$this->assertEquals($r->getId(), $ur_filtered->getId('role_id'));
 	}
 
 	public function testFilterContains()

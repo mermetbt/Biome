@@ -14,6 +14,8 @@ class MySQLConnector
 	protected $_logger		= FALSE;
 	protected $_queries_log	= array();
 
+	protected $_last_query = '';
+
 	private function __construct() { }
 
 	public static function getInstance($name = 'default')
@@ -124,6 +126,7 @@ class MySQLConnector
 		}
 
 		Logger::debug('Executing query: ' . $query);
+		$this->_last_query = $query;
 		$result = $this->_instance->query($query);
 
 		$this->checkDbError();
@@ -183,7 +186,7 @@ class MySQLConnector
 	{
 		if(!empty($this->_instance->error))
 		{
-			throw new \Exception('SQL Error: ' . $this->_instance->error);
+			throw new \Exception('SQL Error: ' . $this->_instance->error . ' Last Query:(' . $this->_last_query . ')');
 		}
 
 		if($this->_instance->warning_count != 0)

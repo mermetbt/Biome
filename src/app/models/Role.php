@@ -14,6 +14,7 @@ class Role extends Models
 		return array(
 					'table'			=> 'roles',
 					'primary_key'	=> 'role_id',
+					'reference'		=> 'role_name'
 		);
 	}
 

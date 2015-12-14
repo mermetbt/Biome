@@ -3,16 +3,18 @@
 namespace Biome\Core\ORM;
 
 use Biome\Core\ORM\LazyFetcher;
+use Biome\Core\ORM\Filter\FilterNode;
+use Biome\Core\ORM\Filter\OperandHandlerInterface;
 use Biome\Biome;
 
-class QueryBuilder
+class QueryBuilder implements OperandHandlerInterface
 {
 	protected $database;
 	protected $operation;
 	protected $columns = array('*');
 	protected $from;
 	protected $innerjoins = array();
-	protected $wheres = array();
+	protected $wheres = NULL;
 	protected $orders = array();
 	protected $offset = NULL;
 	protected $limit = NULL;
@@ -50,7 +52,19 @@ class QueryBuilder
 
 	public function where($column, $operator = null, $value = null)
 	{
-		$this->wheres[] = array($column, $operator, $value);
+		$this->wheres = new FilterNode('AND', array($this->wheres, array($operator, $column, $value)));
+		return $this;
+	}
+
+	public function orWhere($column, $operator = null, $value = null)
+	{
+		$this->wheres = new FilterNode('OR', array($this->wheres, array($operator, $column, $value)));
+		return $this;
+	}
+
+	public function setFilters(FilterNode $filters)
+	{
+		$this->wheres = $filters;
 		return $this;
 	}
 
@@ -96,6 +110,46 @@ class QueryBuilder
 		}
 
 		return $this->db()->real_escape_string($value);
+	}
+
+	public function handleOperand($operand)
+	{
+		$operator = $operand[0];
+		$field = $operand[1];
+		$value = $operand[2];
+
+		if(is_array($field))
+		{
+			$table 	= $this->db()->real_escape_string($field[0]);
+			$column	= $this->db()->real_escape_string($field[1]);
+			$column = '`' . $table . '`.`'. $column . '`';
+		}
+		else
+		{
+			$column = $this->db()->real_escape_string($field);
+			$column = '`' . $this->from . '`.`'. $column . '`';
+		}
+		$operator = $this->db()->real_escape_string($operator);
+
+		$value = $this->handleValue($value);
+
+		$where_sql = $column . ' ' . $operator . ' ';
+		if(is_array($value))
+		{
+			if(empty($value))
+			{
+				$where_sql .= '(NULL)';
+			}
+			else
+			{
+				$where_sql .= '(' . join(', ', $value) . ')';
+			}
+		}
+		else
+		{
+			$where_sql .= '"' . $value . '"';
+		}
+		return $where_sql;
 	}
 
 	public function toSql()
@@ -144,46 +198,13 @@ class QueryBuilder
 			}
 		}
 
-		foreach($this->wheres AS $where)
+		if(!empty($this->wheres))
 		{
-			if(is_array($where[0]))
+			$where_sql = $this->wheres->toSql($this);
+			if(!empty($where_sql))
 			{
-				$table 	= $this->db()->real_escape_string($where[0][0]);
-				$column	= $this->db()->real_escape_string($where[0][1]);
-				$column = '`' . $table . '`.`'. $column . '`';
+				$sql .= ' WHERE ' . $where_sql;
 			}
-			else
-			{
-				$column = $this->db()->real_escape_string($where[0]);
-				$column = '`' . $this->from . '`.`'. $column . '`';
-			}
-			$operator = $this->db()->real_escape_string($where[1]);
-
-			$value = $this->handleValue($where[2]);
-
-			$where_sql = $column . $operator . ' ';
-			if(is_array($value))
-			{
-				if(empty($value))
-				{
-					$where_sql .= '(NULL)';
-				}
-				else
-				{
-					$where_sql .= '(' . join(', ', $value) . ')';
-				}
-			}
-			else
-			{
-				$where_sql .= '"' . $value . '"';
-			}
-
-			$wheres[] = $where_sql;
-		}
-
-		if(!empty($wheres))
-		{
-			$sql .= ' WHERE ' . join(' AND ', $wheres);
 		}
 
 		if(!empty($this->orders))

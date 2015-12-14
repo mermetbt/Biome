@@ -191,3 +191,19 @@ body {
 .ajaxfield-input:hover i {
 	display: inline;
 }
+
+/*
+.select2-selection {
+	height: 34px;
+	margin: 2px 0;
+}
+*/
+
+.input-xs {
+	border-radius: 2px;
+	padding: 1px;
+	height: 20px;
+	line-height: 14px;
+	font-size: 12px;
+	font-weight: normal;
+}

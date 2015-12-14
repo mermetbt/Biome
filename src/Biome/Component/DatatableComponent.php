@@ -54,6 +54,9 @@ class DatatableComponent extends Component
 		$column_list	= $this->getChildren('column');
 		$object_list	= $this->getValue();
 
+		/**
+		 * Retrieve QuerySet
+		 */
 		if($object_list instanceof QuerySet)
 		{
 			$length = $request->get('length');
@@ -63,6 +66,24 @@ class DatatableComponent extends Component
 			}
 		}
 
+		/**
+		 * Handle search.
+		 */
+		foreach($request->get('columns') AS $number => $column)
+		{
+			if($column['searchable'] == 'true' && !empty($column['search']['value']))
+			{
+				$filter = $column['name'];
+				//$regex = $column['search']['regex'];
+				$value = $column['search']['value'];
+
+				$object_list->filter($filter, 'like', $value . '%');
+			}
+		}
+
+		/**
+		 * Generate columns content.
+		 */
 		$data = array();
 		foreach($object_list AS $v)
 		{
@@ -77,6 +98,9 @@ class DatatableComponent extends Component
 			$data[] = $item;
 		}
 
+		/**
+		 * Generate dataTable output.
+		 */
 		if($object_list instanceof QuerySet)
 		{
 			$recordsTotal = $object_list->getTotalCount();

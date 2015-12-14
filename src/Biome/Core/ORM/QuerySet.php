@@ -37,7 +37,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		$this->_db_handler = new Handler\MySQLHandler($this);
 	}
 
-	protected function db()
+	public function db()
 	{
 		if($this->_query_builder === NULL)
 		{
@@ -47,7 +47,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		return $this->_query_builder;
 	}
 
-	protected function object()
+	public function object()
 	{
 		if($this->object === NULL)
 		{
@@ -178,6 +178,48 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 			 */
 			if(count($subset) == 1)
 			{
+				/* Filtering on Many2One field. */
+				if($field instanceof \Biome\Core\ORM\Field\Many2OneField)
+				{
+					/* Filtering on search. */
+					if(substr($field_name, -3) !== '_id')
+					{
+						$field_name .= '_id';
+
+						$table = $field->object()->parameters()['table'];
+						$foreign_key = $field->getForeignKey();
+						$this->db()->join($table, $foreign_key, '=', $field_name);
+
+						$parameters = $field->object()->parameters();
+
+						$search_fields = array();
+
+						if(array_key_exists('search', $parameters))
+						{
+							$search_fields = is_array($parameters['search']) ? $parameters['search'] : array($parameters['search']);
+						}
+						else
+						if(array_key_exists('reference', $parameters))
+						{
+							$search_fields = array($parameters['reference']);
+						}
+
+						if(empty($search_fields))
+						{
+							throw new \Exception('Search attribute is not defined in the parameter of this object! ' . print_r($parameters, true));
+						}
+
+						foreach($search_fields AS $field)
+						{
+							$this->db()->orWhere([$table, $field], $operator, $value);
+						}
+						continue;
+					}
+
+					/* Filtering on id, using the default filtering. */
+				}
+
+				/* Filtering on Many2Many field. */
 				if($field instanceof \Biome\Core\ORM\Field\Many2ManyField)
 				{
 					/* Link table. */
@@ -195,6 +237,8 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 					$this->db()->where([$table_dst, $foreign_key_dst], $operator, $value);
 					continue;
 				}
+
+				/* Default filtering.*/
 				$this->db()->where($field_name, $operator, $value);
 				continue;
 			}

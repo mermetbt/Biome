@@ -72,7 +72,7 @@ class AjaxfieldComponent extends VariableComponent
 		}
 
 		$object_name = $field->getObjectName();
-		$queryset = $object_name::all();
+		$queryset = $object_name::searchFromString($q);
 
 		if(empty($page))
 		{
@@ -83,22 +83,6 @@ class AjaxfieldComponent extends VariableComponent
 		$limit = $page * 30;
 
 		$queryset->limit($offset, $limit);
-
-		$search_field = $field->getSearchField();
-
-		if(empty($search_field))
-		{
-			$obj = $field->object();
-			if(method_exists($obj, 'getSearchField'))
-			{
-				$search_field = $obj->getSearchField();
-			}
-		}
-
-		if(!empty($search_field) && !empty($q))
-		{
-			$queryset->filter($search_field, 'like', $q . '%');
-		}
 
 		$results = array();
 

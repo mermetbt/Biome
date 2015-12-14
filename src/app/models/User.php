@@ -21,6 +21,7 @@ class User extends Models
 		return array(
 					'table'			=> 'users',
 					'primary_key'	=> 'user_id',
+					'search'		=> array('firstname', 'lastname', 'mail')
 		);
 	}
 

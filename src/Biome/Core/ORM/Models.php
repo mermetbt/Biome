@@ -669,10 +669,50 @@ abstract class Models implements ObjectInterface
 	}
 
 	/**
-	 *
+	 * Search objects from a string.
+	 */
+	public static function searchFromString($string)
+	{
+		$query_set = self::all();
+
+		$parameters = $query_set->object()->parameters();
+
+		$search_fields = array();
+
+		if(array_key_exists('search', $parameters))
+		{
+			$search_fields = is_array($parameters['search']) ? $parameters['search'] : array($parameters['search']);
+		}
+		else
+		if(array_key_exists('reference', $parameters))
+		{
+			$search_fields = array($parameters['reference']);
+		}
+
+		foreach($search_fields AS $field)
+		{
+			$query_set->db()->orWhere($field, 'like', $string . '%');
+		}
+
+		return $query_set;
+	}
+
+	/**
+	 * Print the reference of the object (usually in many2one cases.)
 	 */
 	public function __toString()
 	{
+		$parameters = $this->parameters();
+		if(array_key_exists('reference', $parameters))
+		{
+			$reference = $parameters['reference'];
+			if(empty($this->$reference))
+			{
+				return '';
+			}
+			return $this->$reference;
+		}
+
 		$str = 'Model ' . get_class($this);
 
 		$str .= ' [<br/>';
