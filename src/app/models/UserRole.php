@@ -18,11 +18,11 @@ class UserRole extends Models
 	public function fields()
 	{
 		$this->role_id		= Many2OneField::create('Role')
-								->setLabel('Role')
+								->setLabel('@string/role')
 								->setRequired(TRUE);
 
 		$this->user_id		= Many2OneField::create('User')
-								->setLabel('User')
+								->setLabel('@string/user')
 								->setRequired(TRUE);
 	}
 }

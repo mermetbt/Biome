@@ -24,14 +24,14 @@ class AuthController extends Controller
 	{
 		if(!$c->user->validate('mail', 'password'))
 		{
-			$this->flash()->error('Invalid Mail or password!');
+			$this->flash()->error('@string/invalid_mail_or_password');
 			return $this->response()->redirect();
 		}
 
 		$result = $c->user->fetch('mail', 'password');
 		if(!$c->isAuthenticated())
 		{
-			$this->flash()->error('Authentication failed!');
+			$this->flash()->error('@string/authentication_failure');
 		}
 
 		return $this->response()->redirect();
@@ -49,7 +49,7 @@ class AuthController extends Controller
 			return $this->response()->redirect();
 		}
 
-		$this->flash()->success('User registered!');
+		$this->flash()->success('@string/user_register_success');
 
 		return $this->response()->redirect();
 	}
@@ -59,7 +59,7 @@ class AuthController extends Controller
 		$c = Collection::get('auth');
 		$c->logout();
 
-		$this->flash()->success('Good Bye!');
+		$this->flash()->success('@string/user_logout_success');
 
 		return $this->response()->redirect('');
 	}

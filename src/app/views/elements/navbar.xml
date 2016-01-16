@@ -7,11 +7,11 @@
 			<biome:condition if="#{auth.isAuthenticated}">
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#">
-						Administration
+						<biome:text value="@string/administration"/>
 					</a>
 					<ul class="dropdown-menu">
-						<li><biome:a controller="user"><span>Users</span></biome:a></li>
-						<li><biome:a controller="role"><span>Roles</span></biome:a></li>
+						<li><biome:a controller="user"><biome:text value="@string/users"/></biome:a></li>
+						<li><biome:a controller="role"><biome:text value="@string/roles"/></biome:a></li>
 					</ul>
 				</li>
 			</biome:condition>
@@ -19,9 +19,9 @@
 
 		<biome:condition if="!#{auth.isAuthenticated}">
 			<biome:form class="navbar-right">
-				<biome:field value="#{auth.user.mail}" placeholder="Email" label="" error="0"/>
-				<biome:field value="#{auth.user.password}" placeholder="Password" label="" error="0"/>
-				<biome:button class="btn-success" value="Sign in" action="#{auth.login}"/>
+				<biome:field value="#{auth.user.mail}" placeholder="@string/mail" label="" error="0"/>
+				<biome:field value="#{auth.user.password}" placeholder="@string/password" label="" error="0"/>
+				<biome:button class="btn-success" value="@string/signin" action="#{auth.login}"/>
 			</biome:form>
 		</biome:condition>
 
@@ -35,9 +35,9 @@
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li><biome:a controller="user" action="profile"><span>Profile</span></biome:a></li>
+						<li><biome:a controller="user" action="profile"><biome:text value="@string/profile"/></biome:a></li>
 						<li role="separator" class="divider"></li>
-						<li><biome:a controller="auth" action="logout"><span>Logout</span></biome:a></li>
+						<li><biome:a controller="auth" action="logout"><biome:text value="@string/logout"/></biome:a></li>
 					</ul>
 				</li>
 			</ul>

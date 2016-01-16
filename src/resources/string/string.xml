@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<string name="app_name">Biome</string>
+
+	<!-- Common model -->
+	<string name="creation_date">Creation date</string>
+	<string name="modification_date">Modification date</string>
+
+	<!-- Menu -->
+	<string name="administration">Administration</string>
+	<string name="dashboard">Dashboard</string>
+	<string name="profile">Profile</string>
+	<string name="parameters">Parameters</string>
+
+	<!-- User model -->
+	<string name="user">User</string>
+	<string name="users">Users</string>
+	<string name="firstname">Firstname</string>
+	<string name="lastname">Lastname</string>
+	<string name="mail">E-Mail</string>
+	<string name="password">Password</string>
+	<string name="active">Active</string>
+
+	<!-- Role model -->
+	<string name="role">Role</string>
+	<string name="roles">Roles</string>
+
+	<!-- Standard buttons -->
+	<string name="create">Create</string>
+	<string name="add">Add</string>
+	<string name="remove">Remove</string>
+	<string name="new">New</string>
+	<string name="edit">Edit</string>
+	<string name="update">Update</string>
+	<string name="save">Save</string>
+	<string name="change">Change</string>
+	<string name="delete">Delete</string>
+
+	<!-- Sign in page -->
+	<string name="sign_up_title">Sign up!</string>
+	<string name="sign_in_title">Please sign in</string>
+	<string name="remember_me">Remember me</string>
+	<string name="signin">Sign in</string>
+	<string name="signup">Sign up</string>
+	<string name="password_confirm">Password Confirm</string>
+	<string name="logout">Log Out</string>
+	<string name="invalid_mail_or_password">Invalid Mail or password!</string>
+	<string name="authentication_failure">Authentication failed!</string>
+	<string name="user_register_success">User registered!</string>
+	<string name="user_logout_success">Good Bye!</string>
+
+	<!-- Profile page -->
+	<string name="profile_title">Profile</string>
+	<string name="profile_user_informations">User informations</string>
+	<string name="profile_password_change">Password change</string>
+	<string name="profile_update_success">Profile updated!</string>
+	<string name="profile_update_failure">Update failure!</string>
+	<string name="password_update_success">Password updated!</string>
+	<string name="password_mismatch">Password doesn't match!</string>
+
+	<!-- User page -->
+	<string name="users_title">Users</string>
+	<string name="users_create_title">Add new user</string>
+	<string name="users_list_title">Users list</string>
+	<string name="users_user_informations">User informations</string>
+	<string name="users_informations">Informations</string>
+	<string name="users_role">Role</string>
+	<string name="user_create_success">User created!</string>
+	<string name="user_create_failure">Unable to create the user!</string>
+	<string name="user_update_success">User updated!</string>
+	<string name="user_update_failure">Unable to update the user!</string>
+	<string name="user_role_remove_success">Role removed!</string>
+	<string name="user_role_limit_reached">Unable to associate more than 1 role to an user, remove the current role to associate another role!</string>
+	<string name="user_role_add_success">Role added!</string>
+	<string name="user_delete_success">User deleted!</string>
+	<string name="user_delete_failure">Unable to delete the user!</string>
+
+	<!-- Role page -->
+	<string name="roles_title">Roles</string>
+	<string name="roles_list_title">Roles list</string>
+	<string name="roles_role">Role</string>
+	<string name="roles_role_informations">Role informations</string>
+	<string name="roles_users">Users</string>
+	<string name="roles_authorizations">Authorizations</string>
+	<string name="roles_create_title">Add new roles</string>
+	<string name="roles_user_add_success">User added!</string>
+	<string name="role_update_success">Role authorizations updated!</string>
+	<string name="role_update_failure">Unable to update the role authorizations!</string>
+
+</resources>

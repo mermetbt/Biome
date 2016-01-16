@@ -65,7 +65,7 @@ class VariableComponent extends Component
 
 	public function getLabel()
 	{
-		return $this->name = $this->getAttribute('label', function() {
+		$label = $this->getAttribute('label', function() {
 			$field = $this->getField();
 
 			if($field == NULL)
@@ -78,7 +78,9 @@ class VariableComponent extends Component
 				throw new \Exception('Attribute "label" must be defined on component!');
 			}
 
-			return $field->getLabel();
+			return $this->getLocalized($field->getLabel());
 		});
+
+		return $this->getLocalized($label);
 	}
 }

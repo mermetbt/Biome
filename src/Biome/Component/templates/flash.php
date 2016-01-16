@@ -16,7 +16,7 @@ foreach($flash->getErrors() AS $title => $msg)
 		?><span aria-hidden="true">&times;</span></button><?php
 
 		?><i class="glyphicon glyphicon-remove"></i> <?php
-		?><strong><?php echo $title; ?></strong><?php
+		?><strong><?php echo $this->getLocalized($title); ?></strong><?php
 		echo ' ', $msg;
 	?></div><?php
 }
@@ -28,7 +28,7 @@ foreach($flash->getWarnings() AS $title => $msg)
 		?><span aria-hidden="true">&times;</span></button><?php
 
 		?><i class="fa fa-exclamation-triangle "></i> <?php
-		?><strong><?php echo $title; ?></strong><?php
+		?><strong><?php echo $this->getLocalized($title); ?></strong><?php
 		echo ' ', $msg;
 	?></div><?php
 }
@@ -40,7 +40,7 @@ foreach($flash->getInfos() AS $title => $msg)
 		?><span aria-hidden="true">&times;</span></button><?php
 
 		?><i class="fa fa-info-circle"></i> <?php
-		?><strong><?php echo $title; ?></strong><?php
+		?><strong><?php echo $this->getLocalized($title); ?></strong><?php
 		echo ' ', $msg;
 	?></div><?php
 }
@@ -52,7 +52,7 @@ foreach($flash->getSuccess() AS $title => $msg)
 		?><span aria-hidden="true">&times;</span></button><?php
 
 		?><i class="glyphicon glyphicon-ok"></i> <?php
-		?><strong><?php echo $title; ?></strong><?php
+		?><strong><?php echo $this->getLocalized($title); ?></strong><?php
 		echo ' ', $msg;
 	?></div><?php
 }

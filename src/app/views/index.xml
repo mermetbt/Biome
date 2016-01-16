@@ -9,13 +9,13 @@
 			<biome:condition if="!#{auth.isAuthenticated}">
 				<div class="col-lg-4 pull-right">
 					<div class="well">
-						<h2>Sign up!</h2>
+						<h2><biome:text value="@string/sign_up_title"/></h2>
 						<biome:form>
 							<biome:field value="#{user.firstname}"/>
 							<biome:field value="#{user.lastname}"/>
 							<biome:field value="#{user.mail}"/>
 							<biome:field value="#{user.password}"/>
-							<biome:button class="btn-success" value="Sign up" action="#{auth.signup}"/>
+							<biome:button class="btn-success" value="@string/sign_up" action="#{auth.signup}"/>
 						</biome:form>
 					</div>
 				</div>

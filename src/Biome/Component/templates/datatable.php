@@ -51,6 +51,47 @@ echo '</tbody>';
 
 ?></table></div><?php
 
+/**
+ * Language hack.
+ */
+$language = '';
+$lang = NULL;
+foreach($this->request->getLanguages() as $lang)
+{
+	switch($lang)
+	{
+		case 'en_US':
+		case 'en':
+			$lang = 'English.lang';
+			break;
+		case 'fr_FR':
+		case 'fr':
+			$lang = 'French.lang';
+			break;
+		case 'zh_CN':
+		case 'zh':
+			$lang = 'Chinese.lang';
+			break;
+		default:
+	}
+
+	if($lang != NULL)
+	{
+		$filepath = APP_DIR . '/vendor/bower_components/datatables-plugins/i18n/' . $lang;
+		$data = file_get_contents($filepath);
+
+		/* Remove comments. */
+		$text = preg_replace('!/\*.*?\*/!s', '', $data);
+		$text = preg_replace('/\n\s*\n/', "\n", $text);
+
+		$language = (array)json_decode($text, true);
+		break;
+	}
+}
+
+/**
+ * Data format
+ */
 $dom = '';
 
 $dom .= 'l'; // Length changing input control
@@ -73,7 +114,8 @@ $datatable_options = array(
 	'responsive' => TRUE,
 	'serverSide' => TRUE,
 	'ajax' => URL::getUri() . '?partial=' . $id,
-	'columns' => $columns
+	'columns' => $columns,
+	'language' => $language
 );
 
 $this->view->javascript(function() use($id, $datatable_options) {

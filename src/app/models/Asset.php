@@ -21,14 +21,14 @@ class Asset extends Models
 	public function fields()
 	{
 		$this->asset_id		= PrimaryField::create()
-								->setLabel('Asset ID');
+								->setLabel('@string/asset_id');
 
 		$this->public_url	= TextField::create(255)
-								->setLabel('URL')
+								->setLabel('@string/URL')
 								->setRequired(TRUE);
 
 		$this->creation_date	= DateTimeField::create()
-									->setLabel('Creation date')
+									->setLabel('@string/creation_date')
 									->setRequired(TRUE)
 									->setEditable(FALSE)
 									->setDefaultValue(RawSQL::select('CURRENT_TIMESTAMP'));

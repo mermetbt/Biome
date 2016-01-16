@@ -289,11 +289,27 @@ class Component extends NodeLoader
 		return TRUE;
 	}
 
+	public function getLocalized($string)
+	{
+		if(!is_string($string))
+		{
+			return $string;
+		}
+
+		if(strncmp($string, '@string/', 8) == 0)
+		{
+			$value = substr($string, 8);
+			return $this->lang->get($value);
+		}
+
+		return $string;
+	}
+
 	public function getAttribute($attribute_name, $default_value = Component::DEFAULT_VALUE)
 	{
 		if(isset($this->_attributes[$attribute_name]))
 		{
-			return $this->_attributes[$attribute_name];
+			return $this->getLocalized($this->_attributes[$attribute_name]);
 		}
 
 		if($default_value === Component::DEFAULT_VALUE)
@@ -303,9 +319,9 @@ class Component extends NodeLoader
 
 		if(is_callable($default_value))
 		{
-			return $default_value();
+			return $this->getLocalized($default_value());
 		}
 
-		return $default_value;
+		return $this->getLocalized($default_value);
 	}
 }

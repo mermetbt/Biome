@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<string name="app_name">Biome</string>
+
+	<!-- Common model -->
+	<string name="creation_date">Date de création</string>
+	<string name="modification_date">Date de modification</string>
+
+	<!-- Menu -->
+	<string name="administration">Administration</string>
+	<string name="dashboard">Panel</string>
+	<string name="profile">Profil</string>
+	<string name="parameters">Paramètres</string>
+
+	<!-- User model -->
+	<string name="user">Utilisateur</string>
+	<string name="users">Utilisateurs</string>
+	<string name="firstname">Prénom</string>
+	<string name="lastname">Nom</string>
+	<string name="mail">E-Mail</string>
+	<string name="password">Mot de passe</string>
+	<string name="active">Actif</string>
+
+	<!-- Role model -->
+	<string name="role">Rôle</string>
+	<string name="roles">Rôles</string>
+
+	<!-- Standard buttons -->
+	<string name="create">Créer</string>
+	<string name="add">Ajouter</string>
+	<string name="remove">Retirer</string>
+	<string name="new">Nouveau</string>
+	<string name="edit">Editer</string>
+	<string name="update">Mettre à jour</string>
+	<string name="save">Sauvegarder</string>
+	<string name="change">Changer</string>
+	<string name="delete">Supprimer</string>
+
+	<!-- Sign in page -->
+	<string name="sign_up_title">S'inscrire!</string>
+	<string name="sign_in_title">Connectez-vous...</string>
+	<string name="remember_me">Se souvenir de moi</string>
+	<string name="signin">Connexion</string>
+	<string name="signup">S'inscrire</string>
+	<string name="password_confirm">Confirmation du mot de passe</string>
+	<string name="logout">Se déconnecter</string>
+	<string name="invalid_mail_or_password">E-Mail ou mot de passe invalide !</string>
+	<string name="authentication_failure">Authentification échoué!</string>
+	<string name="user_register_success">Utilisateur enregistré !</string>
+	<string name="user_logout_success">À bientôt !</string>
+
+	<!-- Profile page -->
+	<string name="profile_title">Profil</string>
+	<string name="profile_user_informations">Informations utilisateur</string>
+	<string name="profile_password_change">Changement de mot de passe</string>
+	<string name="profile_update_success">Profil mis à jour !</string>
+	<string name="profile_update_failure">Erreur de mise à jour !</string>
+	<string name="password_update_success">Mot de passe mis à jour !</string>
+	<string name="password_mismatch">Les mot de passes ne correspondent pas !</string>
+
+	<!-- User page -->
+	<string name="users_title">Utilisateurs</string>
+	<string name="users_create_title">Ajout d'un nouvel utilisateur</string>
+	<string name="users_list_title">Liste des utilisateurs</string>
+	<string name="users_user_informations">Informations utilisateur</string>
+	<string name="users_informations">Informations</string>
+	<string name="users_role">Rôle</string>
+	<string name="user_create_success">Utilisateur créé !</string>
+	<string name="user_create_failure">Impossible de créer l'utilisateur !</string>
+	<string name="user_update_success">Utilisateur mis à jour !</string>
+	<string name="user_update_failure">Impossible de mettre à jour l'utilisateur !</string>
+	<string name="user_role_remove_success">Rôle retiré !</string>
+	<string name="user_role_limit_reached">Impossible d'associer plus d'un rôle à un utilisateur. Retirez le rôle actuel pour pouvoir le remplacer par un autre.</string>
+	<string name="user_role_add_success">Rôle ajouté !</string>
+	<string name="user_delete_success">Utilisateur supprimé !</string>
+	<string name="user_delete_failure">Impossible de supprimer l'utilisateur !</string>
+
+	<!-- Role page -->
+	<string name="roles_title">Rôles</string>
+	<string name="roles_list_title">Liste des rôles</string>
+	<string name="roles_role">Rôle</string>
+	<string name="roles_role_informations">Informations sur le rôle</string>
+	<string name="roles_users">Utilisateurs</string>
+	<string name="roles_authorizations">Autorisations</string>
+	<string name="roles_create_title">Ajout d'un nouveau rôle</string>
+	<string name="roles_user_add_success">Utilisateur ajouté !</string>
+	<string name="role_update_success">Autorisations sur le rôle mises à jour !</string>
+	<string name="role_update_failure">Impossible de mettre à jour les autorisations sur le rôle !</string>
+
+</resources>

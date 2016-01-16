@@ -85,12 +85,29 @@ class Biome
 		}
 
 		/**
+		 * Biome default lang service.
+		 */
+		if(!Biome::hasService('lang'))
+		{
+			Biome::registerService('lang', function() {
+				$languages = Biome::getService('request')->getLanguages();
+
+				$lang = new \Biome\Core\Lang\XMLLang($languages);
+
+				return $lang;
+			});
+		}
+
+		/**
 		 * Biome default view service.
 		 */
 		if(!Biome::hasService('view'))
 		{
 			Biome::registerService('view', function() {
-				return new \Biome\Core\View();
+				$view = new \Biome\Core\View();
+				$app_name = Biome::getService('lang')->get('app_name');
+				$view->setTitle($app_name);
+				return $view;
 			});
 		}
 
@@ -211,6 +228,7 @@ class Biome
 			'components'	=> __DIR__ . '/../app/components/',
 			'collections'	=> __DIR__ . '/../app/collections/',
 			'commands'		=> __DIR__ . '/../app/commands/',
+			'resources'		=> __DIR__ . '/../resources/',
 		);
 		self::registerDirs($dirs);
 		return TRUE;

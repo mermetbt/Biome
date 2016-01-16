@@ -6,11 +6,11 @@ class UserController extends BaseController
 	{
 		if(!$c->user->save())
 		{
-			$this->flash()->error('Update failure!');
+			$this->flash()->error('@string/profile_update_failure');
 			return $this->response()->redirect();
 		}
 
-		$this->flash()->success('Profile updated!');
+		$this->flash()->success('@string/profile_update_success');
 
 		return $this->response()->redirect();
 	}
@@ -19,14 +19,14 @@ class UserController extends BaseController
 	{
 		if($c->password != $c->password_confirm)
 		{
-			$this->flash()->error('Password doesn\'t match!');
+			$this->flash()->error('@string/password_mismatch');
 			return $this->response()->redirect();
 		}
 
 		$c->user->password = $c->password;
 		$c->user->save();
 
-		$this->flash()->success('Password updated!');
+		$this->flash()->success('@string/password_update_success');
 
 		return $this->response()->redirect();
 	}
@@ -35,11 +35,11 @@ class UserController extends BaseController
 	{
 		if($u->save())
 		{
-			$this->flash()->success('User created!');
+			$this->flash()->success('@string/user_create_success');
 		}
 		else
 		{
-			$this->flash()->error('Unable to create the user!');
+			$this->flash()->error('@string/user_create_failure');
 		}
 		return $this->response()->redirect();
 	}
@@ -50,7 +50,7 @@ class UserController extends BaseController
 		{
 			if($c->password != $c->password_confirm)
 			{
-				$this->flash()->error('Password doesn\'t match!');
+				$this->flash()->error('@string/password_mismatch');
 				return $this->response()->redirect();
 			}
 			else
@@ -61,11 +61,11 @@ class UserController extends BaseController
 
 		if($c->user->save())
 		{
-			$this->flash()->success('User updated!');
+			$this->flash()->success('@string/user_update_success');
 		}
 		else
 		{
-			$this->flash()->error('Unable to update the user!', join(', ', $c->user->getErrors()));
+			$this->flash()->error('@string/user_update_failure', join(', ', $c->user->getErrors()));
 		}
 
 		return $this->response()->redirect();
@@ -93,7 +93,7 @@ class UserController extends BaseController
 		{
 			if($ur->delete())
 			{
-				$this->flash()->success('Role removed!');
+				$this->flash()->success('@string/user_role_remove_success');
 			}
 		}
 		return $this->response()->redirect();
@@ -103,6 +103,12 @@ class UserController extends BaseController
 	{
 		$user = User::get($user_id);
 
+		if(count($user->roles) > 0)
+		{
+			$this->flash()->error('@string/user_role_limit_reached');
+			return $this->response()->redirect();
+		}
+
 		$role_id = $this->request()->get('role_id');
 
 		$role = Role::get($role_id);
@@ -111,7 +117,7 @@ class UserController extends BaseController
 
 		if($user->save())
 		{
-			$this->flash()->success('Role added!');
+			$this->flash()->success('@string/user_role_add_success');
 		}
 
 		return $this->response()->redirect();
@@ -123,11 +129,11 @@ class UserController extends BaseController
 
 		if($user->delete())
 		{
-			$this->flash()->success('User deleted!');
+			$this->flash()->success('@string/user_delete_success');
 		}
 		else
 		{
-			$this->flash()->error('Unable to delete the user!');
+			$this->flash()->error('@string/user_delete_failure');
 		}
 
 		return $this->response()->redirect();

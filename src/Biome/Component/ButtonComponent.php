@@ -14,7 +14,13 @@ class ButtonComponent extends Component
 
 	public function getValue($default)
 	{
-		return $this->getAttribute('value', $default);
+		$label = $this->getAttribute('value', $default);
+		if(strncmp($label, '@string/', 8) == 0)
+		{
+			$value = substr($label, 8);
+			return $this->lang->get($value);
+		}
+		return $label;
 	}
 
 	public function getURL()

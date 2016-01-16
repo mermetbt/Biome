@@ -27,7 +27,7 @@ class RoleController extends BaseController
 
 		if($user->save())
 		{
-			$this->flash()->success('User added!');
+			$this->flash()->success('@string/roles_user_add_success');
 		}
 
 		return $this->response()->redirect();
@@ -42,11 +42,11 @@ class RoleController extends BaseController
 
 		if($c->role->save())
 		{
-			$this->flash()->success('Role authorizations updated!');
+			$this->flash()->success('@string/role_update_success');
 		}
 		else
 		{
-			$this->flash()->error('Unable to update the role authorizations!', join(', ', $c->role->getErrors()));
+			$this->flash()->error('@string/role_update_failure', join(', ', $c->role->getErrors()));
 		}
 		return $this->response()->redirect();
 	}

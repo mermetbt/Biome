@@ -28,38 +28,38 @@ class User extends Models
 	public function fields()
 	{
 		$this->user_id		= PrimaryField::create()
-								->setLabel('User ID');
+								->setLabel('@string/user_id');
 
 		$this->firstname	= TextField::create(32)
-								->setLabel('Firstname')
+								->setLabel('@string/firstname')
 								->setRequired(TRUE);
 
 		$this->lastname		= TextField::create(32)
-								->setLabel('Lastname')
+								->setLabel('@string/lastname')
 								->setRequired(TRUE);
 
 		$this->mail			= EmailField::create()
-								->setLabel('E-Mail')
+								->setLabel('@string/mail')
 								->setRequired(TRUE);
 
 		$this->password		= PasswordField::create(32)
-								->setLabel('Password')
+								->setLabel('@string/password')
 								->setRequired(TRUE)
 								->setConverter(new PasswordConverter());
 
 		$this->user_active	= BooleanField::create()
-								->setLabel('Active')
+								->setLabel('@string/active')
 								->setRequired(TRUE)
 								->setDefaultValue(TRUE);
 
 		$this->creation_date	= DateTimeField::create()
-									->setLabel('Creation date')
+									->setLabel('@string/creation_date')
 									->setRequired(TRUE)
 									->setEditable(FALSE)
 									->setDefaultValue(RawSQL::select('CURRENT_TIMESTAMP'));
 
 		$this->roles		= Many2ManyField::create('Role', 'role_id', 'UserRole', 'user_id')
-								->setLabel('Roles');
+								->setLabel('@string/roles');
 	}
 
 	public function __toString()

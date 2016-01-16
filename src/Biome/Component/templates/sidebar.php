@@ -45,7 +45,7 @@ function prepareMenu(array &$menu_list)
 	return $is_active;
 }
 
-function generateMenu(array $menu_list)
+function generateMenu(array $menu_list, $sidebar)
 {
 	foreach($menu_list AS $menu)
 	{
@@ -65,7 +65,7 @@ function generateMenu(array $menu_list)
 			{
 				echo '<i class="', $icon, '"></i>';
 			}
-			echo ' ', $title, '</a>';
+			echo ' ', $sidebar->getLocalized($title), '</a>';
 		}
 		else
 		{
@@ -76,10 +76,10 @@ function generateMenu(array $menu_list)
 				echo '<i class="', $icon, '"></i>';
 			}
 
-			echo ' ', $title, '<i class="fa fa-fw fa-caret-down"></i></a>';
+			echo ' ', $sidebar->getLocalized($title), '<i class="fa fa-fw fa-caret-down"></i></a>';
 			echo '</a>';
 			echo '<ul id="', $target, '" class="navbar-nav collapse', (!empty($subclass) ? ' ' . $subclass : '') ,'">';
-			generateMenu($submenu);
+			generateMenu($submenu, $sidebar);
 			echo '</ul>';
 		}
 
@@ -91,6 +91,6 @@ $menu_list = $this->getValue();
 
 prepareMenu($menu_list);
 
-generateMenu($menu_list);
+generateMenu($menu_list, $this);
 
 ?></ul>
