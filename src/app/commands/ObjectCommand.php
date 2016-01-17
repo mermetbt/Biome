@@ -4,16 +4,27 @@ use Biome\Core\Command\AbstractCommand;
 
 class ObjectCommand extends AbstractCommand
 {
-	protected function createModel($object)
+	protected function plural($object)
 	{
 		if($object[(strlen($object)-1)] == 's')
 		{
-			$tablename = strtolower($object) . 'es';
+			$objects = $object . 'es';
+		}
+		else
+		if($object[(strlen($object)-1)] == 'y')
+		{
+			$objects = substr($object, 0, -1) . 'ies';
 		}
 		else
 		{
-			$tablename = strtolower($object) . 's';
+			$objects = $object . 's';
 		}
+		return $objects;
+	}
+
+	protected function createModel($object)
+	{
+		$tablename = strtolower($this->plural($object));
 
 		$primary_key = strtolower($object) . '_id';
 		$object_name = strtolower($object) . '_name';
@@ -43,25 +54,26 @@ class $object extends Models
 		return array(
 					'table'			=> '$tablename',
 					'primary_key'	=> '$primary_key',
+					'reference'		=> '$object_name'
 		);
 	}
 
 	public function fields()
 	{
 		\$this->$primary_key				= PrimaryField::create()
-										->setLabel('$object ID');
+										->setLabel('@string/$primary_key');
 
 		\$this->$object_name				= TextField::create()
-										->setLabel('$object name');
+										->setLabel('@string/$object_name');
 
 		\$this->c_date				= DateTimeField::create()
-										->setLabel('Creation')
+										->setLabel('@string/creation_date')
 										->setRequired(TRUE)
 										->setEditable(FALSE)
 										->setDefaultValue(RawSQL::select('CURRENT_TIMESTAMP'));
 
 		\$this->m_date				= DateTimeField::create()
-										->setLabel('Modification')
+										->setLabel('@string/modification_date')
 										->setEditable(FALSE)
 										->setDefaultValue(RawSQL::select('ON UPDATE CURRENT_TIMESTAMP NULL DEFAULT NULL'));
 	}
@@ -73,15 +85,7 @@ EOF;
 
 	protected function createController($object)
 	{
-		if($object[(strlen($object)-1)] == 's')
-		{
-			$objects = $object . 'es';
-		}
-		else
-		{
-			$objects = $object . 's';
-		}
-
+		$objects = $this->plural($object);
 		$filename = APP_ROOT . '/app/controllers/' . $object . 'Controller.php';
 
 		if(file_exists($filename))
@@ -114,14 +118,7 @@ EOF;
 
 	protected function createCollection($object)
 	{
-		if($object[(strlen($object)-1)] == 's')
-		{
-			$objects = $object . 'es';
-		}
-		else
-		{
-			$objects = $object . 's';
-		}
+		$objects = $this->plural($object);
 		$object_lower = strtolower($object);
 		$objects_lower = strtolower($objects);
 
@@ -159,14 +156,7 @@ EOF;
 
 	protected function createView($object)
 	{
-		if($object[(strlen($object)-1)] == 's')
-		{
-			$objects = $object . 'es';
-		}
-		else
-		{
-			$objects = $object . 's';
-		}
+		$objects = $this->plural($object);
 		$object_lower = strtolower($object);
 		$objects_lower = strtolower($objects);
 
@@ -187,23 +177,23 @@ EOF;
 	<biome:include src="elements/navbar.xml"/>
 
 	<biome:view action="index">
-		<biome:title title="$objects">
-				<biome:a class="btn btn-sm btn-success" controller="$object_lower" action="create"><i class="fa fa-plus"></i><span> New</span></biome:a>
+		<biome:title title="@string/{$objects_lower}_title">
+				<biome:a class="btn btn-sm btn-success" controller="$object_lower" action="create"><i class="fa fa-plus"></i> <biome:text value="@string/new"/></biome:a>
 		</biome:title>
 
-		<biome:panel title="$objects list">
+		<biome:panel title="@string/{$objects_lower}_list_title">
 			<biome:datatable value="#{{$objects_lower}.{$objects_lower}}" var="$object_lower">
 				<biome:column headerTitle="#">
 					<biome:variable value="#{{$object_lower}.{$primary_key}}"/>
 				</biome:column>
 
-				<biome:column headerTitle="$object">
+				<biome:column headerTitle="@string/$object_lower">
 					<biome:a controller="$object_lower" action="show" item="#{{$object_lower}.{$primary_key}}">
 						<biome:variable value="#{{$object_lower}.{$object_name}}"/>
 					</biome:a>
 				</biome:column>
 
-				<biome:column headerTitle="Creation date">
+				<biome:column headerTitle="@string/creation_date">
 					<biome:variable value="#{{$object_lower}.c_date}"/>
 				</biome:column>
 			</biome:datatable>
@@ -211,13 +201,13 @@ EOF;
 	</biome:view>
 
 	<biome:view action="show">
-		<biome:title title="$object #{{$objects_lower}.{$object_lower}.{$object_name}}">
-			<biome:a class="btn btn-sm btn-danger" controller="$object_lower" action="delete" item="#{{$objects_lower}.{$object_lower}.{$primary_key}}"><i class="fa fa-trash"></i><span> Delete</span></biome:a>
+		<biome:title title="#{{$objects_lower}.{$object_lower}.{$object_name}}">
+			<biome:a class="btn btn-sm btn-danger" controller="$object_lower" action="delete" item="#{{$objects_lower}.{$object_lower}.{$primary_key}}"><i class="fa fa-trash"></i> <biome:text value="@string/delete"/></biome:a>
 		</biome:title>
 
 		<div class="row">
 			<div class="col-lg-12">
-				<biome:panel title="$object informations">
+				<biome:panel title="@string/{$object_lower}_informations">
 					<biome:ajaxfield value="#{{$objects_lower}.{$object_lower}.{$object_name}}"/>
 					<biome:ajaxfield value="#{{$objects_lower}.{$object_lower}.c_date}"/>
 					<biome:ajaxfield value="#{{$objects_lower}.{$object_lower}.m_date}"/>
@@ -227,12 +217,12 @@ EOF;
 	</biome:view>
 
 	<biome:view action="create">
-		<biome:title title="Add new $object_lower"/>
+		<biome:title title="@string/{$objects_lower}_create_title"/>
 
-		<biome:panel title="$object informations">
+		<biome:panel title="@string/{$object_lower}_informations">
 			<biome:form>
 				<biome:field value="#{{$object_lower}.{$object_name}}"/>
-				<biome:button class="btn-success" value="Create" action="#{{$object_lower}.create}"/>
+				<biome:button class="btn-success" value="@string/create" action="#{{$object_lower}.create}"/>
 			</biome:form>
 		</biome:panel>
 	</biome:view>

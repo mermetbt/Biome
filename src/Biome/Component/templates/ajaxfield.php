@@ -17,7 +17,7 @@ $url = URL::getUri() . '?partial=' . $id;
 
 if(!empty($label))
 {
-	?><label for="<?php echo $id; ?>" class="control-label col-sm-2"><?php echo $label; ?></label> <?php
+	?><label for="<?php echo $id; ?>" class="control-label col-sm-3"><?php echo $label; ?></label> <?php
 }
 
 ?><div id="<?php echo $id; ?>"<?php
@@ -45,7 +45,7 @@ if($type == 'many2one')
 	?> data-id="<?php echo $data_id; ?>"<?php
 }
 
-?> class="ajaxfield col-sm-10 form-group"><?php
+?> class="ajaxfield col-sm-9 form-group"><?php
 
 $viewable = $field === NULL || $this->rights->isAttributeView($field);
 
