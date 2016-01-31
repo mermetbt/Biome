@@ -129,7 +129,7 @@ trait ContextManager
 
 		/* No item found, check view. */
 		$view = \Biome\Biome::getService('view');
-		$result = $view->$raw[0];
+		$result = $view->{$raw[0]};
 		if($result !== NULL)
 		{
 			return $result;

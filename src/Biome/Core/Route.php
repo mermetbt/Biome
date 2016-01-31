@@ -300,10 +300,10 @@ class Route extends RouteCollection
 					$iter = $value;
 					for($i = 1; $i < $total-1; $i++)
 					{
-						$iter = $iter->$raw[$i];
+						$iter = $iter->{$raw[$i]};
 					}
 					$v = $request->request->get($key);
-					$iter->$raw[$i] = $v;
+					$iter->{$raw[$i]} = $v;
 				}
 			}
 		}
@@ -326,10 +326,10 @@ class Route extends RouteCollection
 					$iter = $value;
 					for($i = 1; $i < $total-1; $i++)
 					{
-						$iter = $iter->$raw[$i];
+						$iter = $iter->{$raw[$i]};
 					}
 					$v = $request->request->get($key);
-					$iter->$raw[$i] = $v;
+					$iter->{$raw[$i]} = $v;
 				}
 			}
 		}

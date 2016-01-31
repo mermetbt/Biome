@@ -47,7 +47,7 @@ class SQLModelInspector implements ModelInspectorInterface
 		{
 			if($defaultValue instanceof RawSQL)
 			{
-				$default .= $defaultValue->get();
+				$default = $defaultValue->get();
 			}
 			else
 			{
@@ -95,6 +95,11 @@ class SQLModelInspector implements ModelInspectorInterface
 				break;
 			case 'many2one':
 				$type = 'INT(10) unsigned';
+
+				if(substr($name, -3) !== '_id')
+				{
+					return FALSE;
+				}
 				break;
 			default:
 				return FALSE;

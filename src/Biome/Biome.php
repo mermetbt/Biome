@@ -36,7 +36,7 @@ class Biome
 		Logger::info('Request URI: ' . $request->getUri());
 
 		$dispatcher = Biome::getService('dispatcher');
-		$response = $dispatcher->dispatch($request->getMethod(), $request->getPathInfo());
+		$response = $dispatcher->dispatch($request->getMethod(), $request->getCanonicPathInfo());
 
 		/* Send the response. */
 		$response->send();
