@@ -48,6 +48,8 @@
 	<string name="authentication_failure">Authentification échoué!</string>
 	<string name="user_register_success">Utilisateur enregistré !</string>
 	<string name="user_logout_success">À bientôt !</string>
+	<string name="user_not_authenticated">Vous n'êtes pas authentifié! Veuillez vous connecter!</string>
+	<string name="user_forbidden">Vous n'avez pas les autorisations nécessaires pour voir cette page!</string>
 
 	<!-- Profile page -->
 	<string name="profile_title">Profil</string>

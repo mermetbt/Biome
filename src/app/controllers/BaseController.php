@@ -8,17 +8,25 @@ class BaseController extends Controller
 	public function beforeRoute()
 	{
 		/**
-		 * Check route rights.
-		 */
-		$this->checkAuthorizations();
-
-		/**
 		 * Check authentication.
 		 */
 		$auth = Collection::get('auth');
 		if(!$auth->isAuthenticated())
 		{
-			$this->flash()->error('Forbidden!');
+			$this->flash()->error('@string/user_not_authenticated');
+			$this->response()->redirect('');
+			return FALSE;
+		}
+
+		/**
+		 * Check route rights.
+		 */
+		try
+		{
+			$this->checkAuthorizations();
+		} catch(ForbiddenException $e)
+		{
+			$this->flash()->error('@string/user_forbidden');
 			$this->response()->redirect('');
 			return FALSE;
 		}

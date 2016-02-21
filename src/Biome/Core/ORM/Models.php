@@ -106,7 +106,7 @@ abstract class Models implements ObjectInterface
 
 		if($f instanceof Many2OneField && !($value instanceof Models) && substr($attribute, -3) != '_id')
 		{
-			throw new \Exception('Unable to store a Models in a non Many2OneField: ' . $value);
+			throw new \Exception('Unable to store a Models in a non Many2OneField: ' . get_class($value));
 		}
 
 		$new = $f->applySet($value);

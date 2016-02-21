@@ -16,7 +16,7 @@
 							<biome:variable value="#{r.role_id}"/>
 						</biome:column>
 
-						<biome:column headerTitle="@string/roles_role">
+						<biome:column headerTitle="@string/roles_role" search="#{role_name}">
 							<biome:a controller="role" action="show" item="#{r.role_id}">
 								<biome:variable value="#{r.role_name}"/>
 							</biome:a>

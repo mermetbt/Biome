@@ -40,19 +40,19 @@
 							<biome:variable value="#{u.user_id}"/>
 						</biome:column>
 
-						<biome:column headerTitle="@string/firstname">
+						<biome:column headerTitle="@string/firstname" search="#{firstname}">
 							<biome:a controller="user" action="show" item="#{u.user_id}">
 								<biome:variable value="#{u.firstname}"/>
 							</biome:a>
 						</biome:column>
 
-						<biome:column headerTitle="@string/lastname">
+						<biome:column headerTitle="@string/lastname" search="#{lastname}">
 							<biome:a controller="user" action="show" item="#{u.user_id}">
 								<biome:variable value="#{u.lastname}"/>
 							</biome:a>
 						</biome:column>
 
-						<biome:column headerTitle="@string/mail">
+						<biome:column headerTitle="@string/mail" search="#{mail}">
 							<biome:variable value="#{u.mail}"/>
 						</biome:column>
 					</biome:datatable>
