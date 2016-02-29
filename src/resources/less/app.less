@@ -72,18 +72,20 @@ body {
 	white-space: normal;
 }
 
-/* Side Navigation */
+/**
+ * Side Navigation
+ */
 @media(min-width:768px) {
 	.side-nav {
 		position: fixed;
-		top: 51px;
+		top: (@navbar-height+2);
 		left: 225px;
 		width: 225px;
 		margin-left: -225px;
 		border: none;
 		border-radius: 0;
 		overflow-y: auto;
-		background-color: #f8f8f8;
+		background-color: @navbar-default-bg;
 /*		background-color: #222;*/
 		bottom: 0;
 		overflow-x: hidden;
@@ -101,7 +103,7 @@ body {
 	.side-nav li a:hover,
 	.side-nav li a:focus {
 		outline: none;
-		background-color: #eee !important;
+		background-color: @navbar-default-toggle-hover-bg !important;
 	}
 }
 
@@ -113,7 +115,7 @@ body {
 	display: block;
 	padding: 10px 15px 10px 38px;
 	text-decoration: none;
-	color: #999;
+	color: @dropdown-link-color;
 }
 
 .side-nav>li>ul>li>a:hover {
@@ -167,6 +169,10 @@ body {
 	color: #df8a13;
 }
 
+/**
+ * Form and input
+ */
+
 .form-group {
 	margin-bottom: 5px;
 }
@@ -177,7 +183,7 @@ body {
 
 .ajaxfield-input {
 	padding-right: 20px;
-	color: #000;
+	color: @text-color;
 }
 
 .ajaxfield-input:hover {

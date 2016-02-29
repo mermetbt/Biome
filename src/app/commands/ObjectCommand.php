@@ -29,7 +29,7 @@ class ObjectCommand extends AbstractCommand
 		$primary_key = strtolower($object) . '_id';
 		$object_name = strtolower($object) . '_name';
 
-		$filename = APP_ROOT . '/app/models/' . $object . '.php';
+		$filename = APP_DIR . '/app/models/' . $object . '.php';
 
 		if(file_exists($filename))
 		{
@@ -86,7 +86,7 @@ EOF;
 	protected function createController($object)
 	{
 		$objects = $this->plural($object);
-		$filename = APP_ROOT . '/app/controllers/' . $object . 'Controller.php';
+		$filename = APP_DIR . '/app/controllers/' . $object . 'Controller.php';
 
 		if(file_exists($filename))
 		{
@@ -122,7 +122,7 @@ EOF;
 		$object_lower = strtolower($object);
 		$objects_lower = strtolower($objects);
 
-		$filename = APP_ROOT . '/app/collections/' . $objects . 'Collection.php';
+		$filename = APP_DIR . '/app/collections/' . $objects . 'Collection.php';
 
 		if(file_exists($filename))
 		{
@@ -163,7 +163,7 @@ EOF;
 		$primary_key = strtolower($object) . '_id';
 		$object_name = strtolower($object) . '_name';
 
-		$filename = APP_ROOT . '/app/views/' . $object_lower . '.xml';
+		$filename = APP_DIR . '/app/views/' . $object_lower . '.xml';
 
 		if(file_exists($filename))
 		{
