@@ -51,7 +51,8 @@ if($viewable)
 
 					if($type == 'many2one')
 					{
-						$object = $this->getParentValue();
+						//$object = $this->getParentValue();
+						$object = $field->getObjectName();
 					}
 					else
 					{

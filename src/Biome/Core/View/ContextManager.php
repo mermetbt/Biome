@@ -210,6 +210,11 @@ trait ContextManager
 			$raw = explode('.', $var);
 			$field = array_pop($raw);
 
+			if(empty($raw))
+			{
+				throw new \Exception('Field must be defined by at least object.attribute!');
+			}
+
 			$object = $this->rec_fetchValue(join('.', $raw));
 			if(!$object instanceof Models)
 			{

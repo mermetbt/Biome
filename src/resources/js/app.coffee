@@ -29,8 +29,7 @@
 			regex = new RegExp('(<([^>]+)>)', 'ig');
 			content = content.replace(regex, '');
 			inputText = $('<textarea class="form-control ajaxfield-input">' + content + '</textarea>');
-		else
-		if type == 'many2one'
+		else if type == 'many2one'
 			# class="form-control ajaxfield-input"
 			inputText = $('<select class="form-control ajaxfield-input"></select>');
 			identifier = $this.data 'id'
@@ -67,8 +66,7 @@
 
 		if type == 'textarea'
 			autosize(inputText);
-		else
-		if type == 'many2one'
+		else if type == 'many2one'
 
 			formatM2OSelector = (content) ->
 				if content.loading

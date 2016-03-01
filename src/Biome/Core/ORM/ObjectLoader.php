@@ -6,6 +6,11 @@ class ObjectLoader
 {
 	public static function load($object_name)
 	{
+		if(empty($object_name))
+		{
+			throw new \Exception('Cannot load an empty object name!');
+		}
+
 		if(class_exists($object_name))
 		{
 			return TRUE;
