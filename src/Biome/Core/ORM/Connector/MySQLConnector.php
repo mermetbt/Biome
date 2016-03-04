@@ -204,4 +204,24 @@ class MySQLConnector
 		}
 		return TRUE;
 	}
+
+	public function getTimezoneOffset()
+	{
+		$now = new \DateTime();
+		$mins = $now->getOffset() / 60;
+
+		$sgn = ($mins < 0 ? -1 : 1);
+		$mins = abs($mins);
+		$hrs = floor($mins / 60);
+		$mins -= $hrs * 60;
+
+		$offset = sprintf('%+d:%02d', $hrs*$sgn, $mins);
+		return $offset;
+	}
+
+	public function setTimezone($timezone)
+	{
+		$offset = $this->getTimezoneOffset();
+		$this->query('SET time_zone=\''.$offset.'\';', NULL);
+	}
 }
