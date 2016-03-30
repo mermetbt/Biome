@@ -105,9 +105,20 @@ class MySQLConnector
 		{
 			return '';
 		}
+
+		if($string === FALSE)
+		{
+			return 0;
+		}
+
+		if($string === TRUE)
+		{
+			return 1;
+		}
+
 		if(!is_string($string) && !is_numeric($string))
 		{
-			$data = print_r($string, true);
+			$data = var_export($string, true);
 			throw new \Exception('Real escape string expects a string !' . PHP_EOL . 'Content : ' . PHP_EOL . $data);
 		}
 		return $this->_instance->real_escape_string($string);
