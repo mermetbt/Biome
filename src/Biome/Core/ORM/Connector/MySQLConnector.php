@@ -3,6 +3,7 @@
 namespace Biome\Core\ORM\Connector;
 
 use Biome\Core\Logger\Logger;
+use Biome\Core\ORM\Exception\DuplicateException;
 
 class MySQLConnector
 {
@@ -199,7 +200,14 @@ class MySQLConnector
 		if(!empty($this->_instance->error))
 		{
 			Logger::error('SQL Error: ' . $this->_instance->error);
-			throw new \Exception('SQL Error: ' . $this->_instance->error . ' Last Query:(' . $this->_last_query . ')');
+
+			switch($this->_instance->errno)
+			{
+				case 1022:
+					throw new DuplicateException($this->_instance->errno);
+				default:
+					throw new \Exception('SQL Error: ' . $this->_instance->error . ' Last Query:(' . $this->_last_query . ')');
+			}
 		}
 
 		if($this->_instance->warning_count != 0)
