@@ -119,7 +119,8 @@ class MySQLConnector
 		if(!is_string($string) && !is_numeric($string))
 		{
 			$data = var_export($string, true);
-			throw new \Exception('Real escape string expects a string !' . PHP_EOL . 'Content : ' . PHP_EOL . $data);
+			Logger::error('Real escape string expects a string! Content: ' . $data);
+			throw new \Exception('Real escape string expects a string!' . PHP_EOL . 'Content : ' . PHP_EOL . $data);
 		}
 		return $this->_instance->real_escape_string($string);
 	}
@@ -197,6 +198,7 @@ class MySQLConnector
 	{
 		if(!empty($this->_instance->error))
 		{
+			Logger::error('SQL Error: ' . $this->_instance->error);
 			throw new \Exception('SQL Error: ' . $this->_instance->error . ' Last Query:(' . $this->_last_query . ')');
 		}
 
@@ -211,6 +213,7 @@ class MySQLConnector
 				}
 				$result->close();
 			}
+			Logger::error('SQL Warning: ' . $message);
 			throw new \Exception('SQL Warning: ' . $message . ' Last Query:(' . $this->_last_query . ')');
 		}
 		return TRUE;
