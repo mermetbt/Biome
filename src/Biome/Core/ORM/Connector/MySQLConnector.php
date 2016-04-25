@@ -199,12 +199,12 @@ class MySQLConnector
 	{
 		if(!empty($this->_instance->error))
 		{
-			Logger::error('SQL Error: ' . $this->_instance->error);
+			Logger::error('SQL Error (' . $this->_instance->errno . '): ' . $this->_instance->error);
 
 			switch($this->_instance->errno)
 			{
-				case 1022:
-					throw new DuplicateException($this->_instance->errno);
+				case 1062:
+					throw new DuplicateException($this->_instance->error);
 				default:
 					throw new \Exception('SQL Error: ' . $this->_instance->error . ' Last Query:(' . $this->_last_query . ')');
 			}
