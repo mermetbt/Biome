@@ -8,6 +8,8 @@ use Biome\Core\ORM\Field\Many2ManyField;
 use Biome\Core\ORM\Field\One2ManyField;
 use Biome\Core\ORM\Inspector\ModelInspectorInterface;
 
+use Biome\Core\Logger\Logger;
+
 abstract class Models implements ObjectInterface
 {
 	protected $_structure;
@@ -366,6 +368,7 @@ abstract class Models implements ObjectInterface
 	{
 		if($this->getId() != NULL)
 		{
+			Logger::warning('Trying to fetch an object already fetched!');
 			return $this;
 		}
 
@@ -409,6 +412,7 @@ abstract class Models implements ObjectInterface
 
 		if($count == 0)
 		{
+			Logger::notice('Object not fetched in the database!');
 			return NULL;
 		}
 

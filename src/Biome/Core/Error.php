@@ -8,7 +8,19 @@ class Error
 	{
 		error_reporting(E_ALL);
 		$whoops = new \Whoops\Run;
-		$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+		if (\Whoops\Util\Misc::isAjaxRequest())
+		{
+			$whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler);
+		}
+		else
+		if(\Whoops\Util\Misc::isCommandLine())
+		{
+			$whoops->pushHandler(new \Whoops\Handler\PlainTextHandler);
+		}
+		else
+		{
+			$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+		}
 		$whoops->register();
 	}
 
