@@ -26,9 +26,9 @@ class Biome
 		session_start();
 
 		/* Initializing the Framework. */
-		Error::init();
-
 		self::declareServices();
+
+		Error::init();
 
 		/* Starting. */
 		$request = Biome::getService('request');
