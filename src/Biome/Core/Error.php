@@ -8,7 +8,9 @@ class Error
 	{
 		error_reporting(E_ALL);
 		$whoops = new \Whoops\Run;
-		if (\Whoops\Util\Misc::isAjaxRequest())
+
+		$request = \Biome\Biome::getService('request');
+		if ($request->acceptJson() || \Whoops\Util\Misc::isAjaxRequest())
 		{
 			$whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler);
 		}
