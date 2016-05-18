@@ -6,7 +6,7 @@
 		"php": ">=5.5.0",
 		"psr/log": "^1.0@dev",
 		"koala-framework/composer-extra-assets": "^1.1@dev",
-		"league/route": "2.0.0",
+		"league/route": "1.2.3",
 		"filp/whoops": "2.1.2",
 		"sabre/xml": "1.4.1",
 		"symfony/console": "3.0.6"
