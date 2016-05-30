@@ -11,6 +11,10 @@ class RoutesCommand extends AbstractCommand
 	{
 		$router = \Biome\Biome::getService('router');
 		$routes = $router->routes_list;
-		print_r($routes);
+
+		foreach($routes AS $route)
+		{
+			echo $route['method'], ' ', $route['path'], PHP_EOL;
+		}
 	}
 }

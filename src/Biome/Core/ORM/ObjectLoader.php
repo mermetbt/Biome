@@ -2,6 +2,8 @@
 
 namespace Biome\Core\ORM;
 
+use \Biome\Core\Logger\Logger;
+
 class ObjectLoader
 {
 	public static function load($object_name)
@@ -47,6 +49,7 @@ class ObjectLoader
 
 		if(file_exists($filename))
 		{
+			Logger::debug('Load object ' . $object_name . ' in ' . $filename);
 			include_once($filename);
 			return TRUE;
 		}

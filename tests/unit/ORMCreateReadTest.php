@@ -186,12 +186,14 @@ class ORMCreateReadTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertInstanceOf('\Biome\Core\ORM\QuerySet', $user->roles);
 
+		// unsync object
 		$this->assertEmpty($user->roles);
 
 		$user->roles[] = $role;
 
 		$this->assertNotEmpty($user->roles);
 
+		// Sync object
 		$this->assertTrue($user->save());
 		$this->assertEquals('Jean', $user->firstname);
 		$this->assertEquals('Dupont', $user->lastname);

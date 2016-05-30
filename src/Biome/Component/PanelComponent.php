@@ -14,6 +14,7 @@ class PanelComponent extends Component
 
 	public function getTitle()
 	{
-		return $this->getAttribute('title', '');
+		$title = $this->getAttribute('title', '');
+		return $this->fetchValue($title);
 	}
 }

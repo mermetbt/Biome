@@ -212,6 +212,7 @@ trait ContextManager
 
 			if(empty($raw))
 			{
+				return NULL;
 				throw new \Exception('Field must be defined by at least object.attribute!');
 			}
 
