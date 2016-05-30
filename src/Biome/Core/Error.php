@@ -10,9 +10,9 @@ class Error
 		$whoops = new \Whoops\Run;
 
 		$request = \Biome\Biome::getService('request');
-		if ($request->acceptJson() || \Whoops\Util\Misc::isAjaxRequest())
+		if($request->acceptHtml())
 		{
-			$whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler);
+			$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 		}
 		else
 		if(\Whoops\Util\Misc::isCommandLine())
@@ -21,8 +21,9 @@ class Error
 		}
 		else
 		{
-			$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+			$whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler);
 		}
+
 		$whoops->register();
 	}
 
