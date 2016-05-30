@@ -23,7 +23,7 @@
 		"psr-0": {
 			"Biome": "src/"
 		},
-		"classmap": ["src/app/controllers/", "src/app/collections/", "src/app/commands/"]
+		"classmap": []
 	},
 	"extra": {
 		"require-bower": {

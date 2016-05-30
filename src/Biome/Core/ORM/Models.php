@@ -500,7 +500,7 @@ abstract class Models implements ObjectInterface
 				{
 					if(!$value->save())
 					{
-						throw new \Exception('Unable to save the object for the field ' . $field_name . '!');
+						throw new \Exception('Unable to save the object for the field ' . $field_name . '! ' . join(', ', $value->getErrors()));
 					}
 				}
 
@@ -613,7 +613,7 @@ abstract class Models implements ObjectInterface
 
 			$value = $this->getRawValue($field_name);
 
-			if(empty($value) && empty($field->getDefaultValue()))
+			if(empty($value) && $field->getDefaultValue() === NULL)
 			{
 				$field->setError('required', 'Field "' . $field->getLabel() . '" is required!');
 				$errors = TRUE;
