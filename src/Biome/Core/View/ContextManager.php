@@ -176,6 +176,9 @@ trait ContextManager
 			// Return an object or an array
 			else
 			{
+				/**
+				 * TODO: In case of array or object, generating an evaluation to return the result of the line.
+				 */
 				return $result;
 			}
 		}

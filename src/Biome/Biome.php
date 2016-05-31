@@ -212,7 +212,7 @@ class Biome
 		}
 	}
 
-	private static function initDirs()
+	private static function initDirs($use_default_app = TRUE)
 	{
 		if(self::$directories !== NULL)
 		{
@@ -221,22 +221,25 @@ class Biome
 
 		self::$directories = array();
 
-		$dirs = array(
-			'controllers'	=> __DIR__ . '/../app/controllers/',
-			'models'		=> __DIR__ . '/../app/models/',
-			'views'			=> __DIR__ . '/../app/views/',
-			'components'	=> __DIR__ . '/../app/components/',
-			'collections'	=> __DIR__ . '/../app/collections/',
-			'commands'		=> __DIR__ . '/../app/commands/',
-			'resources'		=> __DIR__ . '/../resources/',
-		);
-		self::registerDirs($dirs);
+		if($use_default_app)
+		{
+			$dirs = array(
+				'controllers'	=> __DIR__ . '/../app/controllers/',
+				'models'		=> __DIR__ . '/../app/models/',
+				'views'			=> __DIR__ . '/../app/views/',
+				'components'	=> __DIR__ . '/../app/components/',
+				'collections'	=> __DIR__ . '/../app/collections/',
+				'commands'		=> __DIR__ . '/../app/commands/',
+				'resources'		=> __DIR__ . '/../resources/',
+			);
+			self::registerDirs($dirs);
+		}
 		return TRUE;
 	}
 
-	public static function registerDirs(array $dirs)
+	public static function registerDirs(array $dirs, $use_default_app = TRUE)
 	{
-		self::initDirs();
+		self::initDirs($use_default_app);
 		foreach($dirs AS $type => $dir)
 		{
 			self::$directories[$type][$dir] = $dir;
