@@ -221,7 +221,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 	public function customFilter(FilterNode $filter)
 	{
 		$this->db()->where($filter);
-		return TRUE;
+		return $this;
 	}
 
 	/**
