@@ -6,6 +6,8 @@ use Sabre\Xml\Element;
 use Sabre\Xml\Reader;
 use Sabre\Xml\Writer;
 
+use Biome\Core\Logger\Logger;
+
 class NodeLoader implements Element
 {
 	/**
@@ -45,7 +47,14 @@ class NodeLoader implements Element
 		{
 			$child['value']->_parent	= $parent_node;
 			$child['value']->_fullname	= $child['name'];
-			$child['value']->_nodename		= strtolower(substr(get_class($child['value']), strlen('Biome\\Component\\'), -strlen('Component')));
+
+			$node_name = get_class($child['value']);
+			if(strncmp('Biome\\Component\\', $node_name, 16) == 0)
+			{
+				$node_name = substr($node_name, 16);
+			}
+
+			$child['value']->_nodename		= strtolower(substr($node_name, 0, -strlen('Component')));
 			$child['value']->_attributes = $child['attributes'];
 			$child['value']->getId(); // Generate ID.
 			$child['value']->building();

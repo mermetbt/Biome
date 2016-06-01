@@ -17,6 +17,7 @@ class Autoload
 		self::classloader($class_name, 'commands');
 		self::classloader($class_name, 'controllers');
 		self::classloader($class_name, 'collections');
+		self::classloader($class_name, 'components');
 	}
 
 	private static function classloader($class_name, $type)

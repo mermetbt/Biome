@@ -46,7 +46,17 @@ class Component extends NodeLoader
 
 	public function renderComponent()
 	{
-		$component_template_file = __DIR__ . '/../../Component/templates/' . $this->_nodename . '.php';
+		$components_dirs = \Biome\Biome::getDirs('components');
+		$components_dirs[] = __DIR__ . '/../../Component/';
+		$components_dirs = array_reverse($components_dirs);
+		foreach($components_dirs AS $dir)
+		{
+			if(file_exists($dir . '/templates/' . $this->_nodename . '.php'))
+			{
+				$component_template_file = $dir . '/templates/' . $this->_nodename . '.php';
+			}
+		}
+
 		if(file_exists($component_template_file))
 		{
 			ob_start();

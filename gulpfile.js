@@ -48,6 +48,22 @@ var sources = {
 	]
 }
 
+if(app_dependencies)
+{
+	console.log('Add application dependencies!');
+	if(app_dependencies.vendor_js)
+	{
+		console.log('vendor_js');
+		sources.vendor_js = sources.vendor_js.concat(app_dependencies.vendor_js);
+	}
+
+	if(app_dependencies.vendor_css)
+	{
+		console.log('vendor_css');
+		sources.vendor_css = sources.vendor_css.concat(app_dependencies.vendor_css);
+	}
+}
+
 gulp.task('check', function () {
 	var found = true;
 	for(var i in sources.coffee)
