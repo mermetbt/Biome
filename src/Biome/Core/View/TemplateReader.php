@@ -37,6 +37,11 @@ class TemplateReader extends Reader
 		$components_dirs = array_reverse($components_dirs);
 		foreach($components_dirs AS $dir)
 		{
+			if(!file_exists($dir))
+			{
+				continue;
+			}
+
 			$components = scandir($dir);
 			foreach($components AS $file)
 			{
