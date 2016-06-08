@@ -55,6 +55,8 @@ class XMLLang implements LangInterface
 			 */
 			foreach($reverse_locales AS $locale)
 			{
+				$raw = explode('_', $locale);
+				$locale = $raw[0];
 				$locale_dir = $dir . '/string/' . $locale . '/';
 
 				if(!file_exists($locale_dir))

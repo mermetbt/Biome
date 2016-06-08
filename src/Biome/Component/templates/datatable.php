@@ -73,6 +73,7 @@ foreach($this->request->getLanguages() as $lang)
 			$lang = 'Chinese.lang';
 			break;
 		default:
+			$lang = '';
 	}
 
 	if($lang != NULL)
