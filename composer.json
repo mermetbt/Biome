@@ -34,7 +34,8 @@
 			"datatables-plugins": "*",
 			"datatables-responsive-helper": "*",
 			"select2-ng": "*",
-			"autosize": "*"
+			"autosize": "*",
+			"jquery.easy-pie-chart": "*"
 		},
 		"require-npm": {
 			"gulp": "*",

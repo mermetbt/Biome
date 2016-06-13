@@ -201,3 +201,26 @@
 $ ->
 	$('.ajaxfield').ajaxField({});
 	autosize($('textarea'));
+
+	easypiecharts = $('[data-toggle=easypiechart]');
+	$.each(easypiecharts, ->
+			barColor = $(this).data('barcolor') || '#000'
+			trackColor = $(this).data('trackcolor') || false
+			scaleColor = $(this).data('scalecolor') || false
+			lineCap = $(this).data('linecap') || "round"
+			lineWidth = $(this).data('linewidth') || 3
+			size = $(this).data('size') || 110
+			animate = $(this).data('animate') || false
+
+			$(this).easyPieChart(
+				{
+					barColor: barColor,
+					trackColor: trackColor,
+					scaleColor: scaleColor,
+					lineCap: lineCap,
+					lineWidth: lineWidth,
+					size: size,
+					animate : animate
+				}
+			);
+		)
