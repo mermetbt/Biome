@@ -568,6 +568,12 @@ abstract class Models implements ObjectInterface
 				continue;
 			}
 
+			if(!$field->validate($this, $field_name))
+			{
+				$errors = TRUE;
+				continue;
+			}
+
 			if(!$field->isRequired())
 			{
 				continue;

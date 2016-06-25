@@ -3,6 +3,7 @@
 namespace Biome\Core\ORM;
 
 use Biome\Core\ORM\Converter\ConverterInterface;
+use Biome\Core\ORM\Models;
 
 abstract class AbstractField
 {
@@ -86,6 +87,24 @@ abstract class AbstractField
 		$list = $this->_error_list;
 		$this->_error_list = array();
 		return $list;
+	}
+
+	public function validate($object, $field_name)
+	{
+		$value = $object->$field_name;
+
+		if(!$this->isRequired() && empty($value))
+		{
+			return TRUE;
+		}
+
+		if(empty($value))
+		{
+			$this->setError('required', 'Field "' . $this->getLabel() . '" is required!');
+			return FALSE;
+		}
+
+		return TRUE;
 	}
 
 	/**

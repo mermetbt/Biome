@@ -146,8 +146,8 @@
 				if data.errors
 					console.log(data.errors);
 					help = $('<span class="help-block"></span>');
-					for i in data.errors
-						help.append(data.errors[i]);
+					for error in data.errors
+						help.append(error);
 					formgroup.addClass('has-error');
 					$this.append(help);
 					return;
