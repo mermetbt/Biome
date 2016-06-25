@@ -4,6 +4,7 @@ namespace Biome\Core\ORM;
 
 use Biome\Core\ORM\Converter\ConverterInterface;
 use Biome\Core\ORM\Models;
+use Biome\Core\Logger\Logger;
 
 abstract class AbstractField
 {
@@ -73,6 +74,7 @@ abstract class AbstractField
 	 */
 	public function setError($type, $message)
 	{
+		Logger::debug('User error ' . $type . ': ' . $message);
 		$this->_error_list[$type] = $message;
 		return TRUE;
 	}
@@ -91,9 +93,19 @@ abstract class AbstractField
 
 	public function validate($object, $field_name)
 	{
-		$value = $object->$field_name;
+		$value = $object->getRawValue($field_name);
 
 		if(!$this->isRequired() && empty($value))
+		{
+			return TRUE;
+		}
+
+		if($value === 0)
+		{
+			return TRUE;
+		}
+
+		if($object->getField($field_name)->getDefaultValue() instanceof RawSQL)
 		{
 			return TRUE;
 		}

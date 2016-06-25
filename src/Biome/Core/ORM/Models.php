@@ -320,7 +320,7 @@ abstract class Models implements ObjectInterface
 
 	public function hasFieldValueChanged($field_name)
 	{
-		return isset($this->_values['new'][$field_name]);
+		return isset($this->_values['new'][$field_name]) || !isset($this->_values['old'][$field_name]);
 	}
 
 	/**
