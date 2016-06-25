@@ -577,6 +577,11 @@ abstract class Models implements ObjectInterface
 				continue;
 			}
 
+			if(!$this->hasFieldValueChanged($field_name))
+			{
+				continue;
+			}
+
 			if(!$field->validate($this, $field_name))
 			{
 				$errors = TRUE;

@@ -139,7 +139,7 @@ class AjaxfieldComponent extends VariableComponent
 		{
 			$new_value = $object->$last;
 			$results['success'] = 'Success!';
-			$results['value'] = empty($new_value) ? '' : $new_value;
+			$results['value'] = $new_value;
 			if($object->hasField($model))
 			{
 				$results['content'] = (string)$object->$model;

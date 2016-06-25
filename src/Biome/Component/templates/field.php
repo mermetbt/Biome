@@ -45,6 +45,21 @@ if($viewable)
 			case 'textarea':
 				?><textarea id="<?php echo $id; ?>" class="<?php echo $classes; ?>" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"><?php echo $value; ?></textarea><?php
 				break;
+			case 'enum':
+				?><select id="<?php echo $id; ?>" class="<?php echo $classes; ?>" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"><?php
+
+					if(!$this->getField()->isRequired())
+					{
+						echo '<option value=""></option>';
+					}
+
+					foreach($this->getField()->getEnumeration() AS $key => $value)
+					{
+						echo '<option value="', $key, '">', $value, '</option>';
+					}
+
+				?></select><?php
+				break;
 			case 'selector':
 			case 'many2one':
 				?><select id="<?php echo $id; ?>" class="<?php echo $classes; ?>" name="<?php echo $name; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"><?php

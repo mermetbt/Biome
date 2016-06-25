@@ -28,17 +28,30 @@ class BooleanField extends AbstractField
 			}
 		}
 
+		if($value === NULL)
+		{
+		//	return $value;
+		}
+
 		$value = ($value == TRUE) ? 1 : 0;
+		return $value;
+	}
+
+	public function applyGet($value)
+	{
+		$value = parent::applyGet($value);
+
+		if($value === NULL)
+		{
+			return NULL;
+		}
+
+		$value = ($value == TRUE) ? TRUE : FALSE;
 		return $value;
 	}
 
 	public function validate($object, $field_name)
 	{
-		if(!$object->hasFieldValueChanged($field_name))
-		{
-			return TRUE;
-		}
-
 		$value = $object->$field_name;
 		if($this->isRequired() && ($value === NULL || $value === ''))
 		{

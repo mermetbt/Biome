@@ -35,6 +35,17 @@
 			identifier = $this.data 'id'
 			if identifier
 				inputText.append('<option value="'+identifier+'" selected="selected">'+content+'</option>');
+		else if type == 'boolean' or type == 'enum'
+			inputText = $('<select class="form-control ajaxfield-input"></select>');
+			opts = window[$this.data 'options']
+			val = $this.data 'value'
+			val = ''+val
+			if opts
+				for k, opt of opts
+					if k == val
+						inputText.append('<option value="'+k+'" selected="selected">'+opt+'</option>');
+					else
+						inputText.append('<option value="'+k+'">'+opt+'</option>');
 		else
 			inputText = $('<input type="'+type+'" class="form-control ajaxfield-input" value="' + content + '">');
 			inputText.keypress((event) ->
@@ -72,9 +83,9 @@
 				if content.loading
 					return content.name
 
-				markup = "<div class='select2-result-field clearfix'>" +
-						"<div class='select2-result-field_content'>"+content.name+"</div>" +
-						"</div>";
+				markup = '<div class="select2-result-field clearfix">' +
+						'<div class="select2-result-field_content">'+content.name+'</div>' +
+						'</div>';
 
 				return markup
 
@@ -82,7 +93,7 @@
 				return content.name || content.text;
 
 			inputText.select2({
-				placeholder: "",
+				placeholder: '',
 				allowClear: true,
 				ajax: {
 					    url: $this.data 'url',
@@ -161,7 +172,19 @@
 					txt = data.content
 					$this.data('id', data.value)
 				else
-					txt = data.value
+					if (type == 'enum' or type == 'boolean')
+						if data.value == false
+							v = '0'
+						else
+							if data.value == true
+								v = '1'
+							else
+								v = data.value
+						opts = window[$this.data 'options']
+						txt = opts[v]
+						$this.data('value', v)
+					else
+						txt = data.value
 
 				txt = txt.replace(regex, '\n<br>');
 				content.html(txt);

@@ -45,6 +45,36 @@ if($type == 'many2one')
 	?> data-id="<?php echo $data_id; ?>"<?php
 }
 
+if($type == 'boolean' || $type == 'enum')
+{
+	$array_id = 'options_' . uniqid();
+	?> data-options="<?php echo $array_id; ?>" data-value="<?php echo $value; ?>"<?php
+
+	if($type == 'boolean')
+	{
+		$options = array('1' => 'Yes', '0' => 'No');
+	}
+	else
+	{
+		$options = $this->getField()->getEnumeration();
+	}
+
+	if(isset($options[$value]))
+	{
+		$value = $options[$value];
+	}
+	else
+	{
+		$value = '';
+	}
+
+$this->view->javascript(function() use($array_id, $options) {
+?>
+var <?php echo $array_id; ?> = <?php echo json_encode($options); ?>;
+<?php
+});
+}
+
 ?> class="ajaxfield col-sm-9 form-group"><?php
 
 $viewable = $field === NULL || $this->rights->isAttributeView($field);
