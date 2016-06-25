@@ -36,6 +36,11 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 		return $this->foreign_key;
 	}
 
+	public function validate($object, $field_name)
+	{
+		return TRUE;
+	}
+
 	/**
 	 * Return true if this is the corresponding field for the Many2One object.
 	 */

@@ -9,6 +9,10 @@ Biome\Biome::registerAlias(array(
 	'URL'		=> 'Biome\Core\URL',
 ));
 
+Biome\Biome::registerService('logger', function() {
+	return new \Biome\Core\Logger\Handler\FileLogger(__DIR__ . '/../biome-tests.log');
+});
+
 Biome\Biome::registerService('mysql', function() {
 	$DB = Biome\Core\ORM\Connector\MySQLConnector::getInstance();
 	$DB->setConnectionParameters(array(
