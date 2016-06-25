@@ -123,6 +123,15 @@ class QueryBuilder implements OperandHandlerInterface
 			return $values;
 		}
 
+		if(is_array($value))
+		{
+			foreach($value AS $i => $v)
+			{
+				$value[$i] = $this->db()->real_escape_string($v);
+			}
+			return $value;
+		}
+
 		return $this->db()->real_escape_string($value);
 	}
 
