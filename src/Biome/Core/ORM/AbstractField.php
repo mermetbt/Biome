@@ -91,6 +91,11 @@ abstract class AbstractField
 
 	public function validate($object, $field_name)
 	{
+		if(!$object->hasFieldValueChanged($field_name))
+		{
+			return TRUE;
+		}
+
 		$value = $object->$field_name;
 
 		if(!$this->isRequired() && empty($value))

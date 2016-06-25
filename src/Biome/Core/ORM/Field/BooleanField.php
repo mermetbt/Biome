@@ -10,20 +10,48 @@ class BooleanField extends AbstractField
 	{
 	}
 
-	public function validate($object, $field_name)
+	public function applySet($value)
 	{
-		if(!parent::validate($object, $field_name))
+		$value = parent::applySet($value);
+
+		if(is_string($value))
 		{
-			return FALSE;
+			$value = strtolower($value);
+			if($value == 'true')
+			{
+				$value = TRUE;
+			}
+			else
+			if($value == 'false')
+			{
+				$value = FALSE;
+			}
 		}
 
-		$value = $object->$field_name;
-		if($value === NULL || $valu === '')
+		$value = ($value == TRUE) ? 1 : 0;
+		return $value;
+	}
+
+	public function validate($object, $field_name)
+	{
+		if(!$object->hasFieldValueChanged($field_name))
 		{
 			return TRUE;
 		}
 
-		if($value !== FALSE && $value !== TRUE && $value !== 0 && $value !== 1)
+		$value = $object->$field_name;
+		if($this->isRequired() && ($value === NULL || $value === ''))
+		{
+			$this->setError('required', 'Field "' . $this->getLabel() . '" is required!');
+			return FALSE;
+		}
+
+		if($value === NULL || $value === '')
+		{
+			return TRUE;
+		}
+
+		if($value !== FALSE && $value !== TRUE && $value !== 0 && $value !== 1 && $value !== '0' && $value !== '1')
 		{
 			$this->setError('wrong_value', 'Field "' . $this->getLabel() . '" (' . $field_name . ') is not a valid boolean (true, false, 0, 1)!');
 			return FALSE;

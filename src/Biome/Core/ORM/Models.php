@@ -318,6 +318,11 @@ abstract class Models implements ObjectInterface
 		return isset($this->_values['new']);
 	}
 
+	public function hasFieldValueChanged($field_name)
+	{
+		return isset($this->_values['new'][$field_name]);
+	}
+
 	/**
 	 * Retrieve the object in the database.
 	 */
