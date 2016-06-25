@@ -2,6 +2,8 @@
 
 namespace Biome\Core;
 
+use \Biome\Core\Logger\Logger;
+
 class Autoload
 {
 	public static function register()
@@ -15,6 +17,7 @@ class Autoload
 		self::classloader($class_name, 'commands');
 		self::classloader($class_name, 'controllers');
 		self::classloader($class_name, 'collections');
+		self::classloader($class_name, 'components');
 	}
 
 	private static function classloader($class_name, $type)
@@ -51,6 +54,7 @@ class Autoload
 
 		if(file_exists($filename))
 		{
+			Logger::debug('Load class in ' . $filename);
 			include_once($filename);
 			return TRUE;
 		}

@@ -8,6 +8,8 @@ use Biome\Core\ORM\Field\Many2ManyField;
 use Biome\Core\ORM\Field\One2ManyField;
 use Biome\Core\ORM\Inspector\ModelInspectorInterface;
 
+use Biome\Core\Logger\Logger;
+
 abstract class Models implements ObjectInterface
 {
 	protected $_structure;
@@ -366,6 +368,7 @@ abstract class Models implements ObjectInterface
 	{
 		if($this->getId() != NULL)
 		{
+			Logger::warning('Trying to fetch an object already fetched!');
 			return $this;
 		}
 
@@ -409,6 +412,7 @@ abstract class Models implements ObjectInterface
 
 		if($count == 0)
 		{
+			Logger::notice('Object not fetched in the database!');
 			return NULL;
 		}
 
@@ -496,7 +500,7 @@ abstract class Models implements ObjectInterface
 				{
 					if(!$value->save())
 					{
-						throw new \Exception('Unable to save the object for the field ' . $field_name . '!');
+						throw new \Exception('Unable to save the object for the field ' . $field_name . '! ' . join(', ', $value->getErrors()));
 					}
 				}
 
@@ -615,7 +619,7 @@ abstract class Models implements ObjectInterface
 
 			$value = $this->getRawValue($field_name);
 
-			if(empty($value) && empty($field->getDefaultValue()))
+			if(empty($value) && $field->getDefaultValue() === NULL)
 			{
 				$field->setError('required', 'Field "' . $field->getLabel() . '" is required!');
 				$errors = TRUE;

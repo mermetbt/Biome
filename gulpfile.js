@@ -40,12 +40,29 @@ var sources = {
 		'vendor/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js',
 		'vendor/bower_components/datatables-plugins/pagination/input.js',
 		'vendor/bower_components/autosize/dist/autosize.min.js',
-		'vendor/bower_components/select2-ng/dist/js/select2.full.min.js'
+		'vendor/bower_components/select2-ng/dist/js/select2.full.min.js',
+		'vendor/bower_components/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js'
 	],
 	vendor_fonts: [
 		'vendor/bower_components/bootstrap/dist/fonts/*',
 		'vendor/bower_components/font-awesome/fonts/*'
 	]
+}
+
+if(app_dependencies)
+{
+	console.log('Add application dependencies!');
+	if(app_dependencies.vendor_js)
+	{
+		console.log('vendor_js');
+		sources.vendor_js = sources.vendor_js.concat(app_dependencies.vendor_js);
+	}
+
+	if(app_dependencies.vendor_css)
+	{
+		console.log('vendor_css');
+		sources.vendor_css = sources.vendor_css.concat(app_dependencies.vendor_css);
+	}
 }
 
 gulp.task('check', function () {

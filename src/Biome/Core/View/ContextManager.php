@@ -176,6 +176,9 @@ trait ContextManager
 			// Return an object or an array
 			else
 			{
+				/**
+				 * TODO: In case of array or object, generating an evaluation to return the result of the line.
+				 */
 				return $result;
 			}
 		}
@@ -212,6 +215,7 @@ trait ContextManager
 
 			if(empty($raw))
 			{
+				return NULL;
 				throw new \Exception('Field must be defined by at least object.attribute!');
 			}
 

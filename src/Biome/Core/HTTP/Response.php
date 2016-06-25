@@ -3,6 +3,7 @@
 namespace Biome\Core\HTTP;
 
 use \Symfony\Component\HttpFoundation\RedirectResponse;
+use Biome\Core\Logger\Logger;
 
 class Response extends \Symfony\Component\HttpFoundation\Response
 {
@@ -22,6 +23,8 @@ class Response extends \Symfony\Component\HttpFoundation\Response
 		{
 			$url = \URL::fromRoute($controller, $action, $item, $module);
 		}
+
+		Logger::info('Redirect to ' . $url);
 
 		$this->headers->set('Location', $url);
 		$this->setStatusCode(302);

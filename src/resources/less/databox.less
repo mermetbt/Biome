@@ -1,0 +1,155 @@
+.databox {
+	background-color: #f9f9f9;
+
+	display: inline-block;
+	font-size: 0;
+	height: 65px;
+	margin-bottom: 30px;
+	min-width: 130px;
+	padding: 0;
+	vertical-align: top;
+	width: 100%;
+
+	background-clip: padding-box;
+	border-radius: 3px;
+}
+
+.databox .databox-icon {
+	display: inline-block;
+	margin: 0;
+	text-align: center;
+	width: 100%;
+}
+
+.databox .databox-sparkline {
+	display: inline-block;
+	font-size: 24px;
+	margin: 0 auto;
+	padding-top: 0;
+	text-align: center;
+	vertical-align: bottom;
+	width: 100%;
+}
+
+.databox .databox-piechart {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 300;
+	margin: 0 auto;
+	padding-top: 0;
+	text-align: center;
+	vertical-align: bottom;
+	width: 100%;
+}
+
+.databox-piechart span {
+	color: #fff;
+	font-size: 90%;
+}
+
+.databox .databox-piechart > div {
+	position: relative;
+	text-align: center;
+}
+
+.databox .databox-piechart canvas {
+	left: 0;
+	position: absolute;
+	top: 0;
+}
+
+.databox .databox-stat {
+	display: inline-block;
+	padding: 2px 5px;
+	position: absolute;
+	right: 7px;
+	top: 7px;
+}
+.databox .databox-stat.stat-left {
+	left: 7px;
+	right: auto;
+}
+
+.databox .databox-stat .stat-text {
+	display: inline-block;
+	font-size: 13px;
+	font-weight: 500;
+	padding-right: 5px;
+}
+
+.databox .databox-number {
+	display: block;
+	font-family: "Roboto","Lucida Sans","trebuchet MS",Arial,Helvetica;
+	font-size: 17px;
+	line-height: 26px;
+	margin: 2px;
+	position: relative;
+}
+
+.databox .databox-number i {
+	margin-right: 5px;
+}
+
+.databox .databox-text {
+	display: block;
+	font-size: 10px;
+	margin: 2px 0 2px;
+	position: relative;
+}
+
+.databox .databox-text i {
+	font-size: 13px;
+	margin-right: 5px;
+}
+
+.databox .databox-stat i {
+	display: inline-block;
+	font-size: 13px;
+}
+
+.databox .databox-left {
+	color: #2dc3e8;
+	display: inline-block;
+	height: 65px;
+	margin: 0;
+	padding: 10px;
+	position: relative;
+	text-align: center;
+	vertical-align: top;
+	width: 65px;
+	background-clip: padding-box;
+	border-radius: 3px 0 0 3px;
+}
+
+.databox .databox-right {
+	color: #555;
+	display: inline-block;
+	height: 65px;
+	margin: 0;
+	padding: 5px 10px;
+	position: relative;
+	vertical-align: top;
+	width: calc(~"100% - 65px");
+	background-clip: padding-box;
+	border-radius: 0 3px 3px 0;
+}
+
+.databox-left.databox-primary {
+	background-color: @brand-primary;
+}
+
+.databox-left.databox-success {
+	background-color: @brand-success;
+}
+
+.databox-left.databox-warning {
+	background-color: @brand-warning;
+}
+
+.databox-left.databox-danger {
+	background-color: @brand-danger;
+}
+
+.databox-left.databox-info {
+	background-color: @brand-info;
+}

@@ -57,7 +57,7 @@ abstract class AbstractCommand
 				$method_description = empty($description[1][0]) ? '' : $description[1][0];
 
 				/* Params. */
-				preg_match_all('#@param (([a-zA-Z0-9]+?) (.*?))\n#s', $comment, $params_annotations);
+				preg_match_all('#@param (([a-zA-Z0-9_]+?) (.*?))\n#s', $comment, $params_annotations);
 				foreach($params_annotations[0] AS $key => $p)
 				{
 					$param_txt = $params_annotations[1][$key];

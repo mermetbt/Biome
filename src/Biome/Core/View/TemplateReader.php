@@ -3,6 +3,7 @@
 namespace Biome\Core\View;
 
 use Sabre\Xml\Reader;
+use Biome\Core\Logger\Logger;
 
 class TemplateReader extends Reader
 {
@@ -14,8 +15,8 @@ class TemplateReader extends Reader
 		/**
 		 * Loading components
 		 */
-		$components = scandir(__DIR__ . '/../../Component/');
 		$components_list = array();
+		$components = scandir(__DIR__ . '/../../Component/');
 		foreach($components AS $file)
 		{
 			if($file[0] == '.')
@@ -30,6 +31,33 @@ class TemplateReader extends Reader
 
 			$componentName = substr($file, 0, -strlen('Component.php'));
 			$components_list['{http://github.com/mermetbt/Biome/}' . strtolower($componentName)] = 'Biome\\Component\\'.$componentName.'Component';
+		}
+
+		$components_dirs = \Biome\Biome::getDirs('components');
+		$components_dirs = array_reverse($components_dirs);
+		foreach($components_dirs AS $dir)
+		{
+			if(!file_exists($dir))
+			{
+				continue;
+			}
+
+			$components = scandir($dir);
+			foreach($components AS $file)
+			{
+				if($file[0] == '.')
+				{
+					continue;
+				}
+
+				if(substr($file, -4) != '.php')
+				{
+					continue;
+				}
+
+				$componentName = substr($file, 0, -strlen('Component.php'));
+				$components_list['{http://github.com/mermetbt/Biome/}' . strtolower($componentName)] = $componentName.'Component';
+			}
 		}
 
 		$reader->elementMap = $components_list;

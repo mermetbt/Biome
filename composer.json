@@ -6,10 +6,10 @@
 		"php": ">=5.5.0",
 		"psr/log": "^1.0@dev",
 		"koala-framework/composer-extra-assets": "^1.1@dev",
-		"league/route": "^1.0@dev",
-		"filp/whoops": "1.1.7",
-		"sabre/xml": "1.2.0",
-		"symfony/console": "2.7.6"
+		"league/route": "1.2.3",
+		"filp/whoops": "2.1.2",
+		"sabre/xml": "1.4.1",
+		"symfony/console": "3.0.6"
 	},
 	"license": "GPL-2.0",
 	"authors": [
@@ -23,7 +23,7 @@
 		"psr-0": {
 			"Biome": "src/"
 		},
-		"classmap": ["src/app/controllers/", "src/app/collections/", "src/app/models/", "src/app/commands/"]
+		"classmap": []
 	},
 	"extra": {
 		"require-bower": {
@@ -34,7 +34,8 @@
 			"datatables-plugins": "*",
 			"datatables-responsive-helper": "*",
 			"select2-ng": "*",
-			"autosize": "*"
+			"autosize": "*",
+			"jquery.easy-pie-chart": "*"
 		},
 		"require-npm": {
 			"gulp": "*",

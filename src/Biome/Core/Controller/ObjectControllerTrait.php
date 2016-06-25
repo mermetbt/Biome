@@ -60,6 +60,9 @@ trait ObjectControllerTrait
 		return $this->response()->redirect();
 	}
 
+	/**
+	 * POST request for editing an object.
+	 */
 	public function postEdit(Collection $collection)
 	{
 		$object_name = strtolower($this->objectName());

@@ -12,6 +12,11 @@ class LoopComponent extends Component
 		return $this->getAttribute('var');
 	}
 
+	public function getKeyName()
+	{
+		return $this->getAttribute('keyname', 'keyname');
+	}
+
 	public function getValue()
 	{
 		$value_var = $this->getAttribute('value', NULL);

@@ -68,8 +68,7 @@ class Route extends RouteCollection
 					{
 						continue;
 					}
-					$class_name = $controller_name . 'Controller';
-					$this->classname_routes[$controller_name] = $this->getRoutesFromClassName($class_name);
+					$this->classname_routes[$controller_name] = $this->getRoutesFromControllerName($controller_name);
 				}
 			}
 
@@ -89,29 +88,6 @@ class Route extends RouteCollection
 			{
 				foreach($action AS $name => $meta)
 				{
-					$route_path = '/';
-					if(!($controller_name == 'index' && $name == 'index'))
-					{
-						// Controller part
-						$route_path .= $controller_name . '/';
-
-						// Object id part
-						if(!empty($meta['url_parameters']))
-						{
-							$p = array_shift($meta['url_parameters']);
-							$route_path .= '{' . $p . '}/';
-						}
-
-						// Action part
-						$route_path .= strtolower($name);
-
-						// Page and others part
-						foreach($meta['url_parameters'] AS $p)
-						{
-							$route_path .= '/{' . $p . '}';
-						}
-					}
-
 					$method = function(Request $request, Response $response, array $args) use($type, $controller_name, $name, $meta) {
 						/* Initialize the controller. */
 						$ctrl = new $meta['controller']($request, $response);
@@ -138,28 +114,30 @@ class Route extends RouteCollection
 						return $ctrl->process($type, $controller_name, $name, $meta['action'], $method_params);
 					};
 
+					$route_path = $meta['path'];
 					$this->addRoute($type, $route_path, $method);
-					$this->routes_list[] = $type . ' ' . $route_path;
+					$this->routes_list[] = array('method' => $type, 'path' => $route_path);
 					if($name == 'index')
 					{
 						$route_path = '/' . $controller_name;
 						$this->addRoute($type, $route_path, $method);
-						$this->routes_list[] = $type . ' ' . $route_path;
+						$this->routes_list[] = array('method' => $type, 'path' => $route_path);
 					}
 
 					if($controller_name == 'index' && $name == 'index')
 					{
 						$route_path = '/' . $controller_name . '/' . $name;
 						$this->addRoute($type, $route_path, $method);
-						$this->routes_list[] = $type . ' ' . $route_path;
+						$this->routes_list[] = array('method' => $type, 'path' => $route_path);
 					}
 				}
 			}
 		}
 	}
 
-	protected function getRoutesFromClassName($classname)
+	protected function getRoutesFromControllerName($controller_name)
 	{
+		$classname = $controller_name . 'Controller';
 		$reflection = new \ReflectionClass($classname);
 
 		$methods = $reflection->getMethods();
@@ -168,9 +146,26 @@ class Route extends RouteCollection
 		foreach($methods AS $method)
 		{
 			/**
+			 * Skip wrong method
+			 */
+			if($method->isStatic())
+			{
+				continue;
+			}
+
+			if($method->isConstructor())
+			{
+				continue;
+			}
+
+			if(!$method->isPublic())
+			{
+				continue;
+			}
+
+			/**
 			 * Type of HTTP Method.
 			 */
-
 			$m_upper = strtoupper($method->getName());
 
 			// GET
@@ -233,13 +228,50 @@ class Route extends RouteCollection
 			}
 
 			/**
+			 * Retrieve annotations
+			 */
+			$annotations = $this->parseAnnotations($method->getDocComment());
+
+			/**
+			 * Generate route path
+			 */
+			$route_array = array();
+			if(!($controller_name == 'index' && $method_name == 'index'))
+			{
+				// Controller part
+				$route_array[] = $controller_name;
+
+				// Object id part
+				if(!empty($url_param_list))
+				{
+					$p = array_shift($url_param_list);
+					$route_array[] = '{' . $p . '}';
+				}
+
+				// Action part
+				if(strlen($method_name) > 0)
+				{
+					$route_array[] = strtolower($method_name);
+				}
+
+				// Page and others part
+				foreach($url_param_list AS $p)
+				{
+					$route_array[] = '{' . $p . '}';
+				}
+			}
+			$route_path = '/' . join('/', $route_array);
+
+			/**
 			 * Save in routes
 			 */
 			$routes[$method_type][$method_name] = array(
+												'path' => $route_path,
 												'controller' => $method->getDeclaringClass()->getName(),
 												'action' => $method->getName(),
 												'url_parameters' => $url_param_list,
-												'parameters' => $param_list
+												'parameters' => $param_list,
+												'annotations' => $annotations
 			);
 		}
 
@@ -337,6 +369,71 @@ class Route extends RouteCollection
 		return $value;
 	}
 
+	protected function parseAnnotations($annotations)
+	{
+		if(empty($annotations))
+		{
+			return array();
+		}
+
+		/**
+		 * Retrieve the description
+		 */
+		$description = array();
+		preg_match_all('#@description (.*?)\n#s', $annotations, $description);
+		$method_description = empty($description[1][0]) ? '' : $description[1][0];
+
+		/**
+		 * Params.
+		 */
+		$params_annotations = array();
+		preg_match_all('#@param (([a-zA-Z0-9_]+?) (.*?))\n#s', $annotations, $params_annotations);
+		$param_description_list = array();
+		foreach($params_annotations[0] AS $key => $p)
+		{
+			$param_txt = $params_annotations[1][$key];
+			$param_name = $params_annotations[2][$key];
+			$param_description = $params_annotations[3][$key];
+			$param_description_list[$param_name] = $param_description;
+		}
+
+		/**
+		 * Request body
+		 */
+		$body = array();
+		preg_match_all('#@body\((.*)\)\n#', $annotations, $body);
+		$requestBody = empty($body[1][0]) ? '' : $body[1][0];
+
+		/**
+		 * Output
+		 */
+		$jsonOutput = array();
+		preg_match_all('#@jsonOutput\((.*)\)\n#', $annotations, $jsonOutput);
+		$jsonOut = empty($jsonOutput[1][0]) ? '' : $jsonOutput[1][0];
+
+		/**
+		 * HTTP Code
+		 */
+		$http_code_list = array();
+		preg_match_all('#@httpCode\((.*)\)\n#', $annotations, $http_code_list);
+
+		$httpCodeList = array();
+		if(!empty($http_code_list[1]))
+		{
+			foreach($http_code_list[1] AS $httpCode)
+			{
+				$array = (array)json_decode('[' . $httpCode . ']', TRUE);
+				$httpCodeList[] = array('code' => $array[0], 'details' => $array[1]);
+			}
+		}
+
+		return array(	'description' => $method_description,
+						'params' => $param_description_list,
+						'request' => $requestBody,
+						'response' => $jsonOut,
+						'http' => $httpCodeList);
+	}
+
 	public function getRoutes()
 	{
 		$data = $this->classname_routes;
@@ -348,7 +445,7 @@ class Route extends RouteCollection
 			{
 				foreach($actions AS $method_name => $action)
 				{
-					$routes_list[] = array('function' => $action['action'], 'action' => $method_name, 'controller' => strtolower($controller_name), 'method' => $method_type);
+					$routes_list[] = array('path' => $action['path'], 'function' => $action['action'], 'action' => $method_name, 'controller' => strtolower($controller_name), 'method' => $method_type, 'annotations' => $action['annotations']);
 				}
 			}
 		}

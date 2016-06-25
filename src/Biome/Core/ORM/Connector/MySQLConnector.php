@@ -3,6 +3,7 @@
 namespace Biome\Core\ORM\Connector;
 
 use Biome\Core\Logger\Logger;
+use Biome\Core\ORM\Exception\DuplicateException;
 
 class MySQLConnector
 {
@@ -119,7 +120,8 @@ class MySQLConnector
 		if(!is_string($string) && !is_numeric($string))
 		{
 			$data = var_export($string, true);
-			throw new \Exception('Real escape string expects a string !' . PHP_EOL . 'Content : ' . PHP_EOL . $data);
+			Logger::error('Real escape string expects a string! Content: ' . $data);
+			throw new \Exception('Real escape string expects a string!' . PHP_EOL . 'Content : ' . PHP_EOL . $data);
 		}
 		return $this->_instance->real_escape_string($string);
 	}
@@ -197,7 +199,15 @@ class MySQLConnector
 	{
 		if(!empty($this->_instance->error))
 		{
-			throw new \Exception('SQL Error: ' . $this->_instance->error . ' Last Query:(' . $this->_last_query . ')');
+			Logger::error('SQL Error (' . $this->_instance->errno . '): ' . $this->_instance->error);
+
+			switch($this->_instance->errno)
+			{
+				case 1062:
+					throw new DuplicateException($this->_instance->error);
+				default:
+					throw new \Exception('SQL Error: ' . $this->_instance->error . ' Last Query:(' . $this->_last_query . ')');
+			}
 		}
 
 		if($this->_instance->warning_count != 0)
@@ -211,6 +221,7 @@ class MySQLConnector
 				}
 				$result->close();
 			}
+			Logger::error('SQL Warning: ' . $message);
 			throw new \Exception('SQL Warning: ' . $message . ' Last Query:(' . $this->_last_query . ')');
 		}
 		return TRUE;
