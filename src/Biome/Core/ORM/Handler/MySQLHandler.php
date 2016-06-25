@@ -36,6 +36,7 @@ class MySQLHandler
 			{
 				throw new \Exception('No ID for object : ' . print_r($row, true));
 			}
+
 			if(is_array($id))
 			{
 				$id = join(',', $id);

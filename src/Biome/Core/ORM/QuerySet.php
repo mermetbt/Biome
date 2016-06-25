@@ -163,6 +163,16 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		/* Join */
 		$table			= $field->object()->parameters()['table'];
 		$foreign_key	= $field->getForeignKey();
+
+		if($field->isId() && count($path) == 1)
+		{
+			$name = array_shift($path);
+			$this->db()->where($name, $operator, $value);
+			return TRUE;
+		}
+
+		$alias			= $this->db()->generateAlias($table);
+		$table			= $alias;
 		$this->db()->join($table, $foreign_key, '=', $join_field);
 
 		$name = array_shift($path);

@@ -19,6 +19,9 @@ class QueryBuilder implements OperandHandlerInterface
 	protected $offset = NULL;
 	protected $limit = NULL;
 
+	protected $join_index = 1;
+	protected $joinMapping = array();
+
 	public function __construct($database, $table_name)
 	{
 		$this->database = $database;
@@ -41,6 +44,13 @@ class QueryBuilder implements OperandHandlerInterface
 	{
 		$this->from = $table;
 		return $this;
+	}
+
+	public function generateAlias($table)
+	{
+		$alias = 'j' . $this->join_index++;
+		$this->joinMapping[$alias] = $table;
+		return $alias;
 	}
 
 	public function join($table, $one, $operator, $two)
@@ -217,7 +227,14 @@ class QueryBuilder implements OperandHandlerInterface
 					$two = $this->from . '.' . $two;
 				}
 
-				$sql .= ' LEFT JOIN ' . $table . ' ON ' . $table . '.' . $one . $operator . $two;
+				$alias = $table;
+				if(!empty($this->joinMapping[$table]))
+				{
+					$alias = $table;
+					$table = $this->joinMapping[$table];
+				}
+
+				$sql .= ' LEFT JOIN ' . $table . ' AS ' . $alias . ' ON ' . $alias . '.' . $one . $operator . $two;
 			}
 		}
 
