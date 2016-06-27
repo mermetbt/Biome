@@ -61,7 +61,7 @@ class EnvConfig implements ConfigInterface
 	{
 		$func = $this->getenv_func;
 		$value = $func($attribute);
-		if(empty($value))
+		if($value === FALSE)
 		{
 			return $default_value;
 		}
