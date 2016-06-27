@@ -254,7 +254,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 
 			$subset = explode('.', $filter[0]);
 			$operator = isset($filter[1]) ? $filter[1] : '=';
-			$value = isset($filter[2]) ? $filter[2] : '';
+			$value = isset($filter[2]) ? $filter[2] : NULL;
 
 			/**
 			 * Field is a part of another object.

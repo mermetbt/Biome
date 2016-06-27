@@ -142,6 +142,11 @@ class QueryBuilder implements OperandHandlerInterface
 			return $value;
 		}
 
+		if($value === NULL)
+		{
+			return $value;
+		}
+
 		return $this->db()->real_escape_string($value);
 	}
 
@@ -177,6 +182,11 @@ class QueryBuilder implements OperandHandlerInterface
 			{
 				$where_sql .= '(' . join(', ', $value) . ')';
 			}
+		}
+		else
+		if($value === NULL)
+		{
+			$where_sql .= 'NULL';
 		}
 		else
 		{
