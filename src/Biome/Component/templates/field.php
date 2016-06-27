@@ -14,6 +14,7 @@ $type = $this->getType();
 $classes = $this->getClasses();
 $name = $this->getName();
 $value = $this->getValue();
+$editable_attr = $this->getEditable();
 $placeholder = $this->getPlaceholder();
 $label = $this->getLabel();
 $show_error_messages = $this->showErrors() && $field !== NULL;
@@ -28,15 +29,21 @@ $viewable = $field === NULL || $this->rights->isAttributeView($field);
 if($viewable)
 {
 	$parent_form = $this->getParent('form');
-	$editable = $field === NULL || ($field->isEditable() && $this->rights->isAttributeEdit($field));
+	$editable = $field === NULL || ($field->isEditable() && $this->rights->isAttributeEdit($field) && $editable_attr);
 	if(!$editable || $parent_form === NULL)
 	{
+		$content = $value;
 		if($type == 'textarea')
 		{
-			$value = nl2br($value);
+			$content = nl2br($value);
+		}
+		else
+		if($value instanceof \Biome\Core\ORM\Models)
+		{
+			$value = $value->getId();
 		}
 
-		?><p class="form-control-static"><?php echo $value; ?></p><?php
+		?><p class="form-control-static"><input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>"/><?php echo $content; ?></p><?php
 	}
 	else
 	{
@@ -114,4 +121,4 @@ if($show_error_messages)
 		?><span id="<?php echo $id; ?>_help" class="help-block"><?php echo join('<br/>', $errors); ?></span><?php
 	}
 }
-?></div>  <?php
+?></div> <?php

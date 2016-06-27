@@ -34,4 +34,30 @@ class FieldComponent extends VariableComponent
 	{
 		return $this->getAttribute('error', '1') == '1';
 	}
+
+	public function getValue()
+	{
+		$value = parent::getValue();
+		if(empty($value))
+		{
+			$default = $this->getAttribute('default', '');
+			$value = $this->fetchValue($default);
+		}
+		return $value;
+	}
+
+	public function getEditable()
+	{
+		$editable = $this->getAttribute('editable', TRUE);
+		if(is_string($editable))
+		{
+			$editable = $this->fetchValue($editable);
+		}
+
+		if(strtolower($editable) === 'true' || $editable === '1' || $editable === TRUE)
+		{
+			return TRUE;
+		}
+		return FALSE;
+	}
 }
