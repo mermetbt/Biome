@@ -7,17 +7,29 @@ if($field !== NULL && $field->hasErrors())
 	$class .= ' has-error';
 }
 
-?><div class="<?php echo $class; ?>"><?php
-
 $id = $this->getId();
 $type = $this->getType();
 $classes = $this->getClasses();
 $name = $this->getName();
 $value = $this->getValue();
 $editable_attr = $this->getEditable();
+$hidden = $this->getHidden();
 $placeholder = $this->getPlaceholder();
 $label = $this->getLabel();
 $show_error_messages = $this->showErrors() && $field !== NULL;
+
+if($hidden)
+{
+	if($value instanceof \Biome\Core\ORM\Models)
+	{
+		$value = $value->getId();
+	}
+
+	echo '<input type="hidden" name="', $name, '" value="', $value, '"/>';
+	return;
+}
+
+?><div class="<?php echo $class; ?>"><?php
 
 if(!empty($label))
 {
@@ -30,6 +42,7 @@ if($viewable)
 {
 	$parent_form = $this->getParent('form');
 	$editable = $field === NULL || ($field->isEditable() && $this->rights->isAttributeEdit($field) && $editable_attr);
+
 	if(!$editable || $parent_form === NULL)
 	{
 		$content = $value;
@@ -43,7 +56,8 @@ if($viewable)
 			$value = $value->getId();
 		}
 
-		?><p class="form-control-static"><input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>"/><?php echo $content; ?></p><?php
+		echo '<input type="hidden" name="', $name, '" value="', $value, '/>';
+		?><p class="form-control-static"><?php echo $content; ?></p><?php
 	}
 	else
 	{

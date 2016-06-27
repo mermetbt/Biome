@@ -60,4 +60,9 @@ class FieldComponent extends VariableComponent
 		}
 		return FALSE;
 	}
+
+	public function getHidden()
+	{
+		return $this->getAttribute('hidden', '0') == '1';
+	}
 }
