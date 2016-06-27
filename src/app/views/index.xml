@@ -15,7 +15,7 @@
 							<biome:field value="#{user.lastname}"/>
 							<biome:field value="#{user.mail}"/>
 							<biome:field value="#{user.password}"/>
-							<biome:button class="btn-success" value="@string/sign_up" action="#{auth.signup}"/>
+							<biome:button class="btn-success" value="@string/signup" action="#{auth.signup}"/>
 						</biome:form>
 					</div>
 				</div>
