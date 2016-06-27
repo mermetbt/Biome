@@ -2,7 +2,7 @@
 
 namespace Biome\Core\ORM\Converter;
 
-use Biome\Core\Utils\DateTime;
+use \DateTime;
 
 class DateTimeConverter implements ConverterInterface
 {
@@ -10,7 +10,7 @@ class DateTimeConverter implements ConverterInterface
 	{
 		if($value instanceof DateTime)
 		{
-			return $value;
+			return new \Biome\Core\Utils\DateTime($value);
 		}
 
 		if(!is_string($value))
@@ -18,7 +18,7 @@ class DateTimeConverter implements ConverterInterface
 			throw new \Exception('Wrong date value given! ' . print_r($value, TRUE));
 		}
 
-		return new DateTime($value);
+		return new \Biome\Core\Utils\DateTime($value);
 	}
 
 	public function set($value)
