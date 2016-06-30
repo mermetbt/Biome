@@ -86,7 +86,12 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 	{
 		$fields = is_array($fields) ? $fields : func_get_args();
 
-		$this->fields = array();
+		$pks = $this->object()->parameters()['primary_key'];
+		if(is_array($pks))
+			$this->fields = $pks;
+		else
+			$this->fields = array($pks);
+
 		foreach($fields AS $field_name)
 		{
 			if($this->object()->hasField($field_name))
