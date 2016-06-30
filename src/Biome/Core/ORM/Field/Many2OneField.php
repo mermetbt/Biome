@@ -16,13 +16,16 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 
 	public function __construct($object_name, $foreign_key = NULL)
 	{
-		$this->object		= ObjectLoader::get($object_name);
 		$this->object_name	= $object_name;
-		$this->foreign_key	= !empty($foreign_key) ? $foreign_key : $this->object->parameters()['primary_key'];
+		$this->foreign_key = $foreign_key;
 	}
 
 	public function object()
 	{
+		if($this->object == NULL)
+		{
+			$this->object		= ObjectLoader::get($this->object_name);
+		}
 		return $this->object;
 	}
 
@@ -33,6 +36,10 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 
 	public function getForeignKey()
 	{
+		if($this->foreign_key == NULL)
+		{
+			$this->foreign_key = $this->object()->parameters()['primary_key'];
+		}
 		return $this->foreign_key;
 	}
 
@@ -63,7 +70,7 @@ class Many2OneField extends AbstractField implements QuerySetFieldInterface
 		$m2o_object_name	= $this->object_name;
 		ObjectLoader::load($m2o_object_name);
 
-		return $m2o_object_name::all()->associate($this->foreign_key, $query_set, $field_name);
+		return $m2o_object_name::all()->associate($this->getForeignKey(), $query_set, $field_name);
 	}
 
 	public function getObject($primary_key_value)
