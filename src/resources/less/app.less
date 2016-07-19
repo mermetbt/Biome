@@ -1,7 +1,8 @@
+@sidenav-width: 225px;
+
 /* Base */
 body {
 	margin-top: 100px;
-
 }
 
 @media(min-width:768px) {
@@ -22,7 +23,7 @@ body {
 
 @media(min-width:768px) {
 	#wrapper {
-		padding-left: 225px;
+		padding-left: @sidenav-width;
 	}
 
 	#page-wrapper {
@@ -79,9 +80,9 @@ body {
 	.side-nav {
 		position: fixed;
 		top: (@navbar-height+2);
-		left: 225px;
-		width: 225px;
-		margin-left: -225px;
+		left: @sidenav-width;
+		width: @sidenav-width;
+		margin-left: -@sidenav-width;
 		border: none;
 		border-radius: 0;
 		overflow-y: auto;
@@ -93,11 +94,11 @@ body {
 	}
 
 	.side-nav>li>a {
-		width: 225px;
+		width: @sidenav-width;
 	}
 
 	.side-nav>li>ul>li>a {
-		width: 225px;
+		width: @sidenav-width;
 	}
 
 	.side-nav li a:hover,

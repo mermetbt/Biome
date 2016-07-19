@@ -36,7 +36,7 @@ if($hasSearchRow)
 			echo '<th></th>';
 			continue;
 		}
-		echo '<th><input style="width:100px;" type="text" name="', $column->getName(),'" class="form-control input-xs"/></th>';
+		echo '<th><input style="width:80px;" type="text" name="', $column->getName(),'" class="form-control input-xs"/></th>';
 	}
 	echo '</tr>';
 }
