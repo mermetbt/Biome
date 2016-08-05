@@ -177,9 +177,16 @@ class MySQLConnector
 			return FALSE;
 		}
 
-		$this->checkDbError();
+		try
+		{
+			$this->checkDbError();
 
-		$this->_instance->commit();
+			$this->_instance->commit();
+		}
+		catch(Exception $e)
+		{
+			return FALSE;
+		}
 
 		return TRUE;
 	}
