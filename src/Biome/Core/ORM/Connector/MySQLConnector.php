@@ -183,7 +183,7 @@ class MySQLConnector
 
 			$this->_instance->commit();
 		}
-		catch(Exception $e)
+		catch(\Exception $e)
 		{
 			return FALSE;
 		}
