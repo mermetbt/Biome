@@ -313,6 +313,28 @@ abstract class Models implements ObjectInterface
 		return TRUE;
 	}
 
+	private function updateId()
+	{
+		$pks = $this->parameters()['primary_key'];
+		if(is_array($pks))
+		{
+			foreach($pks AS $index => $pk)
+			{
+				if(!empty($this->_values['new'][$pk]))
+				{
+					$this->_values['old'][$pk] = $this->_values['new'][$pk];
+				}
+			}
+			return TRUE;
+		}
+
+		if(!empty($this->_values['new'][$pks]))
+		{
+			$this->_values['old'][$pks] = $this->_values['new'][$pks];
+		}
+		return TRUE;
+	}
+
 	public function hasChanges()
 	{
 		return isset($this->_values['new']);
@@ -525,6 +547,8 @@ abstract class Models implements ObjectInterface
 		if($this->hasChanges())
 		{
 			$this->_query_set->update($id, $data);
+			// Update the primary keys if they were changed.
+			$this->updateId();
 		}
 
 		// (Dis)Associate Many2Many and One2Many elements.

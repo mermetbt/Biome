@@ -119,13 +119,19 @@ class Biome
 			Biome::registerService('rights', function() {
 				$auth = \Biome\Core\Collection::get('auth');
 
-				if($auth->isAuthenticated())
+				if($auth->isAuthenticated() && !empty($auth->user->roles))
 				{
+					$admin_id = 1; // Default value of the Admin role id.
+					if(Biome::hasService('config'))
+					{
+						$admin_id = Biome::getService('config')->get('ADMIN_ROLE_ID', 1);
+					}
+
 					$roles = $auth->user->roles;
 					foreach($roles AS $role)
 					{
 						/* If Admin. */
-						if($role->role_id == 1)
+						if($role->role_id == $admin_id)
 						{
 							return new \Biome\Core\Rights\FreeRights();
 						}
