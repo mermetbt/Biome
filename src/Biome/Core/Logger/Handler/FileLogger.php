@@ -10,7 +10,7 @@ class FileLogger extends AbstractLogger
 
 	public function __construct($filename)
 	{
-		if(file_exists($filename))
+		if(file_exists($filename) && 0666 !== (fileperms($filename) & 0777))
 		{
 			@chmod($filename, 0666); // A+RW
 		}
