@@ -361,7 +361,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		{
 			foreach($primary_keys AS $pk)
 			{
-				$this->order_by($parameters['table'] . '.' . $k . ' ASC');
+				$this->order_by($parameters['table'] . '.' . $pk . ' ASC');
 			}
 		}
 		else
@@ -381,7 +381,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		{
 			foreach($primary_keys AS $pk)
 			{
-				$this->order_by($parameters['table'] . '.' . $k . ' DESC');
+				$this->order_by($parameters['table'] . '.' . $pk . ' DESC');
 			}
 		}
 		else
