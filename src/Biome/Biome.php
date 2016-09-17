@@ -119,7 +119,7 @@ class Biome
 			Biome::registerService('rights', function() {
 				$auth = \Biome\Core\Collection::get('auth');
 
-				if($auth->isAuthenticated() && !empty($auth->user->roles))
+				if($auth->isAuthenticated())
 				{
 					$admin_id = 1; // Default value of the Admin role id.
 					if(Biome::hasService('config'))
