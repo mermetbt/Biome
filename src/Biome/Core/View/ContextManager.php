@@ -114,7 +114,7 @@ trait ContextManager
 				$result = $result->$end();
 			}
 			else
-			if(is_array($result))
+			if(is_array($result) && in_array($end, $result))
 			{
 				$result = $result[$end];
 			}
