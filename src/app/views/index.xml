@@ -22,23 +22,29 @@
 			</biome:condition>
 
 			<div class="col-lg-8">
-				<div class="well">
-					<span>My main controller !</span>
-					<br/>
-					<a href="index/test">Test</a>
-					<br/>
+				<div class="jumbotron">
+					<h1>Demo App!</h1>
+					<p>
+						This is the introduction page of the Demo application. Please override the index.xml to customize your project!
+					</p>
+					<p>
+						<a class="btn btn-primary btn-lg" role="button" href="index/test">Demo</a>
+					</p>
 				</div>
 			</div>
+			<!--
 			<div class="col-lg-8">
 				<biome:panel title="Framework control">
 					<biome:a class="btn btn-default" controller="index" action="unset"><span>Reset the session</span></biome:a>
 				</biome:panel>
 			</div>
+			-->
 		</div>
 	</biome:view>
 
 	<biome:view action="test">
-		<span>Test!</span><br/>
+		<h1>Test action</h1>
+
 		<h3>Users registered!</h3>
 		<ul>
 			<biome:loop value="#{auth.users}" var="user">
@@ -53,6 +59,6 @@
 			</biome:loop>
 		</ul>
 
-		<a href="../">Go back!</a>
+		<a class="btn btn-success" href="../"><i class="glyphicon glyphicon-menu-left"/><span>Go back!</span></a>
 	</biome:view>
 </biome:views>
