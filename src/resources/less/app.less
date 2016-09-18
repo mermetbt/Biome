@@ -2,13 +2,7 @@
 
 /* Base */
 body {
-	margin-top: 100px;
-}
-
-@media(min-width:768px) {
-	body {
-		margin-top: 50px;
-	}
+	margin-top: @navbar-height;
 }
 
 #wrapper {
@@ -27,8 +21,16 @@ body {
 	}
 
 	#page-wrapper {
-		padding: 10px;
+		padding: 20px 0px;
 	}
+}
+
+/* Alert (flash message) */
+.alert {
+	margin-top: 10px;
+	margin-bottom: 0;
+	margin-left: 0;
+	margin-right: 0;
 }
 
 /* Top Navigation */
@@ -73,103 +75,8 @@ body {
 	white-space: normal;
 }
 
-/**
- * Side Navigation
- */
-@media(min-width:768px) {
-	.side-nav {
-		position: fixed;
-		top: (@navbar-height+2);
-		left: @sidenav-width;
-		width: @sidenav-width;
-		margin-left: -@sidenav-width;
-		border: none;
-		border-radius: 0;
-		overflow-y: auto;
-		background-color: @navbar-default-bg;
-/*		background-color: #222;*/
-		bottom: 0;
-		overflow-x: hidden;
-		padding-bottom: 40px;
-	}
-
-	.side-nav>li>a {
-		width: @sidenav-width;
-	}
-
-	.side-nav>li>ul>li>a {
-		width: @sidenav-width;
-	}
-
-	.side-nav li a:hover,
-	.side-nav li a:focus {
-		outline: none;
-		background-color: @navbar-default-toggle-hover-bg !important;
-	}
-}
-
-.side-nav>li>ul {
-	padding: 0;
-}
-
-.side-nav>li>ul>li>a {
-	display: block;
-	padding: 10px 15px 10px 38px;
-	text-decoration: none;
-	color: @dropdown-link-color;
-}
-
-.side-nav>li>ul>li>a:hover {
-/*	color: #fff;*/
-}
-
-/**
- * Panel color
- */
-
-.panel-green {
-	border-color: #5cb85c;
-}
-.panel-green > .panel-heading {
-	background-color: #5cb85c;
-	border-color: #5cb85c;
-	color: #fff;
-}
-.panel-green > a {
-	color: #5cb85c;
-}
-.panel-green > a:hover {
-	color: #3d8b3d;
-}
-.panel-red {
-	border-color: #d9534f;
-}
-.panel-red > .panel-heading {
-	background-color: #d9534f;
-	border-color: #d9534f;
-	color: #fff;
-}
-.panel-red > a {
-	color: #d9534f;
-}
-.panel-red > a:hover {
-	color: #b52b27;
-}
-.panel-yellow {
-	border-color: #f0ad4e;
-}
-.panel-yellow > .panel-heading {
-	background-color: #f0ad4e;
-	border-color: #f0ad4e;
-	color: #fff;
-}
-.panel-yellow > a {
-	color: #f0ad4e;
-}
-.panel-yellow > a:hover {
-	color: #df8a13;
-}
-
+@import "sidenav.less";
+@import "panel.less";
 @import "ajaxfield.less";
 @import "databox.less";
 @import "progress-stats.less";
