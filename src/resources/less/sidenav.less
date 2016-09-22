@@ -1,0 +1,49 @@
+/**
+ * Side Navigation
+ */
+@media(min-width:768px) {
+	.side-nav {
+		position: fixed;
+		top: (@navbar-height+2);
+		left: @sidenav-width;
+		width: @sidenav-width;
+		margin-left: -@sidenav-width;
+		border: none;
+		border-radius: 0;
+		overflow-y: auto;
+		background-color: @navbar-default-bg;
+/*		background-color: #222;*/
+		bottom: 0;
+		overflow-x: hidden;
+		padding-bottom: 40px;
+	}
+
+	.side-nav>li>a {
+		width: @sidenav-width;
+	}
+
+	.side-nav>li>ul>li>a {
+		width: @sidenav-width;
+	}
+
+	.side-nav li a:hover,
+	.side-nav li a:focus {
+		outline: none;
+		background-color: @navbar-default-toggle-hover-bg !important;
+	}
+}
+
+.side-nav>li>ul {
+	padding: 0;
+}
+
+.side-nav>li>ul>li>a {
+	display: block;
+	padding: 10px 15px 10px 38px;
+	text-decoration: none;
+	color: @dropdown-link-color;
+}
+
+.side-nav>li>ul>li>a:hover {
+/*	color: #fff;*/
+}
