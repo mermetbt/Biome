@@ -11,7 +11,7 @@
 	width: 100%;
 
 	background-clip: padding-box;
-	border-radius: 3px;
+	border-radius: @border-radius-base;
 }
 
 .databox .databox-icon {
@@ -118,7 +118,7 @@
 	vertical-align: top;
 	width: 65px;
 	background-clip: padding-box;
-	border-radius: 3px 0 0 3px;
+	border-radius: @border-radius-base 0 0 @border-radius-base;
 }
 
 .databox .databox-right {
@@ -131,7 +131,7 @@
 	vertical-align: top;
 	width: calc(~"100% - 65px");
 	background-clip: padding-box;
-	border-radius: 0 3px 3px 0;
+	border-radius: 0 @border-radius-base @border-radius-base 0;
 }
 
 .databox-left.databox-primary {
