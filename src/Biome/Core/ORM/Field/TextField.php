@@ -3,6 +3,7 @@
 namespace Biome\Core\ORM\Field;
 
 use Biome\Core\ORM\AbstractField;
+use Biome\Core\ORM\Exception\InvalidParameterException;
 
 class TextField extends AbstractField
 {
@@ -10,6 +11,10 @@ class TextField extends AbstractField
 
 	public function __construct($size = 64)
 	{
+		if(!is_integer($size))
+		{
+			throw new InvalidParameterException('The "size" parameter of TextField have to be a number, current value: ' . $size);
+		}
 		$this->size = $size;
 	}
 

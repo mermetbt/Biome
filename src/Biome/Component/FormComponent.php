@@ -16,4 +16,10 @@ class FormComponent extends Component
 		}
 		return NULL;
 	}
+
+	public function getEnctype()
+	{
+		$enctype = $this->getAttribute('enctype', NULL);
+		return $enctype;
+	}
 }
