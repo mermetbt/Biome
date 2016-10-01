@@ -8,6 +8,7 @@ $classes = $this->getClasses();
 $name = $this->getName();
 $value = $this->getValue();
 $placeholder = $this->getPlaceholder();
+$editable_attr = $this->getEditable();
 $label = $this->getLabel();
 
 $url = URL::getUri() . '?partial=' . $id;
@@ -79,7 +80,7 @@ var <?php echo $array_id; ?> = <?php echo json_encode($options); ?>;
 
 $viewable = $field === NULL || $this->rights->isAttributeView($field);
 
-$editable = $field === NULL || ($field->isEditable() && $this->rights->isAttributeEdit($field));
+$editable = $field === NULL || ($field->isEditable() && $this->rights->isAttributeEdit($field) && $editable_attr);
 
 if($type == 'textarea')
 {

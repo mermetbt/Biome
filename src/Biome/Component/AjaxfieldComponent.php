@@ -21,6 +21,21 @@ class AjaxfieldComponent extends VariableComponent
 		return $this->getAttribute('placeholder', '');
 	}
 
+	public function getEditable()
+	{
+		$editable = $this->getAttribute('editable', TRUE);
+		if(is_string($editable))
+		{
+			$editable = $this->fetchValue($editable);
+		}
+
+		if(strtolower($editable) === 'true' || $editable === '1' || $editable === TRUE)
+		{
+			return TRUE;
+		}
+		return FALSE;
+	}
+
 	public function getObject(&$last = NULL)
 	{
 		$value_name = $this->getAttribute('value');
