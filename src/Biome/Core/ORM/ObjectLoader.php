@@ -66,6 +66,11 @@ class ObjectLoader
 			throw new \Exception('The object ' . $object_name . ' doesn\'t exists!');
 		}
 
+		if(!is_subclass_of($object_name, '\Biome\Core\ORM\Models'))
+		{
+			throw new \Exception('The object ' . $object_name . ' is not an instance of Models!');
+		}
+
 		$object = new $object_name($raw_values, $query_set);
 
 		if(!$object instanceof ObjectInterface)

@@ -8,7 +8,7 @@ class Error
 	{
 		error_reporting(E_ALL);
 
-		if(Config\Config::get('WHOOPS_ERROR', TRUE))
+		if(Config\Config::get('WHOOPS_ERROR', FALSE))
 		{
 			$whoops = new \Whoops\Run;
 
