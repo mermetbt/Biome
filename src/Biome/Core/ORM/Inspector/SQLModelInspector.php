@@ -81,6 +81,12 @@ class SQLModelInspector implements ModelInspectorInterface
 			case 'datetime':
 				$type = 'TIMESTAMP';
 				break;
+			case 'date':
+				$type = 'DATE';
+				break;
+			case 'time':
+				$type = 'TIME';
+				break;
 			case 'textarea':
 				$type = 'TEXT';
 				break;

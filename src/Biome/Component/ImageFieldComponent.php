@@ -3,7 +3,6 @@
 namespace Biome\Component;
 
 use Biome\Core\View\Component;
-use Biome\Core\ORM\AbstractField;
 use Biome\Core\HTTP\Request;
 
 class ImageFieldComponent extends VariableComponent
