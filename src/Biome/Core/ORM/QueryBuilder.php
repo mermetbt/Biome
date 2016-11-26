@@ -53,6 +53,21 @@ class QueryBuilder implements OperandHandlerInterface
 		return $alias;
 	}
 
+	/**
+	 * Return the first alias corresponding to the table $table, NULL otherwise.
+	 */
+	public function getAlias($table)
+	{
+		foreach($this->joinMapping AS $alias => $t)
+		{
+			if($table == $t)
+			{
+				return $alias;
+			}
+		}
+		return NULL;
+	}
+
 	public function join($table, $one, $operator, $two)
 	{
 		$join_key = $table . $one . $operator . print_r($two, true);

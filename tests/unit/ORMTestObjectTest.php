@@ -2,13 +2,13 @@
 
 namespace Biome\Test;
 
-use \TestObject1;
+use \Object1;
 
 class ORMTestObjectTest extends \PHPUnit_Framework_TestCase
 {
 	public function testCreateAndRetrieve()
 	{
-		$object = new TestObject1();
+		$object = new Object1();
 
 		$object->object_name = 'TestObject1';
 
@@ -16,22 +16,22 @@ class ORMTestObjectTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertTrue($object->save());
 
-		$o = TestObject1::all()->filter('object_id', '=', $object->getId())->current();
+		$o = Object1::all()->filter('object_id', '=', $object->getId())->current();
 		$this->assertNotEmpty($o);
 
-		$o = new TestObject1();
+		$o = new Object1();
 		$o->object_name = 'First';
 		$o->enumerate = 'first';
 		$o->value = 2.0;
 		$this->assertTrue($o->save());
 
-		$o = new TestObject1();
+		$o = new Object1();
 		$o->object_name = 'Second';
 		$o->enumerate = 'second';
 		$o->value = 3.0;
 		$this->assertTrue($o->save());
 
-		$objects = TestObject1::all()
+		$objects = Object1::all()
 						->filter('value', '>', 1.0)
 						->filter('value', '<', 4.0)
 						->order_by('value ASC');
@@ -42,7 +42,7 @@ class ORMTestObjectTest extends \PHPUnit_Framework_TestCase
 		$second = $objects->next();
 		$this->assertEquals('Second', $second->object_name);
 
-		$objects = TestObject1::all()
+		$objects = Object1::all()
 						->filter('value', 'in', [2.0, 3.0])
 						->order_by('value DESC');
 

@@ -545,6 +545,11 @@ abstract class Models implements ObjectInterface
 				continue;
 			}
 
+			if($field instanceof One2ManyField)
+			{
+				continue;
+			}
+
 			if(isset($this->_values['old'][$field_name]) || isset($data[$field_name]))
 			{
 				continue;

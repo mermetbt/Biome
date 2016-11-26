@@ -5,6 +5,7 @@ namespace Biome\Core\ORM;
 use Iterator, Countable, ArrayAccess;
 
 use Biome\Core\ORM\Filter\FilterNode;
+use Biome\Core\ORM\Field\Many2OneField;
 
 class QuerySet implements Iterator, Countable, ArrayAccess
 {
@@ -142,13 +143,14 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		return $this;
 	}
 
-	protected function many2OneFilter($field, array $path, $operator, $value, $preceding_table = NULL)
+	protected function many2OneFilter(Many2OneField $field, array $path, $operator, $value, $preceding_table = NULL)
 	{
+	/*
 		if(!$field instanceof \Biome\Core\ORM\Field\Many2OneField)
 		{
 			return FALSE;
 		}
-
+	*/
 		$field_name = $field->getName();
 
 		if($field->isObject())
@@ -169,19 +171,27 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 		$table			= $field->object()->parameters()['table'];
 		$foreign_key	= $field->getForeignKey();
 
+		/**
+		 * If the filtering can be done without new join (Filtering on the ID directly).
+		 */
 		if($field->isId() && count($path) == 1)
 		{
-			$name = array_shift($path);
-			$this->db()->where($name, $operator, $value);
+			//$name = array_shift($path);
+			$this->db()->where($join_field, $operator, $value);
 			return TRUE;
 		}
 
+		/**
+		 * Join the related table.
+		 */
 		$alias			= $this->db()->generateAlias($table);
 		$table			= $alias;
 		$this->db()->join($table, $foreign_key, '=', $join_field);
 
+		/**
+		 * Identify the where clause.
+		 */
 		$name = array_shift($path);
-
 		if(count($path) > 0)
 		{
 			$field_name = $path[0];
@@ -206,6 +216,9 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 			return TRUE;
 		}
 
+		/**
+		 * Search case.
+		 */
 		$parameters = $field->object()->parameters();
 		$search_fields = array();
 		if(array_key_exists('search', $parameters))
@@ -273,7 +286,7 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 			$field = $this->object()->getField($field_name);
 
 			/* Filtering on Many2One field. */
-			if($this->many2OneFilter($field, $subset, $operator, $value))
+			if($field instanceof Many2OneField && $this->many2OneFilter($field, $subset, $operator, $value))
 			{
 				continue;
 			}
@@ -333,8 +346,51 @@ class QuerySet implements Iterator, Countable, ArrayAccess
 
 	public function order_by($field)
 	{
-		$this->orders[] = $field;
-		$this->db()->orderby($field);
+		/**
+		 * Separate the ordering rules.
+		 */
+		$rules = explode(',', $field);
+
+		foreach($rules AS $rule)
+		{
+			$subset = explode('.', $rule);
+			if(count($subset) == 1)
+			{
+				$this->orders[] = $rule;
+				$this->db()->orderby($rule);
+				continue;
+			}
+
+			/**
+			 * Retrieve the table alias to use with the filter field.
+			 */
+			$filter_field = array_pop($subset);
+
+			$obj = $this->object();
+			do
+			{
+				$field_name = array_shift($subset);
+				if(!$obj->hasField($field_name))
+				{
+					// The expected field_name can be a table name.
+					break;
+					//throw new \Exception('Unable to order on an unexisting field "' . $field_name . '"!');
+				}
+
+				$field = $obj->getField($field_name);
+				$obj = $field->object();
+			} while(count($subset) > 0);
+
+			$table = $obj->parameters()['table'];
+			$alias = $this->db()->getAlias($table);
+			if($alias == NULL)
+			{
+				$alias = $table;
+				//throw new \Exception('No alias defined for this table "' . $table . '"!');
+			}
+			$this->db()->orderby($alias . '.' . $filter_field);
+			return $this;
+		}
 		return $this;
 	}
 

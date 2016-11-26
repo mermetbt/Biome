@@ -10,7 +10,7 @@ use Biome\Core\ORM\Field\EnumField;
 use Biome\Core\ORM\Field\DoubleField;
 use Biome\Core\ORM\Field\Many2OneField;
 
-class TestObject1 extends Models
+class Object1 extends Models
 {
 	public function parameters()
 	{
