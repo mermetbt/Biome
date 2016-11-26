@@ -537,6 +537,28 @@ abstract class Models implements ObjectInterface
 			unset($data[$field_name]);
 		}
 
+		// Deal with default values.
+		foreach($this->_structure AS $field_name => $field)
+		{
+			if($field instanceof Many2ManyField)
+			{
+				continue;
+			}
+
+			if(isset($this->_values['old'][$field_name]) || isset($data[$field_name]))
+			{
+				continue;
+			}
+
+			$default = $field->getDefaultValue();
+			if($default === NULL || $default instanceof RawSQL)
+			{
+				continue;
+			}
+
+			$data[$field_name] = $default;
+		}
+
 		// Creation
 		if($id === NULL)
 		{

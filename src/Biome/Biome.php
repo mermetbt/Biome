@@ -248,6 +248,14 @@ class Biome
 		self::initDirs($use_default_app);
 		foreach($dirs AS $type => $dir)
 		{
+			if(is_array($dir))
+			{
+				foreach($dir AS $d)
+				{
+					self::$directories[$type][$d] = $d;
+				}
+				continue;
+			}
 			self::$directories[$type][$dir] = $dir;
 		}
 		return TRUE;
