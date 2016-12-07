@@ -8,6 +8,8 @@ class FileLogger extends AbstractLogger
 {
 	protected $fp;
 
+	protected $_request_id;
+
 	public function __construct($filename)
 	{
 		if(file_exists($filename) && 0666 !== (fileperms($filename) & 0777))
@@ -20,6 +22,8 @@ class FileLogger extends AbstractLogger
 		{
 			throw new \Exception('Unable to write in filename ' . $filename . '!');
 		}
+
+		$this->_request_id = uniqid();
 	}
 
 	public function __destruct()
@@ -29,7 +33,7 @@ class FileLogger extends AbstractLogger
 
 	public function log($level, $message, array $context = array())
 	{
-		$m = date('Y-m-d H:i:s') . ' [' . $level . '] ' . $message . PHP_EOL;
+		$m = date('Y-m-d H:i:s') . ' ' . $this->_request_id . ' [' . $level . '] ' . $message . PHP_EOL;
 		if(!empty($context))
 		{
 			$m .= print_r($context, true) . PHP_EOL;
