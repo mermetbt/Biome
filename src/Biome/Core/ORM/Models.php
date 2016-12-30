@@ -55,6 +55,12 @@ abstract class Models implements ObjectInterface
 		return $this->getValue($field_name);
 	}
 
+	public function __isset($field_name)
+	{
+		$value = $this->getValue($field_name);
+		return !empty($value);
+	}
+
 	/**
 	 * Operations over fields.
 	 */
