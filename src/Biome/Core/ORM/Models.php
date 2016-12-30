@@ -12,8 +12,8 @@ use Biome\Core\Logger\Logger;
 
 abstract class Models implements ObjectInterface
 {
-	protected $_structure;
-	protected $_values;
+	protected $_structure = [];
+	protected $_values = ['old' => [], 'new' => []];
 
 	private $_query_set = NULL;
 
@@ -57,7 +57,7 @@ abstract class Models implements ObjectInterface
 
 	public function __isset($field_name)
 	{
-		return isset($this->_structure[$field_name]);
+		return isset($this->$field_name) || array_key_exists($field_name, $this->_values['old']) || array_key_exists($field_name, $this->_values['new']);
 	}
 
 	/**
@@ -139,12 +139,12 @@ abstract class Models implements ObjectInterface
 	{
 		$f = $this->getField($attribute);
 
-		if(isset($this->_values['new'][$attribute]))
+		if(array_key_exists('new', $this->_values) && array_key_exists($attribute, $this->_values['new']))
 		{
 			return $f->applyGet($this->_values['new'][$attribute]);
 		}
 
-		if(isset($this->_values['old'][$attribute]))
+		if(array_key_exists('old', $this->_values) && array_key_exists($attribute, $this->_values['old']))
 		{
 			if($this->_values['old'][$attribute] instanceof RawSQL)
 			{
@@ -170,6 +170,8 @@ abstract class Models implements ObjectInterface
 
 		if($all_pk_set)
 		{
+			// TODO: This retrieve the attribute of the object on the fly and set the values to all the others.
+			throw new \Exception('Shouldn\'t happen!');
 			$this->_query_set->fields($attribute)->fetch();
 
 			return $this->getValue($attribute);
@@ -212,12 +214,12 @@ abstract class Models implements ObjectInterface
 	{
 		$f = $this->getField($attribute);
 
-		if(isset($this->_values['new'][$attribute]))
+		if(array_key_exists('new', $this->_values) && array_key_exists($attribute, $this->_values['new']))
 		{
 			return $this->_values['new'][$attribute];
 		}
 
-		if(isset($this->_values['old'][$attribute]))
+		if(array_key_exists('old', $this->_values) && array_key_exists($attribute, $this->_values['old']))
 		{
 			return $this->_values['old'][$attribute];
 		}
@@ -239,6 +241,8 @@ abstract class Models implements ObjectInterface
 
 		if($all_pk_set)
 		{
+			// TODO: This retrieve the attribute of the object on the fly and set the values to all the others.
+			throw new \Exception('Shouldn\'t happen!');
 			$this->_query_set->fields($attribute)->fetch();
 
 			return $this->getRawValue($attribute);

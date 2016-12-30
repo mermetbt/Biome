@@ -44,6 +44,11 @@ abstract class AbstractField
 	 */
 	public function applyGet($value)
 	{
+		if($value === NULL)
+		{
+			return NULL;
+		}
+
 		foreach($this->_apply_converter AS $converter)
 		{
 			$value = $converter->get($value);
