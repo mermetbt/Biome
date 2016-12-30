@@ -57,8 +57,7 @@ abstract class Models implements ObjectInterface
 
 	public function __isset($field_name)
 	{
-		$value = $this->getValue($field_name);
-		return !empty($value);
+		return isset($this->_structure[$field_name]);
 	}
 
 	/**
