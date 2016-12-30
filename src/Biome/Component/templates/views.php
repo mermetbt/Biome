@@ -8,8 +8,12 @@
     <meta name="author" content="">
 	<title><?php echo $view->getTitle() ?></title>
 	<link href="<?php echo URL::getAsset('css/vendor.min.css') ?>" rel="stylesheet">
-	<link href="<?php echo URL::getAsset('css/app.min.css') ?>" rel="stylesheet">
 	<?php
+		if(file_exists(PUBLIC_DIR . '/css/app.min.css'))
+		{
+			?><link href="<?php echo URL::getAsset('css/app.min.css') ?>" rel="stylesheet"><?php
+		}
+
 		$css_list = $this->getCss();
 		foreach($css_list AS $css_file)
 		{
