@@ -65,9 +65,9 @@ class URL
 		}
 
 		$base_url = self::getBaseURL();
-		if(empty($base_url))
+		if(empty($base_url) && empty($url))
 		{
-			$base_url = '/';
+			return '/';
 		}
 
 		return $base_url . $url;
