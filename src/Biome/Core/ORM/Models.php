@@ -346,7 +346,7 @@ abstract class Models implements ObjectInterface
 
 	public function hasChanges()
 	{
-		return isset($this->_values['new']);
+		return !empty($this->_values['new']);
 	}
 
 	public function hasFieldValueChanged($field_name)
