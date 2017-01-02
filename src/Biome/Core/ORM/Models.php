@@ -168,15 +168,6 @@ abstract class Models implements ObjectInterface
 			$all_pk_set = isset($this->$pks);
 		}
 
-		if($all_pk_set)
-		{
-			// TODO: This retrieve the attribute of the object on the fly and set the values to all the others.
-			throw new \Exception('Shouldn\'t happen!');
-			$this->_query_set->fields($attribute)->fetch();
-
-			return $this->getValue($attribute);
-		}
-
 		if($f instanceof Many2ManyField)
 		{
 			if($this->_query_set === NULL)
@@ -197,6 +188,15 @@ abstract class Models implements ObjectInterface
 			$qs = $f->generateQuerySet($this->_query_set, $attribute);
 			$this->_values['old'][$attribute] = $qs;
 			return $qs;
+		}
+
+		if($all_pk_set)
+		{
+			// TODO: This retrieve the attribute of the object on the fly and set the values to all the others.
+			throw new \Exception('Shouldn\'t happen!');
+			$this->_query_set->fields($attribute)->fetch();
+
+			return $this->getValue($attribute);
 		}
 
 		// Otherwise return the default value.
