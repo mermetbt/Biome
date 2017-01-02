@@ -64,6 +64,12 @@ class URL
 			$url .= '/' . $page;
 		}
 
-		return self::getBaseURL() . $url;
+		$base_url = self::getBaseURL();
+		if(empty($base_url))
+		{
+			$base_url = '/';
+		}
+
+		return $base_url . $url;
 	}
 }
