@@ -242,7 +242,8 @@ abstract class Models implements ObjectInterface
 		if($all_pk_set)
 		{
 			// TODO: This retrieve the attribute of the object on the fly and set the values to all the others.
-			throw new \Exception('Shouldn\'t happen!');
+			return NULL;
+			//throw new \Exception('Shouldn\'t happen!');
 			$this->_query_set->fields($attribute)->fetch();
 
 			return $this->getRawValue($attribute);
