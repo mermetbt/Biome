@@ -489,7 +489,7 @@ abstract class Models implements ObjectInterface
 	/**
 	 * Insert or update the object in the database.
 	 */
-	public function save()
+	public function save($autosync = TRUE)
 	{
 		if($this->_query_set === NULL)
 		{
@@ -604,7 +604,10 @@ abstract class Models implements ObjectInterface
 		}
 
 		// Final sync to retrieve the values saved.
-		$this->sync();
+		if($autosync)
+		{
+			$this->sync();
+		}
 
 		return TRUE;
 	}
