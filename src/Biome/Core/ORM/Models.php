@@ -193,7 +193,7 @@ abstract class Models implements ObjectInterface
 		if($all_pk_set)
 		{
 			// TODO: This retrieve the attribute of the object on the fly and set the values to all the others.
-			throw new \Exception('Shouldn\'t happen!');
+			throw new \Exception('Shouldn\'t happen! This means the field "' . $attribute . '" cannot be retrieved from the database. Maybe it doesn\'t exists, check your table.');
 			$this->_query_set->fields($attribute)->fetch();
 
 			return $this->getValue($attribute);

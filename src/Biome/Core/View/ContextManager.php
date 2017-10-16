@@ -6,6 +6,8 @@ use Biome\Core\Collection;
 use Biome\Core\ORM\ObjectLoader;
 use Biome\Core\ORM\Models;
 
+use Biome\Core\View\Exception\FetchException;
+
 trait ContextManager
 {
 	protected static $_context = array(
@@ -120,6 +122,11 @@ trait ContextManager
 			}
 			else
 			{
+				if(!is_object($result))
+				{
+					throw new FetchException('Property not found: "' . $end . '" in ' . $var);
+				}
+
 				$result = $result->$end;
 			}
 

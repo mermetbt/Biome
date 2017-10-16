@@ -84,11 +84,11 @@ class Route extends RouteCollection
 
 		foreach($this->classname_routes AS $controller_name => $actions)
 		{
-			foreach($actions AS $type => $action)
+			foreach($actions AS $method => $action)
 			{
 				foreach($action AS $name => $meta)
 				{
-					$method = function(Request $request, Response $response, array $args) use($type, $controller_name, $name, $meta) {
+					$handler = function(Request $request, Response $response, array $args) use($method, $controller_name, $name, $meta) {
 						/* Initialize the controller. */
 						$ctrl = new $meta['controller']($request, $response);
 
@@ -111,24 +111,24 @@ class Route extends RouteCollection
 						}
 
 						/* Execute the action. */
-						return $ctrl->process($type, $controller_name, $name, $meta['action'], $method_params);
+						return $ctrl->process($method, $controller_name, $name, $meta['action'], $method_params);
 					};
 
 					$route_path = $meta['path'];
-					$this->addRoute($type, $route_path, $method);
-					$this->routes_list[] = array('method' => $type, 'path' => $route_path);
+					$this->addRoute($method, $route_path, $handler);
+					$this->routes_list[] = array('method' => $method, 'path' => $route_path);
 					if($name == 'index')
 					{
 						$route_path = '/' . $controller_name;
-						$this->addRoute($type, $route_path, $method);
-						$this->routes_list[] = array('method' => $type, 'path' => $route_path);
+						$this->addRoute($method, $route_path, $handler);
+						$this->routes_list[] = array('method' => $method, 'path' => $route_path);
 					}
 
 					if($controller_name == 'index' && $name == 'index')
 					{
 						$route_path = '/' . $controller_name . '/' . $name;
-						$this->addRoute($type, $route_path, $method);
-						$this->routes_list[] = array('method' => $type, 'path' => $route_path);
+						$this->addRoute($method, $route_path, $handler);
+						$this->routes_list[] = array('method' => $method, 'path' => $route_path);
 					}
 				}
 			}

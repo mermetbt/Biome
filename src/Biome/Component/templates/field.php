@@ -118,7 +118,27 @@ if($viewable)
 
 				break;
 			default:
-				?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php
+				$min = $this->getAttribute('min', NULL);
+				$max = $this->getAttribute('max', NULL);
+				$step = $this->getAttribute('step', NULL);
+
+				$attrs = '';
+				if($min != NULL)
+				{
+					$attrs .= 'min="' . $min . '" ';
+				}
+
+				if($max != NULL)
+				{
+					$attrs .= 'max="' . $max . '" ';
+				}
+
+				if($step != NULL)
+				{
+					$attrs .= 'step="' . $step . '" ';
+				}
+
+				?><input id="<?php echo $id; ?>" class="<?php echo $classes; ?>" type="<?php echo $type; ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>" <?php echo $attrs; ?>placeholder="<?php echo $placeholder; ?>" aria-describedby="<?php echo $id; ?>_help"/><?php
 		}
 	}
 }
@@ -126,6 +146,8 @@ else
 {
 	?><p class="form-control-static"><i class="fa fa-ban"></i></p><?php
 }
+
+echo $this->getContent();
 
 if($show_error_messages)
 {

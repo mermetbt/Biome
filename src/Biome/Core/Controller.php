@@ -74,6 +74,7 @@ class Controller
 		 */
 		if(!$this->beforeRoute())
 		{
+			Logger::info('Before route returned FALSE => skip action!');
 			return $this->response();
 		}
 
