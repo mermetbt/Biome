@@ -1,5 +1,23 @@
-<nav class="navbar navbar-default navbar-fixed-top <?php echo $this->getClasses(); ?>" role="navigation">
-	<div class="container-fluid">
+<?php
+$type = $this->getType();
+if(!empty($type))
+{
+	$this->addClasses('navbar-' . $type);
+}
+
+if($this->isFixedTop())
+{
+	$this->addClasses('navbar-fixed-top');
+}
+
+$container_class = 'container';
+if($this->isExpanded())
+{
+	$container_class = 'container-fluid';
+}
+?>
+<nav class="navbar <?php echo $this->getClasses(); ?>" role="navigation">
+	<div class="<?php echo $container_class; ?>">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-ex1-collapse" aria-expanded="false" aria-controls="navbar">
 				<span class="sr-only">Toggle navigation</span>

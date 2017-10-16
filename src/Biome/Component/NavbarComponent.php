@@ -23,4 +23,22 @@ class NavbarComponent extends Component
 		$logo = $this->getAttribute('logo', '');
 		return $logo;
 	}
+
+	public function getType()
+	{
+		$type = $this->getAttribute('type', 'default');
+		return $this->fetchValue($type);
+	}
+
+	public function isFixedTop()
+	{
+		$fixed = $this->getAttribute('fixed-top', '1');
+		return $fixed == '1';
+	}
+
+	public function isExpanded()
+	{
+		$expanded = $this->getAttribute('expanded', '1');
+		return $expanded == '1';
+	}
 }
