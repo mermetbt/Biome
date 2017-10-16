@@ -210,7 +210,7 @@ class Route extends RouteCollection
 				// PHP 7
 				if(method_exists($param, 'getType'))
 				{
-					$type = $param->getType();
+					$type = (string)$param->getType();
 				}
 				// PHP 5
 				else
