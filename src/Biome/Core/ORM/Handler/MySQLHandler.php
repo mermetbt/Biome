@@ -6,6 +6,8 @@ use Biome\Core\ORM\QuerySet;
 use Biome\Core\ORM\LazyFetcher;
 use Biome\Biome;
 
+use Biome\Core\ORM\Exception\InvalidParameterException;
+
 class MySQLHandler
 {
 	public function __construct(QuerySet $qs)
@@ -59,7 +61,11 @@ class MySQLHandler
 				$groups[] = '`' . $field_name . '`=NULL';
 				continue;
 			}
-			$groups[] = '`' . $field_name . '`="' . $this->db()->real_escape_string($value) . '"';
+			try {
+				$groups[] = '`' . $field_name . '`="' . $this->db()->real_escape_string($value) . '"';
+			} catch(InvalidParameterException $e) {
+				throw new InvalidParameterException('Field ' . $field_name . ' has invalid type! ' . $e->getMessage());
+			}
 		}
 
 		$query .= join(', ', $groups);
@@ -79,7 +85,11 @@ class MySQLHandler
 				$groups[] = '`' . $field_name . '`=NULL';
 				continue;
 			}
-			$groups[] = '`' . $field_name . '`="' . $this->db()->real_escape_string($value) . '"';
+			try {
+				$groups[] = '`' . $field_name . '`="' . $this->db()->real_escape_string($value) . '"';
+			} catch(InvalidParameterException $e) {
+				throw new InvalidParameterException('Field ' . $field_name . ' has invalid type! ' . $e->getMessage());
+			}
 		}
 
 		$query .= join(', ', $groups);

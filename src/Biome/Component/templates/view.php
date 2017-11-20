@@ -1,1 +1,1 @@
-<div id="page-wrapper"><div class="container-fluid"><?php echo $this->getContent(); ?></div></div>
+<div id="page-wrapper"><?php echo $this->getContent(); ?></div>

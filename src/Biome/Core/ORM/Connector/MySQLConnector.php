@@ -4,6 +4,7 @@ namespace Biome\Core\ORM\Connector;
 
 use Biome\Core\Logger\Logger;
 use Biome\Core\ORM\Exception\DuplicateException;
+use Biome\Core\ORM\Exception\InvalidParameterException;
 
 class MySQLConnector
 {
@@ -121,7 +122,7 @@ class MySQLConnector
 		{
 			$data = var_export($string, true);
 			Logger::error('Real escape string expects a string! Content: ' . $data);
-			throw new \Exception('Real escape string expects a string!' . PHP_EOL . 'Content : ' . PHP_EOL . $data);
+			throw new InvalidParameterException('Real escape string expects a string!' . PHP_EOL . 'Content : ' . PHP_EOL . $data);
 		}
 		return $this->_instance->real_escape_string($string);
 	}
