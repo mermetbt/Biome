@@ -22,9 +22,6 @@ class Biome
 
 	public static function start()
 	{
-		session_name(md5($_SERVER['PHP_SELF']));
-		session_start();
-
 		/* Initializing the Framework. */
 		self::declareServices();
 
@@ -81,6 +78,18 @@ class Biome
 		{
 			Biome::registerService('request', function() {
 				return Request::createFromGlobals();
+			});
+		}
+
+		/**
+		 * Biome default request.
+		 */
+		if(!Biome::hasService('session'))
+		{
+			Biome::registerService('session', function() {
+				$session = new Biome\Core\Session\Session();
+				$session->start();
+				return $session;
 			});
 		}
 

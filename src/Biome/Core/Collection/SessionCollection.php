@@ -6,8 +6,12 @@ use Biome\Core\Collection;
 
 class SessionCollection extends Collection
 {
+	private $_session = NULL;
+
 	public function __construct()
 	{
+		$this->_session = \Biome\Biome::getService('session');
+
 		// Load from session.
 		$class_name = get_class($this);
 
