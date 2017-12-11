@@ -109,7 +109,19 @@ class Controller
 			}
 		}
 
-		if($rendering && !$this->response->isRedirection())
+		// Is a redirection.
+		if($this->response->isRedirection())
+		{
+			$rendering = FALSE;
+		}
+
+		// Content already set in the controller.
+		if(!empty($this->response->getContent()))
+		{
+			$rendering = FALSE;
+		}
+
+		if($rendering)
 		{
 			// Render view
 			$content = $this->view->render();
