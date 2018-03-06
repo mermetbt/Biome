@@ -87,7 +87,7 @@ class Biome
 		if(!Biome::hasService('session'))
 		{
 			Biome::registerService('session', function() {
-				$session = new Biome\Core\Session\Session();
+				$session = new \Biome\Core\Session\Session();
 				$session->start();
 				return $session;
 			});

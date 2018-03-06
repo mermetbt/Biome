@@ -61,10 +61,10 @@
 		group = $('<div class="input-group"/>');
 
 		submitButton.click(() ->
-					 $.submitFunc $this
+					$.submitFunc $this
 		);
 		cancelButton.click(() ->
-					 $.cancelFunc $this
+					$.cancelFunc $this
 		);
 
 		inputGroup.append(submitButton);
@@ -96,7 +96,7 @@
 				placeholder: '',
 				allowClear: true,
 				ajax: {
-					    url: $this.data 'url',
+						url: $this.data 'url',
 						dataType: 'json',
 						delay: 250,
 						data: (params) ->
@@ -203,7 +203,7 @@
 		$this.html(c);
 		i = $this.find('.ajaxfield-input')
 		i.click(() ->
-		  $.ajaxField_event_callback $this
+			$.ajaxField_event_callback $this
 		);
 
 	$.fn.setCursorPosition = (pos) ->
