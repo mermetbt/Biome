@@ -3,6 +3,7 @@
 namespace Biome\Core\ORM;
 
 use \Biome\Core\Logger\Logger;
+use \Biome\Core\ORM\Exception\ObjectNotFoundException;
 
 class ObjectLoader
 {
@@ -10,7 +11,7 @@ class ObjectLoader
 	{
 		if(empty($object_name))
 		{
-			throw new \Exception('Cannot load an empty object name!');
+			throw new ObjectNotFoundException('Cannot load an empty object name!');
 		}
 
 		if(class_exists($object_name))
@@ -63,19 +64,19 @@ class ObjectLoader
 
 		if(!class_exists($object_name))
 		{
-			throw new \Exception('The object ' . $object_name . ' doesn\'t exists!');
+			throw new ObjectNotFoundException('The object ' . $object_name . ' doesn\'t exists!');
 		}
 
 		if(!is_subclass_of($object_name, '\Biome\Core\ORM\Models'))
 		{
-			throw new \Exception('The object ' . $object_name . ' is not an instance of Models!');
+			throw new ObjectNotFoundException('The object ' . $object_name . ' is not an instance of Models!');
 		}
 
 		$object = new $object_name($raw_values, $query_set);
 
 		if(!$object instanceof ObjectInterface)
 		{
-			throw new \Exception('The models ' . $object_name . ' doesn\'t implement the ObjectInterface!');
+			throw new ObjectNotFoundException('The models ' . $object_name . ' doesn\'t implement the ObjectInterface!');
 		}
 
 		return $object;

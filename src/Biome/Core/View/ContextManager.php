@@ -150,10 +150,15 @@ trait ContextManager
 		}
 
 		/* No item found, check objects. */
-		$result = ObjectLoader::get($raw[0]);
-		if($result !== NULL)
+		try {
+			$result = ObjectLoader::get($raw[0]);
+			if($result !== NULL)
+			{
+				return $result;
+			}
+		} catch(\Biome\Core\ORM\Exception\ObjectNotFoundException $e)
 		{
-			return $result;
+			// Skip object not found exception
 		}
 
 		throw new \Exception('Unable to find the variable ' . $var . ' in the context!');
@@ -226,7 +231,12 @@ trait ContextManager
 				throw new \Exception('Field must be defined by at least object.attribute!');
 			}
 
-			$object = $this->rec_fetchValue(join('.', $raw));
+			try {
+				$object = $this->rec_fetchValue(join('.', $raw));
+			} catch(\Exception $e) {
+				throw new \Exception('Unable to retrieve the field "' . $var . '": ' . $e->getMessage());
+			}
+
 			if(!$object instanceof Models)
 			{
 				return NULL;

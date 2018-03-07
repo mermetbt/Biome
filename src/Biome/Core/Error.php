@@ -2,33 +2,24 @@
 
 namespace Biome\Core;
 
+use \Biome\Core\Error\ErrorInterface;
+
 class Error
 {
+	private static $_handler = NULL;
+
+	public static function setHandler(ErrorInterface $handler)
+	{
+		self::$_handler = $handler;
+	}
+
 	public static function init()
 	{
 		error_reporting(E_ALL);
 
-		if(Config\Config::get('WHOOPS_ERROR', TRUE) && Config\Config::get('DEBUG', FALSE))
+		if(self::$_handler instanceof ErrorInterface)
 		{
-			$whoops = new \Whoops\Run;
-
-			$request = \Biome\Biome::getService('request');
-			if($request->acceptHtml())
-			{
-				$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-			}
-			else
-			if(\Whoops\Util\Misc::isCommandLine())
-			{
-				$whoops->pushHandler(new \Whoops\Handler\PlainTextHandler);
-			}
-			else
-			{
-				$whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler);
-			}
-
-			$whoops->register();
+			self::$_handler->init();
 		}
 	}
-
 }

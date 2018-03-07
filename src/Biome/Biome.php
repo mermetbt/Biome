@@ -48,8 +48,6 @@ class Biome
 	public static function tests()
 	{
 		self::declareServices();
-
-
 	}
 
 	protected static function declareServices()
@@ -130,23 +128,20 @@ class Biome
 
 				if($auth->isAuthenticated())
 				{
-					$admin_id = 1; // Default value of the Admin role id.
-					if(Biome::hasService('config'))
+					if(\Biome\Core\Auth::isAdmin())
 					{
-						$admin_id = Biome::getService('config')->get('ADMIN_ROLE_ID', 1);
+						return new \Biome\Core\Rights\FreeRights();
 					}
 
 					$roles = $auth->user->roles;
+					$rights_array = array();
 					foreach($roles AS $role)
 					{
-						/* If Admin. */
-						if($role->role_id == $admin_id)
-						{
-							return new \Biome\Core\Rights\FreeRights();
-						}
-						$rights = AccessRights::loadFromJSON($role->role_rights);
+						$rights = (array)json_decode($role->role_rights, TRUE);
+						$rights_array = array_merge($rights_array, $rights);
 					}
-					return $rights;
+
+					return AccessRights::loadFromArray($rights_array);
 				}
 
 				$rights = AccessRights::loadFromArray(array());

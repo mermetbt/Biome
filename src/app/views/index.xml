@@ -4,61 +4,57 @@
 	<biome:include src="elements/navbar.xml"/>
 
 	<biome:view action="index">
+		<div class="container-fluid">
+			<div class="row">
+				<biome:condition if="!#{auth.isAuthenticated}">
+					<div class="col-lg-4 pull-right">
+						<div class="well">
+							<h2><biome:text value="@string/sign_up_title"/></h2>
+							<biome:form>
+								<biome:field value="#{user.firstname}"/>
+								<biome:field value="#{user.lastname}"/>
+								<biome:field value="#{user.mail}"/>
+								<biome:field value="#{user.password}"/>
+								<biome:button class="btn-success" value="@string/signup" action="#{auth.signup}"/>
+							</biome:form>
+						</div>
+					</div>
+				</biome:condition>
 
-		<div class="row">
-			<biome:condition if="!#{auth.isAuthenticated}">
-				<div class="col-lg-4 pull-right">
-					<div class="well">
-						<h2><biome:text value="@string/sign_up_title"/></h2>
-						<biome:form>
-							<biome:field value="#{user.firstname}"/>
-							<biome:field value="#{user.lastname}"/>
-							<biome:field value="#{user.mail}"/>
-							<biome:field value="#{user.password}"/>
-							<biome:button class="btn-success" value="@string/signup" action="#{auth.signup}"/>
-						</biome:form>
+				<div class="col-lg-8">
+					<div class="jumbotron">
+						<h1>Demo App!</h1>
+						<p>
+							This is the introduction page of the Demo application. Please override the index.xml to customize your project!
+						</p>
+						<p>
+							<a class="btn btn-primary btn-lg" role="button" href="index/test">Demo</a>
+						</p>
 					</div>
 				</div>
-			</biome:condition>
-
-			<div class="col-lg-8">
-				<div class="jumbotron">
-					<h1>Demo App!</h1>
-					<p>
-						This is the introduction page of the Demo application. Please override the index.xml to customize your project!
-					</p>
-					<p>
-						<a class="btn btn-primary btn-lg" role="button" href="index/test">Demo</a>
-					</p>
-				</div>
 			</div>
-			<!--
-			<div class="col-lg-8">
-				<biome:panel title="Framework control">
-					<biome:a class="btn btn-default" controller="index" action="unset"><span>Reset the session</span></biome:a>
-				</biome:panel>
-			</div>
-			-->
 		</div>
 	</biome:view>
 
 	<biome:view action="test">
-		<h1>Test action</h1>
+		<div class="container-fluid">
+			<h1>Test action</h1>
 
-		<h3>Users registered!</h3>
-		<ul>
-			<biome:loop value="#{auth.users}" var="user">
-				<li><biome:variable value="#{user.user_id}"/><span>: </span><biome:variable value="#{user.firstname}"/><span> - </span><biome:variable value="#{user.lastname}"/></li>
-			</biome:loop>
-		</ul>
+			<h3>Users registered!</h3>
+			<ul>
+				<biome:loop value="#{auth.users}" var="user">
+					<li><biome:variable value="#{user.user_id}"/><span>: </span><biome:variable value="#{user.firstname}"/><span> - </span><biome:variable value="#{user.lastname}"/></li>
+				</biome:loop>
+			</ul>
 
-		<h3>Users in database!</h3>
-		<ul>
-			<biome:loop value="#{users.users}" var="u">
-				<li><biome:variable value="#{u.user_id}"/><span>: </span><biome:variable value="#{u.firstname}"/><span> - </span><biome:variable value="#{u.lastname}"/></li>
-			</biome:loop>
-		</ul>
+			<h3>Users in database!</h3>
+			<ul>
+				<biome:loop value="#{users.users}" var="u">
+					<li><biome:variable value="#{u.user_id}"/><span>: </span><biome:variable value="#{u.firstname}"/><span> - </span><biome:variable value="#{u.lastname}"/></li>
+				</biome:loop>
+			</ul>
 
-		<a class="btn btn-success" href="../"><i class="glyphicon glyphicon-menu-left"/><span>Go back!</span></a>
+			<a class="btn btn-success" href="../"><i class="glyphicon glyphicon-menu-left"/><span>Go back!</span></a>
+		</div>
 	</biome:view>
 </biome:views>

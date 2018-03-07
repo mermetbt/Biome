@@ -147,8 +147,6 @@ else
 	?><p class="form-control-static"><i class="fa fa-ban"></i></p><?php
 }
 
-echo $this->getContent();
-
 if($show_error_messages)
 {
 	$errors = $field->getErrors();
