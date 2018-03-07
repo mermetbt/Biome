@@ -1,1 +1,1 @@
-<div id="page-wrapper"><?php echo $this->getContent(); ?></div>
+<div id="page-wrapper" class="<?php echo $this->getClasses(); ?>"><?php echo $this->getContent(); ?></div>

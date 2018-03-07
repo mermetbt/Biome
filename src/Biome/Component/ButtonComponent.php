@@ -46,8 +46,9 @@ class ButtonComponent extends Component
 
 	public function getAction()
 	{
+		$controller = $this->getAttribute('controller', '');
 		$action = $this->getAttribute('action', '');
-		if(empty($action))
+		if(!empty($controller))
 		{
 			return $this->getURL();
 		}

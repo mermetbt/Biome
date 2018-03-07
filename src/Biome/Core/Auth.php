@@ -25,4 +25,14 @@ class Auth {
 		}
 		return FALSE;
 	}
+
+	public static function userId()
+	{
+		$auth = \Biome\Core\Collection::get('auth');
+		if(!$auth->isAuthenticated())
+		{
+			return NULL;
+		}
+		return $auth->user->getId();
+	}
 }

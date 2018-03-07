@@ -177,54 +177,60 @@ EOF;
 	<biome:include src="elements/navbar.xml"/>
 
 	<biome:view action="index">
-		<biome:title title="@string/{$objects_lower}_title">
-				<biome:a class="btn btn-sm btn-success" controller="$object_lower" action="create"><i class="fa fa-plus"></i> <biome:text value="@string/new"/></biome:a>
-		</biome:title>
+		<div class="container-fluid">
+			<biome:title title="@string/{$objects_lower}_title">
+					<biome:a class="btn btn-sm btn-success" controller="$object_lower" action="create"><i class="fa fa-plus"></i> <biome:text value="@string/new"/></biome:a>
+			</biome:title>
 
-		<biome:panel title="@string/{$objects_lower}_list_title">
-			<biome:datatable value="#{{$objects_lower}.{$objects_lower}}" var="$object_lower">
-				<biome:column headerTitle="#">
-					<biome:variable value="#{{$object_lower}.{$primary_key}}"/>
-				</biome:column>
+			<biome:panel title="@string/{$objects_lower}_list_title">
+				<biome:datatable value="#{{$objects_lower}.{$objects_lower}}" var="$object_lower">
+					<biome:column headerTitle="#">
+						<biome:variable value="#{{$object_lower}.{$primary_key}}"/>
+					</biome:column>
 
-				<biome:column headerTitle="@string/$object_lower">
-					<biome:a controller="$object_lower" action="show" item="#{{$object_lower}.{$primary_key}}">
-						<biome:variable value="#{{$object_lower}.{$object_name}}"/>
-					</biome:a>
-				</biome:column>
+					<biome:column headerTitle="@string/$object_lower">
+						<biome:a controller="$object_lower" action="show" item="#{{$object_lower}.{$primary_key}}">
+							<biome:variable value="#{{$object_lower}.{$object_name}}"/>
+						</biome:a>
+					</biome:column>
 
-				<biome:column headerTitle="@string/creation_date">
-					<biome:variable value="#{{$object_lower}.c_date}"/>
-				</biome:column>
-			</biome:datatable>
-		</biome:panel>
+					<biome:column headerTitle="@string/creation_date">
+						<biome:variable value="#{{$object_lower}.c_date}"/>
+					</biome:column>
+				</biome:datatable>
+			</biome:panel>
+		</div>
 	</biome:view>
 
 	<biome:view action="show">
-		<biome:title title="#{{$objects_lower}.{$object_lower}.{$object_name}}">
-			<biome:a class="btn btn-sm btn-danger" controller="$object_lower" action="delete" item="#{{$objects_lower}.{$object_lower}.{$primary_key}}"><i class="fa fa-trash"></i> <biome:text value="@string/delete"/></biome:a>
-		</biome:title>
+		<div class="container-fluid">
+			<biome:title title="#{{$objects_lower}.{$object_lower}.{$object_name}}">
+				<biome:a class="btn btn-sm btn-danger" controller="$object_lower" action="delete" item="#{{$objects_lower}.{$object_lower}.{$primary_key}}"><i class="fa fa-trash"></i> <biome:text value="@string/delete"/></biome:a>
+			</biome:title>
 
-		<div class="row">
-			<div class="col-lg-12">
-				<biome:panel title="@string/{$object_lower}_informations">
-					<biome:ajaxfield value="#{{$objects_lower}.{$object_lower}.{$object_name}}"/>
-					<biome:ajaxfield value="#{{$objects_lower}.{$object_lower}.c_date}"/>
-					<biome:ajaxfield value="#{{$objects_lower}.{$object_lower}.m_date}"/>
-				</biome:panel>
+			<div class="row">
+				<div class="col-lg-12">
+					<biome:panel title="@string/{$object_lower}_informations">
+						<biome:ajaxfield value="#{{$objects_lower}.{$object_lower}.{$object_name}}"/>
+						<biome:ajaxfield value="#{{$objects_lower}.{$object_lower}.c_date}"/>
+						<biome:ajaxfield value="#{{$objects_lower}.{$object_lower}.m_date}"/>
+					</biome:panel>
+				</div>
 			</div>
 		</div>
 	</biome:view>
 
 	<biome:view action="create">
-		<biome:title title="@string/{$objects_lower}_create_title"/>
+		<div class="container-fluid">
+			<biome:title title="@string/{$objects_lower}_create_title"/>
 
-		<biome:panel title="@string/{$object_lower}_informations">
-			<biome:form>
-				<biome:field value="#{{$object_lower}.{$object_name}}"/>
-				<biome:button class="btn-success" value="@string/create" action="#{{$object_lower}.create}"/>
-			</biome:form>
-		</biome:panel>
+			<biome:panel title="@string/{$object_lower}_informations">
+				<biome:form>
+					<biome:field value="#{{$object_lower}.{$object_name}}"/>
+					<biome:button class="btn-success" value="@string/create" action="#{{$object_lower}.create}"/>
+				</biome:form>
+			</biome:panel>
+		</div>
 	</biome:view>
 
 </biome:views>
