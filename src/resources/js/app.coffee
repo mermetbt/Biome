@@ -96,7 +96,7 @@
 				placeholder: '',
 				allowClear: true,
 				ajax: {
-						url: $this.data 'url',
+						url: url,
 						dataType: 'json',
 						delay: 250,
 						data: (params) ->
@@ -104,11 +104,10 @@
 								action: 'search',
 								q: params.term,
 								page: params.page
-							};
+							}
 						,
 						processResults: (data, params) ->
 							params.page = params.page || 1
-
 							return {
 									results: data.items,
 									pagination: {
@@ -119,11 +118,10 @@
 						cache: true
 				},
 				escapeMarkup: (markup) -> return markup,
-				minimumInputLength: 1,
 				templateResult: formatM2OSelector,
 				templateSelection: formatM2OSelection
-			});
-			return;
+			})
+			return
 
 		inputText.focus();
 		inputText.setCursorPosition(inputText.val().length*2);
@@ -131,7 +129,7 @@
 		inputText.focusout(() ->
 			setTimeout ( =>
 				if submitButton.is(':focus')
-					return;
+					return
 				$.cancelFunc($this);
 			), 0
 		);

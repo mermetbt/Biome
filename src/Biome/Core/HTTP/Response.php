@@ -20,6 +20,11 @@ class Response extends \Symfony\Component\HttpFoundation\Response
 			$url = \Biome\Biome::getService('request')->headers->get('referer');
 		}
 		else
+		if(strpos($controller, '://') !== FALSE)
+		{
+			$url = $controller;
+		}
+		else
 		{
 			$url = \URL::fromRoute($controller, $action, $item, $module);
 		}
